@@ -1,0 +1,15 @@
+[target.riscv32imc-unknown-none-elf]
+runner = "espflash --speed 921600 --monitor"
+
+rustflags = [
+    "-C", "link-arg=-Tlinkall.x",
+    "-C", "link-arg=-Tesp32c3_rom_functions.x",
+
+    "-C", "force-frame-pointers",
+]
+
+[build]
+target = "riscv32imc-unknown-none-elf"
+
+[unstable]
+build-std = [ "core" ]
