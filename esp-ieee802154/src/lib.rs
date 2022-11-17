@@ -1,13 +1,18 @@
 #![no_std]
+#![feature(c_variadic)]
 
 use binary::include_esp32h4::esp_phy_calibration_mode_t_PHY_RF_CAL_FULL;
 use binary::include_esp32h4::register_chipv7_phy;
 
 mod binary;
+mod compat;
 mod ral;
+mod utils;
 
 extern "C" {
     pub fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
+
+    pub fn bt_bb_set_zb_tx_on_delay(time: u16); // from libbtbb.a
 
     pub fn phy_version_print(); // from libphy.a
 }
