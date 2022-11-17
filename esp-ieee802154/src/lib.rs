@@ -3,9 +3,15 @@
 
 use binary::include_esp32h4::esp_phy_calibration_mode_t_PHY_RF_CAL_FULL;
 use binary::include_esp32h4::register_chipv7_phy;
+use hal::enable_events;
+use hal::Ieee802154Event;
+
+use crate::utils::clkrst;
+use crate::utils::etm;
 
 mod binary;
 mod compat;
+mod hal;
 mod ral;
 mod utils;
 
@@ -57,13 +63,16 @@ fn ieee802154_enable() {
 }
 
 fn ieee802154_mac_init() {
+    //TODO: need to be removed
+    etm_clk_enable();
+
     /*
-        //TODO: need to be removed
-        etm_clk_enable();
         ieee802154_pib_init();
+    */
 
-        ieee802154_hal_enable_events(IEEE802154_EVENT_MASK);
+    enable_events(Ieee802154Event::Ieee802154EventMask as u16); // ieee802154_hal_enable_events(IEEE802154_EVENT_MASK);
 
+    /*
         if(!get_test_mode()) {
             ieee802154_hal_disable_events((IEEE802154_EVENT_TIMER0_OVERFLOW) | (IEEE802154_EVENT_TIMER1_OVERFLOW));
         }
@@ -86,4 +95,17 @@ fn ieee802154_mac_init() {
         memset(rx_frame, 0, sizeof(rx_frame));
         ieee802154_state = IEEE802154_STATE_IDLE;
     */
+}
+
+fn etm_clk_enable() {
+    //#if CONFIG_IDF_TARGET_ESP32H4_BETA_VERSION_2
+    //    REG_SET_BIT(SYSTEM_PERIP_CLK_EN1_REG, SYSTEM_ETM_CLK_EN);
+    etm().etm_clk_en.modify(|_, w| unsafe { w.bits(1) });
+    clkrst().clkrst_modclk_conf.modify(|_, w| {
+        w.clkrst_etm_clk_sel()
+            .set_bit()
+            .clkrst_etm_clk_active()
+            .set_bit()
+    });
+    //#endif
 }

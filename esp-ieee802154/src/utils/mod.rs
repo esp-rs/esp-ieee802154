@@ -68,3 +68,19 @@ impl Write for StrBuf {
         Ok(())
     }
 }
+
+pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
+    unsafe { &*crate::ral::IEEE802154::PTR }
+}
+
+pub fn coex() -> &'static crate::ral::coex::RegisterBlock {
+    unsafe { &*crate::ral::COEX::PTR }
+}
+
+pub fn etm() -> &'static crate::ral::etm::RegisterBlock {
+    unsafe { &*crate::ral::ETM::PTR }
+}
+
+pub fn clkrst() -> &'static crate::ral::clkrst::RegisterBlock {
+    unsafe { &*crate::ral::CLKRST::PTR }
+}
