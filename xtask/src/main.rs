@@ -9,6 +9,7 @@ use anyhow::Result;
 use clap::Parser;
 use log::{info, LevelFilter};
 use svd2rust::{generate::device::render, load_from, Config, Target};
+use xshell::{cmd, Shell};
 
 #[derive(Debug, Parser)]
 struct Opts {}
@@ -45,12 +46,20 @@ fn main() -> Result<()> {
 
     let mut device_x = String::new();
     let items = render(&device, &config, &mut device_x)?;
-    let data = items.to_string();
+    let data = items.to_string()
+        .replace("crate :: ", "crate :: ral :: ")
+        .replace("# ! [deny (dead_code)] # ! [deny (improper_ctypes)] # ! [deny (missing_docs)] # ! [deny (no_mangle_generic_items)] # ! [deny (non_shorthand_field_patterns)] # ! [deny (overflowing_literals)] # ! [deny (path_statements)] # ! [deny (patterns_in_fns_without_body)] # ! [deny (private_in_public)] # ! [deny (unconditional_recursion)] # ! [deny (unused_allocation)] # ! [deny (unused_comparisons)] # ! [deny (unused_parens)] # ! [deny (while_true)] # ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] # ! [no_std]","# ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] #![allow(unused)]")
+        .replace("DEVICE_PERIPHERALS", "IEEE802154_PERIPHERALS");
 
     let mut file = File::create(out_dir.join("mod.rs"))?;
     file.write_all(data.as_ref())?;
 
-    info!("All done. Manually format ./esp-ieee802154/src/ral/mod.rs now and replace `crate::` with `crate::ral::`.\nRemove and add allo/deny attributes as needed.");
+
+    let out_dir = out_dir.as_os_str().to_str().unwrap().to_string().replace("\\\\?\\","");
+    let sh = Shell::new().unwrap();
+    cmd!(sh, "rustfmt {out_dir}/mod.rs").quiet().run().unwrap();
+
+    info!("All done.");
 
     Ok(())
 }
