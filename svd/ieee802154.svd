@@ -8,8 +8,90 @@
   <peripherals>
     <peripheral>
       <name>ieee802154</name>
-      <baseAddress>0x60047000</baseAddress>
+      <baseAddress>0x60047000</baseAddress>      
       <registers>
+        <register>
+          <name>error_cnt_clear</name>
+          <addressOffset>0x158</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>iee802154_cca_busy_cnt_clear</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_tx_security_error_cnt_clear</name>
+              <bitOffset>1</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_tx_break_coex_cnt_clear</name>
+              <bitOffset>2</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_rx_ack_timeout_cnt_clear</name>
+              <bitOffset>3</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_rx_ack_abort_coex_cnt_clear</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_ed_scan_coex_cnt_clear</name>
+              <bitOffset>5</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_tx_ack_abort_coex_cnt_clear</name>
+              <bitOffset>6</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_rx_restart_cnt_clear</name>
+              <bitOffset>7</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_rx_abort_coex_cnt_clear</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_no_rss_detect_cnt_clear</name>
+              <bitOffset>9</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_rx_filter_fail_cnt_clear</name>
+              <bitOffset>10</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_cca_fail_cnt_clear</name>
+              <bitOffset>11</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_ed_abort_cnt_clear</name>
+              <bitOffset>12</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_crc_error_cnt_clear</name>
+              <bitOffset>13</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>iee802154_sfd_timeout_cnt_clear</name>
+              <bitOffset>14</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>      
         <register>
           <name>cca_busy_cnt</name>
           <addressOffset>0x158</addressOffset>
@@ -1238,6 +1320,18 @@
       <baseAddress>0x60049000</baseAddress>
       <registers>
         <register>
+          <name>coex_date</name>
+          <addressOffset>0xC4</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_date</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>28</bitWidth>
+            </field>
+          </fields>
+        </register>      
+        <register>
           <name>ocex_src2_select</name>
           <addressOffset>0xC0</addressOffset>
           <size>0x20</size>
@@ -2076,6 +2170,65 @@
           </fields>
         </register>
       </registers>
+    </peripheral>
+    <peripheral>
+      <name>etm</name>
+      <baseAddress>0x60044000</baseAddress>
+      <registers>
+        <register>
+          <name>etm_ch0_task_id</name>
+          <addressOffset>0x1C</addressOffset>
+          <size>0x20</size>
+        </register>
+        <register>
+          <name>etm_ch0_evt_id</name>
+          <addressOffset>0x18</addressOffset>
+          <size>0x20</size>
+        </register>
+        <register>
+          <name>etm_chenclr_ad0</name>
+          <addressOffset>0x8</addressOffset>
+          <size>0x20</size>
+        </register>
+        <register>
+          <name>etm_chenset_ad0</name>
+          <addressOffset>0x4</addressOffset>
+          <size>0x20</size>
+        </register>
+        <register>
+          <name>etm_chen_ad0</name>
+          <addressOffset>0x0</addressOffset>
+          <size>0x20</size>
+        </register>
+        <register>
+          <name>etm_clk_en</name>
+          <addressOffset>0xDC</addressOffset>
+          <size>0x20</size>
+        </register>        
+      </registers>
     </peripheral>    
+    <peripheral>
+      <name>clkrst</name>
+      <baseAddress>0x6004B000</baseAddress>
+      <registers>
+        <register>
+          <name>clkrst_modclk_conf</name>
+          <addressOffset>0xC</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>clkrst_etm_clk_active</name>
+              <bitOffset>3</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>clkrst_etm_clk_sel</name>
+              <bitOffset>2</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+      </registers>
+    </peripheral>      
   </peripherals>
 </device>

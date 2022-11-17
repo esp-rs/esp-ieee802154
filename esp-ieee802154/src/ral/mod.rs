@@ -887,8 +887,7 @@ pub mod ieee802154 {
         pub tx_break_coex_cnt: TX_BREAK_COEX_CNT,
         #[doc = "0x154 - "]
         pub tx_security_error_cnt: TX_SECURITY_ERROR_CNT,
-        #[doc = "0x158 - "]
-        pub cca_busy_cnt: CCA_BUSY_CNT,
+        _reserved_75_cca_busy_cnt: [u8; 0x04],
     }
     impl RegisterBlock {
         #[doc = "0x00 - "]
@@ -905,6 +904,354 @@ pub mod ieee802154 {
         #[inline(always)]
         pub const fn ctrl_cfg(&self) -> &CTRL_CFG {
             unsafe { &*(self as *const Self).cast::<u8>().add(4usize).cast() }
+        }
+        #[doc = "0x158 - "]
+        #[inline(always)]
+        pub const fn cca_busy_cnt(&self) -> &CCA_BUSY_CNT {
+            unsafe { &*(self as *const Self).cast::<u8>().add(344usize).cast() }
+        }
+        #[doc = "0x158 - "]
+        #[inline(always)]
+        pub const fn error_cnt_clear(&self) -> &ERROR_CNT_CLEAR {
+            unsafe { &*(self as *const Self).cast::<u8>().add(344usize).cast() }
+        }
+    }
+    #[doc = "error_cnt_clear (rw) register accessor: an alias for `Reg<ERROR_CNT_CLEAR_SPEC>`"]
+    pub type ERROR_CNT_CLEAR = crate::ral::Reg<error_cnt_clear::ERROR_CNT_CLEAR_SPEC>;
+    #[doc = ""]
+    pub mod error_cnt_clear {
+        #[doc = "Register `error_cnt_clear` reader"]
+        pub struct R(crate::ral::R<ERROR_CNT_CLEAR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ERROR_CNT_CLEAR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ERROR_CNT_CLEAR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ERROR_CNT_CLEAR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `error_cnt_clear` writer"]
+        pub struct W(crate::ral::W<ERROR_CNT_CLEAR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ERROR_CNT_CLEAR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ERROR_CNT_CLEAR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ERROR_CNT_CLEAR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `iee802154_cca_busy_cnt_clear` reader - "]
+        pub type IEE802154_CCA_BUSY_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_cca_busy_cnt_clear` writer - "]
+        pub type IEE802154_CCA_BUSY_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_tx_security_error_cnt_clear` reader - "]
+        pub type IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_tx_security_error_cnt_clear` writer - "]
+        pub type IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_tx_break_coex_cnt_clear` reader - "]
+        pub type IEE802154_TX_BREAK_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_tx_break_coex_cnt_clear` writer - "]
+        pub type IEE802154_TX_BREAK_COEX_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_rx_ack_timeout_cnt_clear` reader - "]
+        pub type IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_rx_ack_timeout_cnt_clear` writer - "]
+        pub type IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_rx_ack_abort_coex_cnt_clear` reader - "]
+        pub type IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_rx_ack_abort_coex_cnt_clear` writer - "]
+        pub type IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_ed_scan_coex_cnt_clear` reader - "]
+        pub type IEE802154_ED_SCAN_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_ed_scan_coex_cnt_clear` writer - "]
+        pub type IEE802154_ED_SCAN_COEX_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_tx_ack_abort_coex_cnt_clear` reader - "]
+        pub type IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_tx_ack_abort_coex_cnt_clear` writer - "]
+        pub type IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_rx_restart_cnt_clear` reader - "]
+        pub type IEE802154_RX_RESTART_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_rx_restart_cnt_clear` writer - "]
+        pub type IEE802154_RX_RESTART_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_rx_abort_coex_cnt_clear` reader - "]
+        pub type IEE802154_RX_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_rx_abort_coex_cnt_clear` writer - "]
+        pub type IEE802154_RX_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_no_rss_detect_cnt_clear` reader - "]
+        pub type IEE802154_NO_RSS_DETECT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_no_rss_detect_cnt_clear` writer - "]
+        pub type IEE802154_NO_RSS_DETECT_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_rx_filter_fail_cnt_clear` reader - "]
+        pub type IEE802154_RX_FILTER_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_rx_filter_fail_cnt_clear` writer - "]
+        pub type IEE802154_RX_FILTER_FAIL_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_cca_fail_cnt_clear` reader - "]
+        pub type IEE802154_CCA_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_cca_fail_cnt_clear` writer - "]
+        pub type IEE802154_CCA_FAIL_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_ed_abort_cnt_clear` reader - "]
+        pub type IEE802154_ED_ABORT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_ed_abort_cnt_clear` writer - "]
+        pub type IEE802154_ED_ABORT_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_crc_error_cnt_clear` reader - "]
+        pub type IEE802154_CRC_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_crc_error_cnt_clear` writer - "]
+        pub type IEE802154_CRC_ERROR_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        #[doc = "Field `iee802154_sfd_timeout_cnt_clear` reader - "]
+        pub type IEE802154_SFD_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `iee802154_sfd_timeout_cnt_clear` writer - "]
+        pub type IEE802154_SFD_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            pub fn iee802154_cca_busy_cnt_clear(&self) -> IEE802154_CCA_BUSY_CNT_CLEAR_R {
+                IEE802154_CCA_BUSY_CNT_CLEAR_R::new((self.bits & 1) != 0)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            pub fn iee802154_tx_security_error_cnt_clear(
+                &self,
+            ) -> IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R {
+                IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R::new(((self.bits >> 1) & 1) != 0)
+            }
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            pub fn iee802154_tx_break_coex_cnt_clear(&self) -> IEE802154_TX_BREAK_COEX_CNT_CLEAR_R {
+                IEE802154_TX_BREAK_COEX_CNT_CLEAR_R::new(((self.bits >> 2) & 1) != 0)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            pub fn iee802154_rx_ack_timeout_cnt_clear(
+                &self,
+            ) -> IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R {
+                IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 3) & 1) != 0)
+            }
+            #[doc = "Bit 4"]
+            #[inline(always)]
+            pub fn iee802154_rx_ack_abort_coex_cnt_clear(
+                &self,
+            ) -> IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R {
+                IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 4) & 1) != 0)
+            }
+            #[doc = "Bit 5"]
+            #[inline(always)]
+            pub fn iee802154_ed_scan_coex_cnt_clear(&self) -> IEE802154_ED_SCAN_COEX_CNT_CLEAR_R {
+                IEE802154_ED_SCAN_COEX_CNT_CLEAR_R::new(((self.bits >> 5) & 1) != 0)
+            }
+            #[doc = "Bit 6"]
+            #[inline(always)]
+            pub fn iee802154_tx_ack_abort_coex_cnt_clear(
+                &self,
+            ) -> IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R {
+                IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 6) & 1) != 0)
+            }
+            #[doc = "Bit 7"]
+            #[inline(always)]
+            pub fn iee802154_rx_restart_cnt_clear(&self) -> IEE802154_RX_RESTART_CNT_CLEAR_R {
+                IEE802154_RX_RESTART_CNT_CLEAR_R::new(((self.bits >> 7) & 1) != 0)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn iee802154_rx_abort_coex_cnt_clear(&self) -> IEE802154_RX_ABORT_COEX_CNT_CLEAR_R {
+                IEE802154_RX_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 8) & 1) != 0)
+            }
+            #[doc = "Bit 9"]
+            #[inline(always)]
+            pub fn iee802154_no_rss_detect_cnt_clear(&self) -> IEE802154_NO_RSS_DETECT_CNT_CLEAR_R {
+                IEE802154_NO_RSS_DETECT_CNT_CLEAR_R::new(((self.bits >> 9) & 1) != 0)
+            }
+            #[doc = "Bit 10"]
+            #[inline(always)]
+            pub fn iee802154_rx_filter_fail_cnt_clear(
+                &self,
+            ) -> IEE802154_RX_FILTER_FAIL_CNT_CLEAR_R {
+                IEE802154_RX_FILTER_FAIL_CNT_CLEAR_R::new(((self.bits >> 10) & 1) != 0)
+            }
+            #[doc = "Bit 11"]
+            #[inline(always)]
+            pub fn iee802154_cca_fail_cnt_clear(&self) -> IEE802154_CCA_FAIL_CNT_CLEAR_R {
+                IEE802154_CCA_FAIL_CNT_CLEAR_R::new(((self.bits >> 11) & 1) != 0)
+            }
+            #[doc = "Bit 12"]
+            #[inline(always)]
+            pub fn iee802154_ed_abort_cnt_clear(&self) -> IEE802154_ED_ABORT_CNT_CLEAR_R {
+                IEE802154_ED_ABORT_CNT_CLEAR_R::new(((self.bits >> 12) & 1) != 0)
+            }
+            #[doc = "Bit 13"]
+            #[inline(always)]
+            pub fn iee802154_crc_error_cnt_clear(&self) -> IEE802154_CRC_ERROR_CNT_CLEAR_R {
+                IEE802154_CRC_ERROR_CNT_CLEAR_R::new(((self.bits >> 13) & 1) != 0)
+            }
+            #[doc = "Bit 14"]
+            #[inline(always)]
+            pub fn iee802154_sfd_timeout_cnt_clear(&self) -> IEE802154_SFD_TIMEOUT_CNT_CLEAR_R {
+                IEE802154_SFD_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 14) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_cca_busy_cnt_clear(&mut self) -> IEE802154_CCA_BUSY_CNT_CLEAR_W<0> {
+                IEE802154_CCA_BUSY_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_tx_security_error_cnt_clear(
+                &mut self,
+            ) -> IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W<1> {
+                IEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_tx_break_coex_cnt_clear(
+                &mut self,
+            ) -> IEE802154_TX_BREAK_COEX_CNT_CLEAR_W<2> {
+                IEE802154_TX_BREAK_COEX_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_rx_ack_timeout_cnt_clear(
+                &mut self,
+            ) -> IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W<3> {
+                IEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 4"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_rx_ack_abort_coex_cnt_clear(
+                &mut self,
+            ) -> IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W<4> {
+                IEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 5"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_ed_scan_coex_cnt_clear(
+                &mut self,
+            ) -> IEE802154_ED_SCAN_COEX_CNT_CLEAR_W<5> {
+                IEE802154_ED_SCAN_COEX_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 6"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_tx_ack_abort_coex_cnt_clear(
+                &mut self,
+            ) -> IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W<6> {
+                IEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_rx_restart_cnt_clear(
+                &mut self,
+            ) -> IEE802154_RX_RESTART_CNT_CLEAR_W<7> {
+                IEE802154_RX_RESTART_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_rx_abort_coex_cnt_clear(
+                &mut self,
+            ) -> IEE802154_RX_ABORT_COEX_CNT_CLEAR_W<8> {
+                IEE802154_RX_ABORT_COEX_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 9"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_no_rss_detect_cnt_clear(
+                &mut self,
+            ) -> IEE802154_NO_RSS_DETECT_CNT_CLEAR_W<9> {
+                IEE802154_NO_RSS_DETECT_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 10"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_rx_filter_fail_cnt_clear(
+                &mut self,
+            ) -> IEE802154_RX_FILTER_FAIL_CNT_CLEAR_W<10> {
+                IEE802154_RX_FILTER_FAIL_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 11"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_cca_fail_cnt_clear(&mut self) -> IEE802154_CCA_FAIL_CNT_CLEAR_W<11> {
+                IEE802154_CCA_FAIL_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 12"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_ed_abort_cnt_clear(&mut self) -> IEE802154_ED_ABORT_CNT_CLEAR_W<12> {
+                IEE802154_ED_ABORT_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 13"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_crc_error_cnt_clear(&mut self) -> IEE802154_CRC_ERROR_CNT_CLEAR_W<13> {
+                IEE802154_CRC_ERROR_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Bit 14"]
+            #[inline(always)]
+            #[must_use]
+            pub fn iee802154_sfd_timeout_cnt_clear(
+                &mut self,
+            ) -> IEE802154_SFD_TIMEOUT_CNT_CLEAR_W<14> {
+                IEE802154_SFD_TIMEOUT_CNT_CLEAR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [error_cnt_clear](index.html) module"]
+        pub struct ERROR_CNT_CLEAR_SPEC;
+        impl crate::ral::RegisterSpec for ERROR_CNT_CLEAR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [error_cnt_clear::R](R) reader structure"]
+        impl crate::ral::Readable for ERROR_CNT_CLEAR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [error_cnt_clear::W](W) writer structure"]
+        impl crate::ral::Writable for ERROR_CNT_CLEAR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
     #[doc = "cca_busy_cnt (rw) register accessor: an alias for `Reg<CCA_BUSY_CNT_SPEC>`"]
@@ -8352,6 +8699,90 @@ pub mod coex {
         pub ocex_src1_select: OCEX_SRC1_SELECT,
         #[doc = "0xc0 - "]
         pub ocex_src2_select: OCEX_SRC2_SELECT,
+        #[doc = "0xc4 - "]
+        pub coex_date: COEX_DATE,
+    }
+    #[doc = "coex_date (rw) register accessor: an alias for `Reg<COEX_DATE_SPEC>`"]
+    pub type COEX_DATE = crate::ral::Reg<coex_date::COEX_DATE_SPEC>;
+    #[doc = ""]
+    pub mod coex_date {
+        #[doc = "Register `coex_date` reader"]
+        pub struct R(crate::ral::R<COEX_DATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_DATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_DATE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_date` writer"]
+        pub struct W(crate::ral::W<COEX_DATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_DATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_DATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_date` reader - "]
+        pub type COEX_DATE_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `coex_date` writer - "]
+        pub type COEX_DATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DATE_SPEC, u32, u32, 28, O>;
+        impl R {
+            #[doc = "Bits 0:27"]
+            #[inline(always)]
+            pub fn coex_date(&self) -> COEX_DATE_R {
+                COEX_DATE_R::new(self.bits & 0x0fff_ffff)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:27"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_date(&mut self) -> COEX_DATE_W<0> {
+                COEX_DATE_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_date](index.html) module"]
+        pub struct COEX_DATE_SPEC;
+        impl crate::ral::RegisterSpec for COEX_DATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_date::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_DATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_date::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_DATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
     }
     #[doc = "ocex_src2_select (rw) register accessor: an alias for `Reg<OCEX_SRC2_SELECT_SPEC>`"]
     pub type OCEX_SRC2_SELECT = crate::ral::Reg<ocex_src2_select::OCEX_SRC2_SELECT_SPEC>;
@@ -13172,6 +13603,571 @@ pub mod coex {
         }
     }
 }
+#[doc = "etm"]
+pub struct ETM {
+    _marker: PhantomData<*const ()>,
+}
+unsafe impl Send for ETM {}
+impl ETM {
+    #[doc = r"Pointer to the register block"]
+    pub const PTR: *const etm::RegisterBlock = 0x6004_4000 as *const _;
+    #[doc = r"Return the pointer to the register block"]
+    #[inline(always)]
+    pub const fn ptr() -> *const etm::RegisterBlock {
+        Self::PTR
+    }
+}
+impl Deref for ETM {
+    type Target = etm::RegisterBlock;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*Self::PTR }
+    }
+}
+impl core::fmt::Debug for ETM {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        f.debug_struct("ETM").finish()
+    }
+}
+#[doc = "etm"]
+pub mod etm {
+    #[doc = r"Register block"]
+    #[repr(C)]
+    pub struct RegisterBlock {
+        #[doc = "0x00 - "]
+        pub etm_chen_ad0: ETM_CHEN_AD0,
+        #[doc = "0x04 - "]
+        pub etm_chenset_ad0: ETM_CHENSET_AD0,
+        #[doc = "0x08 - "]
+        pub etm_chenclr_ad0: ETM_CHENCLR_AD0,
+        _reserved3: [u8; 0x0c],
+        #[doc = "0x18 - "]
+        pub etm_ch0_evt_id: ETM_CH0_EVT_ID,
+        #[doc = "0x1c - "]
+        pub etm_ch0_task_id: ETM_CH0_TASK_ID,
+        _reserved5: [u8; 0xbc],
+        #[doc = "0xdc - "]
+        pub etm_clk_en: ETM_CLK_EN,
+    }
+    #[doc = "etm_ch0_task_id (rw) register accessor: an alias for `Reg<ETM_CH0_TASK_ID_SPEC>`"]
+    pub type ETM_CH0_TASK_ID = crate::ral::Reg<etm_ch0_task_id::ETM_CH0_TASK_ID_SPEC>;
+    #[doc = ""]
+    pub mod etm_ch0_task_id {
+        #[doc = "Register `etm_ch0_task_id` reader"]
+        pub struct R(crate::ral::R<ETM_CH0_TASK_ID_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CH0_TASK_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CH0_TASK_ID_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CH0_TASK_ID_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_ch0_task_id` writer"]
+        pub struct W(crate::ral::W<ETM_CH0_TASK_ID_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CH0_TASK_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CH0_TASK_ID_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CH0_TASK_ID_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_ch0_task_id](index.html) module"]
+        pub struct ETM_CH0_TASK_ID_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CH0_TASK_ID_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_ch0_task_id::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CH0_TASK_ID_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_ch0_task_id::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CH0_TASK_ID_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "etm_ch0_evt_id (rw) register accessor: an alias for `Reg<ETM_CH0_EVT_ID_SPEC>`"]
+    pub type ETM_CH0_EVT_ID = crate::ral::Reg<etm_ch0_evt_id::ETM_CH0_EVT_ID_SPEC>;
+    #[doc = ""]
+    pub mod etm_ch0_evt_id {
+        #[doc = "Register `etm_ch0_evt_id` reader"]
+        pub struct R(crate::ral::R<ETM_CH0_EVT_ID_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CH0_EVT_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CH0_EVT_ID_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CH0_EVT_ID_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_ch0_evt_id` writer"]
+        pub struct W(crate::ral::W<ETM_CH0_EVT_ID_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CH0_EVT_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CH0_EVT_ID_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CH0_EVT_ID_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_ch0_evt_id](index.html) module"]
+        pub struct ETM_CH0_EVT_ID_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CH0_EVT_ID_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_ch0_evt_id::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CH0_EVT_ID_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_ch0_evt_id::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CH0_EVT_ID_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "etm_chenclr_ad0 (rw) register accessor: an alias for `Reg<ETM_CHENCLR_AD0_SPEC>`"]
+    pub type ETM_CHENCLR_AD0 = crate::ral::Reg<etm_chenclr_ad0::ETM_CHENCLR_AD0_SPEC>;
+    #[doc = ""]
+    pub mod etm_chenclr_ad0 {
+        #[doc = "Register `etm_chenclr_ad0` reader"]
+        pub struct R(crate::ral::R<ETM_CHENCLR_AD0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CHENCLR_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CHENCLR_AD0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CHENCLR_AD0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_chenclr_ad0` writer"]
+        pub struct W(crate::ral::W<ETM_CHENCLR_AD0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CHENCLR_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CHENCLR_AD0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CHENCLR_AD0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chenclr_ad0](index.html) module"]
+        pub struct ETM_CHENCLR_AD0_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CHENCLR_AD0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_chenclr_ad0::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CHENCLR_AD0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_chenclr_ad0::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CHENCLR_AD0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "etm_chenset_ad0 (rw) register accessor: an alias for `Reg<ETM_CHENSET_AD0_SPEC>`"]
+    pub type ETM_CHENSET_AD0 = crate::ral::Reg<etm_chenset_ad0::ETM_CHENSET_AD0_SPEC>;
+    #[doc = ""]
+    pub mod etm_chenset_ad0 {
+        #[doc = "Register `etm_chenset_ad0` reader"]
+        pub struct R(crate::ral::R<ETM_CHENSET_AD0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CHENSET_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CHENSET_AD0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CHENSET_AD0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_chenset_ad0` writer"]
+        pub struct W(crate::ral::W<ETM_CHENSET_AD0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CHENSET_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CHENSET_AD0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CHENSET_AD0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chenset_ad0](index.html) module"]
+        pub struct ETM_CHENSET_AD0_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CHENSET_AD0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_chenset_ad0::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CHENSET_AD0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_chenset_ad0::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CHENSET_AD0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "etm_chen_ad0 (rw) register accessor: an alias for `Reg<ETM_CHEN_AD0_SPEC>`"]
+    pub type ETM_CHEN_AD0 = crate::ral::Reg<etm_chen_ad0::ETM_CHEN_AD0_SPEC>;
+    #[doc = ""]
+    pub mod etm_chen_ad0 {
+        #[doc = "Register `etm_chen_ad0` reader"]
+        pub struct R(crate::ral::R<ETM_CHEN_AD0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CHEN_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CHEN_AD0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CHEN_AD0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_chen_ad0` writer"]
+        pub struct W(crate::ral::W<ETM_CHEN_AD0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CHEN_AD0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CHEN_AD0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CHEN_AD0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chen_ad0](index.html) module"]
+        pub struct ETM_CHEN_AD0_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CHEN_AD0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_chen_ad0::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CHEN_AD0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_chen_ad0::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CHEN_AD0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "etm_clk_en (rw) register accessor: an alias for `Reg<ETM_CLK_EN_SPEC>`"]
+    pub type ETM_CLK_EN = crate::ral::Reg<etm_clk_en::ETM_CLK_EN_SPEC>;
+    #[doc = ""]
+    pub mod etm_clk_en {
+        #[doc = "Register `etm_clk_en` reader"]
+        pub struct R(crate::ral::R<ETM_CLK_EN_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ETM_CLK_EN_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ETM_CLK_EN_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ETM_CLK_EN_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `etm_clk_en` writer"]
+        pub struct W(crate::ral::W<ETM_CLK_EN_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ETM_CLK_EN_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ETM_CLK_EN_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ETM_CLK_EN_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        impl W {
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_clk_en](index.html) module"]
+        pub struct ETM_CLK_EN_SPEC;
+        impl crate::ral::RegisterSpec for ETM_CLK_EN_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [etm_clk_en::R](R) reader structure"]
+        impl crate::ral::Readable for ETM_CLK_EN_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [etm_clk_en::W](W) writer structure"]
+        impl crate::ral::Writable for ETM_CLK_EN_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+}
+#[doc = "clkrst"]
+pub struct CLKRST {
+    _marker: PhantomData<*const ()>,
+}
+unsafe impl Send for CLKRST {}
+impl CLKRST {
+    #[doc = r"Pointer to the register block"]
+    pub const PTR: *const clkrst::RegisterBlock = 0x6004_b000 as *const _;
+    #[doc = r"Return the pointer to the register block"]
+    #[inline(always)]
+    pub const fn ptr() -> *const clkrst::RegisterBlock {
+        Self::PTR
+    }
+}
+impl Deref for CLKRST {
+    type Target = clkrst::RegisterBlock;
+    #[inline(always)]
+    fn deref(&self) -> &Self::Target {
+        unsafe { &*Self::PTR }
+    }
+}
+impl core::fmt::Debug for CLKRST {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        f.debug_struct("CLKRST").finish()
+    }
+}
+#[doc = "clkrst"]
+pub mod clkrst {
+    #[doc = r"Register block"]
+    #[repr(C)]
+    pub struct RegisterBlock {
+        _reserved0: [u8; 0x0c],
+        #[doc = "0x0c - "]
+        pub clkrst_modclk_conf: CLKRST_MODCLK_CONF,
+    }
+    #[doc = "clkrst_modclk_conf (rw) register accessor: an alias for `Reg<CLKRST_MODCLK_CONF_SPEC>`"]
+    pub type CLKRST_MODCLK_CONF = crate::ral::Reg<clkrst_modclk_conf::CLKRST_MODCLK_CONF_SPEC>;
+    #[doc = ""]
+    pub mod clkrst_modclk_conf {
+        #[doc = "Register `clkrst_modclk_conf` reader"]
+        pub struct R(crate::ral::R<CLKRST_MODCLK_CONF_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<CLKRST_MODCLK_CONF_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<CLKRST_MODCLK_CONF_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<CLKRST_MODCLK_CONF_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `clkrst_modclk_conf` writer"]
+        pub struct W(crate::ral::W<CLKRST_MODCLK_CONF_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<CLKRST_MODCLK_CONF_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<CLKRST_MODCLK_CONF_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<CLKRST_MODCLK_CONF_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `clkrst_etm_clk_sel` reader - "]
+        pub type CLKRST_ETM_CLK_SEL_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `clkrst_etm_clk_sel` writer - "]
+        pub type CLKRST_ETM_CLK_SEL_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CLKRST_MODCLK_CONF_SPEC, bool, O>;
+        #[doc = "Field `clkrst_etm_clk_active` reader - "]
+        pub type CLKRST_ETM_CLK_ACTIVE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `clkrst_etm_clk_active` writer - "]
+        pub type CLKRST_ETM_CLK_ACTIVE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CLKRST_MODCLK_CONF_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            pub fn clkrst_etm_clk_sel(&self) -> CLKRST_ETM_CLK_SEL_R {
+                CLKRST_ETM_CLK_SEL_R::new(((self.bits >> 2) & 1) != 0)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            pub fn clkrst_etm_clk_active(&self) -> CLKRST_ETM_CLK_ACTIVE_R {
+                CLKRST_ETM_CLK_ACTIVE_R::new(((self.bits >> 3) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            #[must_use]
+            pub fn clkrst_etm_clk_sel(&mut self) -> CLKRST_ETM_CLK_SEL_W<2> {
+                CLKRST_ETM_CLK_SEL_W::new(self)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn clkrst_etm_clk_active(&mut self) -> CLKRST_ETM_CLK_ACTIVE_W<3> {
+                CLKRST_ETM_CLK_ACTIVE_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [clkrst_modclk_conf](index.html) module"]
+        pub struct CLKRST_MODCLK_CONF_SPEC;
+        impl crate::ral::RegisterSpec for CLKRST_MODCLK_CONF_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [clkrst_modclk_conf::R](R) reader structure"]
+        impl crate::ral::Readable for CLKRST_MODCLK_CONF_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [clkrst_modclk_conf::W](W) writer structure"]
+        impl crate::ral::Writable for CLKRST_MODCLK_CONF_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+}
 #[no_mangle]
 static mut IEEE802154_PERIPHERALS: bool = false;
 #[doc = r" All the peripherals."]
@@ -13181,6 +14177,10 @@ pub struct Peripherals {
     pub IEEE802154: IEEE802154,
     #[doc = "COEX"]
     pub COEX: COEX,
+    #[doc = "ETM"]
+    pub ETM: ETM,
+    #[doc = "CLKRST"]
+    pub CLKRST: CLKRST,
 }
 impl Peripherals {
     #[doc = r" Returns all the peripherals *once*."]
@@ -13207,6 +14207,12 @@ impl Peripherals {
                 _marker: PhantomData,
             },
             COEX: COEX {
+                _marker: PhantomData,
+            },
+            ETM: ETM {
+                _marker: PhantomData,
+            },
+            CLKRST: CLKRST {
                 _marker: PhantomData,
             },
         }
