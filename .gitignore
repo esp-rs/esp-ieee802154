@@ -1,2 +1,3 @@
-target/
 esp-ieee802154/Cargo.lock
+svd/ieee802154.svd
+target/
