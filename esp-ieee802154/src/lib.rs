@@ -1,19 +1,19 @@
 #![no_std]
 #![feature(c_variadic)]
 
-use binary::include_esp32h4::esp_phy_calibration_mode_t_PHY_RF_CAL_FULL;
-use binary::include_esp32h4::register_chipv7_phy;
-use hal::enable_events;
-use hal::Ieee802154Event;
-
-use crate::utils::clkrst;
-use crate::utils::etm;
+use self::{
+    binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
+    hal::{enable_events, Ieee802154Event},
+    utils::{clkrst, etm},
+};
 
 mod binary;
 mod compat;
 mod hal;
 mod ral;
 mod utils;
+
+const PHY_ENABLE_VERSION_PRINT: u32 = 1;
 
 extern "C" {
     pub fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
@@ -23,14 +23,14 @@ extern "C" {
     pub fn phy_version_print(); // from libphy.a
 }
 
-const PHY_ENABLE_VERSION_PRINT: u32 = 1;
-
+/// Enable the IEEE802.15.4 radio
 pub fn esp_ieee802154_enable() {
     esp_phy_enable();
     ieee802154_enable();
     ieee802154_mac_init();
 }
 
+/// Enable the PHY
 fn esp_phy_enable() {
     //_lock_acquire(&s_phy_access_lock);
     //if (s_phy_access_ref == 0) {
@@ -51,6 +51,7 @@ fn esp_phy_enable() {
     // ESP32H4-TODO: enable common clk.
 }
 
+/// Enable the IEEE802.15.4 clock and modem
 fn ieee802154_enable() {
     // TODO hopefully these will be in PAC
 
@@ -62,6 +63,7 @@ fn ieee802154_enable() {
     // REG_CLR_BIT(SYSTEM_MODEM_RST_EN_REG, SYSTEM_IEEE802154BB_RST);
 }
 
+/// Initialize the IEEE802.15.4 MAC
 fn ieee802154_mac_init() {
     //TODO: need to be removed
     etm_clk_enable();
@@ -97,6 +99,7 @@ fn ieee802154_mac_init() {
     */
 }
 
+/// Enable the ETM clock
 fn etm_clk_enable() {
     //#if CONFIG_IDF_TARGET_ESP32H4_BETA_VERSION_2
     //    REG_SET_BIT(SYSTEM_PERIP_CLK_EN1_REG, SYSTEM_ETM_CLK_EN);

@@ -1,2 +1,3 @@
 pub(crate) mod c_types;
-pub(crate) mod include_esp32h4;
+#[cfg_attr(feature = "esp32h4", path = "include/esp32h4.rs")]
+pub(crate) mod include;
