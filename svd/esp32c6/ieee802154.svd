@@ -8,93 +8,105 @@
   <peripherals>
     <peripheral>
       <name>ieee802154</name>
-      <baseAddress>0x60047000</baseAddress>      
+      <baseAddress>0x600A3000</baseAddress>
       <registers>
         <register>
-          <name>error_cnt_clear</name>
-          <addressOffset>0x158</addressOffset>
+          <name>mac_date</name>
+          <addressOffset>0x184</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
-              <name>iee802154_cca_busy_cnt_clear</name>
+              <name>mac_date</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>error_cnt_clear</name>
+          <addressOffset>0x180</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>cca_busy_cnt_clear</name>
               <bitOffset>0</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_tx_security_error_cnt_clear</name>
+              <name>tx_security_error_cnt_clear</name>
               <bitOffset>1</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_tx_break_coex_cnt_clear</name>
+              <name>tx_break_coex_cnt_clear</name>
               <bitOffset>2</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_rx_ack_timeout_cnt_clear</name>
+              <name>rx_ack_timeout_cnt_clear</name>
               <bitOffset>3</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_rx_ack_abort_coex_cnt_clear</name>
+              <name>rx_ack_abort_coex_cnt_clear</name>
               <bitOffset>4</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_ed_scan_coex_cnt_clear</name>
+              <name>ed_scan_coex_cnt_clear</name>
               <bitOffset>5</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_tx_ack_abort_coex_cnt_clear</name>
+              <name>tx_ack_abort_coex_cnt_clear</name>
               <bitOffset>6</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_rx_restart_cnt_clear</name>
+              <name>rx_restart_cnt_clear</name>
               <bitOffset>7</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_rx_abort_coex_cnt_clear</name>
+              <name>rx_abort_coex_cnt_clear</name>
               <bitOffset>8</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_no_rss_detect_cnt_clear</name>
+              <name>no_rss_detect_cnt_clear</name>
               <bitOffset>9</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_rx_filter_fail_cnt_clear</name>
+              <name>rx_filter_fail_cnt_clear</name>
               <bitOffset>10</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_cca_fail_cnt_clear</name>
+              <name>cca_fail_cnt_clear</name>
               <bitOffset>11</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_ed_abort_cnt_clear</name>
+              <name>ed_abort_cnt_clear</name>
               <bitOffset>12</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_crc_error_cnt_clear</name>
+              <name>crc_error_cnt_clear</name>
               <bitOffset>13</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>iee802154_sfd_timeout_cnt_clear</name>
+              <name>sfd_timeout_cnt_clear</name>
               <bitOffset>14</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
           </fields>
-        </register>      
+        </register>
         <register>
           <name>cca_busy_cnt</name>
-          <addressOffset>0x158</addressOffset>
+          <addressOffset>0x17C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -106,7 +118,7 @@
         </register>
         <register>
           <name>tx_security_error_cnt</name>
-          <addressOffset>0x154</addressOffset>
+          <addressOffset>0x178</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -118,7 +130,7 @@
         </register>
         <register>
           <name>tx_break_coex_cnt</name>
-          <addressOffset>0x150</addressOffset>
+          <addressOffset>0x174</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -130,7 +142,7 @@
         </register>
         <register>
           <name>rx_ack_timeout_cnt</name>
-          <addressOffset>0x14C</addressOffset>
+          <addressOffset>0x170</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -142,7 +154,7 @@
         </register>
         <register>
           <name>rx_ack_abort_coex_cnt</name>
-          <addressOffset>0x148</addressOffset>
+          <addressOffset>0x16C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -154,7 +166,7 @@
         </register>
         <register>
           <name>ed_scan_coex_cnt</name>
-          <addressOffset>0x144</addressOffset>
+          <addressOffset>0x168</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -166,7 +178,7 @@
         </register>
         <register>
           <name>tx_ack_abort_coex_cnt</name>
-          <addressOffset>0x140</addressOffset>
+          <addressOffset>0x164</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -178,7 +190,7 @@
         </register>
         <register>
           <name>rx_restart_cnt</name>
-          <addressOffset>0x13C</addressOffset>
+          <addressOffset>0x160</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -190,7 +202,7 @@
         </register>
         <register>
           <name>rx_abort_coex_cnt</name>
-          <addressOffset>0x138</addressOffset>
+          <addressOffset>0x15C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -202,7 +214,7 @@
         </register>
         <register>
           <name>no_rss_detect_cnt</name>
-          <addressOffset>0x134</addressOffset>
+          <addressOffset>0x158</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -214,7 +226,7 @@
         </register>
         <register>
           <name>rx_filter_fail_cnt</name>
-          <addressOffset>0x130</addressOffset>
+          <addressOffset>0x154</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -226,7 +238,7 @@
         </register>
         <register>
           <name>cca_fail_cnt</name>
-          <addressOffset>0x12C</addressOffset>
+          <addressOffset>0x150</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -238,7 +250,7 @@
         </register>
         <register>
           <name>ed_abort_cnt</name>
-          <addressOffset>0x128</addressOffset>
+          <addressOffset>0x14C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -250,7 +262,7 @@
         </register>
         <register>
           <name>crc_error_cnt</name>
-          <addressOffset>0x124</addressOffset>
+          <addressOffset>0x148</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -262,7 +274,7 @@
         </register>
         <register>
           <name>sfd_timeout_cnt</name>
-          <addressOffset>0x120</addressOffset>
+          <addressOffset>0x144</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -274,7 +286,7 @@
         </register>
         <register>
           <name>sec_key3</name>
-          <addressOffset>0x11C</addressOffset>
+          <addressOffset>0x140</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -286,7 +298,7 @@
         </register>
         <register>
           <name>sec_key2</name>
-          <addressOffset>0x118</addressOffset>
+          <addressOffset>0x13C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -298,7 +310,7 @@
         </register>
         <register>
           <name>sec_key1</name>
-          <addressOffset>0x114</addressOffset>
+          <addressOffset>0x138</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -310,7 +322,7 @@
         </register>
         <register>
           <name>sec_key0</name>
-          <addressOffset>0x110</addressOffset>
+          <addressOffset>0x134</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -322,7 +334,7 @@
         </register>
         <register>
           <name>sec_extend_address1</name>
-          <addressOffset>0x10C</addressOffset>
+          <addressOffset>0x130</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -334,7 +346,7 @@
         </register>
         <register>
           <name>sec_extend_address0</name>
-          <addressOffset>0x108</addressOffset>
+          <addressOffset>0x12C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -346,7 +358,7 @@
         </register>
         <register>
           <name>sec_ctrl</name>
-          <addressOffset>0x100</addressOffset>
+          <addressOffset>0x128</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -358,6 +370,159 @@
               <name>sec_payload_offset</name>
               <bitOffset>8</bitOffset>
               <bitWidth>7</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>debug_ctrl</name>
+          <addressOffset>0x120</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>debug_signal_sel</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>3</bitWidth>
+            </field>
+            <field>
+              <name>debug_trigger_state_select</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>debug_ser_debug_sel</name>
+              <bitOffset>12</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>debug_trigger_state_match_value</name>
+              <bitOffset>16</bitOffset>
+              <bitWidth>5</bitWidth>
+            </field>
+            <field>
+              <name>debug_trigger_pulse_select</name>
+              <bitOffset>24</bitOffset>
+              <bitWidth>3</bitWidth>
+            </field>
+            <field>
+              <name>debug_state_match_dump_en</name>
+              <bitOffset>30</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>debug_trigger_dump_en</name>
+              <bitOffset>31</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>dcdc_ctrl</name>
+          <addressOffset>0x11C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>dcdc_pre_up_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>8</bitWidth>
+            </field>
+            <field>
+              <name>dcdc_down_delay</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>8</bitWidth>
+            </field>
+            <field>
+              <name>dcdc_ctrl_en</name>
+              <bitOffset>16</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>tx_dcdc_up</name>
+              <bitOffset>31</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>cont_rx_delay</name>
+          <addressOffset>0x118</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>cont_rx_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>6</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>txrx_switch_delay</name>
+          <addressOffset>0x114</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>txrx_switch_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>10</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>rxon_delay</name>
+          <addressOffset>0x110</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>rxon_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>11</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>txoff_delay</name>
+          <addressOffset>0x10C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>txoff_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>6</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>txen_stop_delay</name>
+          <addressOffset>0x108</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>txen_stop_dly</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>6</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>txon_delay</name>
+          <addressOffset>0x104</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>txon_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>10</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>paon_delay</name>
+          <addressOffset>0x100</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>paon_delay</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>10</bitWidth>
             </field>
           </fields>
         </register>
@@ -488,161 +653,8 @@
           </fields>
         </register>
         <register>
-          <name>debug_ctrl</name>
-          <addressOffset>0xCC</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>debug_signal_sel</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>3</bitWidth>
-            </field>
-            <field>
-              <name>debug_trigger_state_select</name>
-              <bitOffset>8</bitOffset>
-              <bitWidth>4</bitWidth>
-            </field>
-            <field>
-              <name>debug_ser_debug_sel</name>
-              <bitOffset>12</bitOffset>
-              <bitWidth>4</bitWidth>
-            </field>
-            <field>
-              <name>debug_trigger_state_match_value</name>
-              <bitOffset>16</bitOffset>
-              <bitWidth>5</bitWidth>
-            </field>
-            <field>
-              <name>debug_trigger_pulse_select</name>
-              <bitOffset>24</bitOffset>
-              <bitWidth>3</bitWidth>
-            </field>
-            <field>
-              <name>debug_state_match_dump_en</name>
-              <bitOffset>30</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>debug_trigger_dump_en</name>
-              <bitOffset>31</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>dcdc_ctrl</name>
-          <addressOffset>0xC8</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>dcdc_pre_up_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>8</bitWidth>
-            </field>
-            <field>
-              <name>dcdc_down_delay</name>
-              <bitOffset>8</bitOffset>
-              <bitWidth>8</bitWidth>
-            </field>
-            <field>
-              <name>dcdc_ctrl_en</name>
-              <bitOffset>16</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>tx_dcdc_up</name>
-              <bitOffset>31</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>cont_rx_delay</name>
-          <addressOffset>0xC4</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>cont_rx_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>6</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>txrx_switch_delay</name>
-          <addressOffset>0xC0</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>txrx_switch_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>10</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>rxon_delay</name>
-          <addressOffset>0xBC</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>rxon_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>11</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>txoff_delay</name>
-          <addressOffset>0xB8</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>txoff_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>6</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>txen_stop_delay</name>
-          <addressOffset>0xB4</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>txen_stop_dly</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>6</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>txon_delay</name>
-          <addressOffset>0xB0</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>txon_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>10</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>paon_delay</name>
-          <addressOffset>0xAC</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>paon_delay</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>10</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
           <name>bb_clk</name>
-          <addressOffset>0xA8</addressOffset>
+          <addressOffset>0xCC</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -654,7 +666,7 @@
         </register>
         <register>
           <name>txrx_path_delay</name>
-          <addressOffset>0xA4</addressOffset>
+          <addressOffset>0xC8</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -671,7 +683,7 @@
         </register>
         <register>
           <name>sfd_wait_symbol</name>
-          <addressOffset>0xA0</addressOffset>
+          <addressOffset>0xC4</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -683,7 +695,7 @@
         </register>
         <register>
           <name>ifs_counter</name>
-          <addressOffset>0x98</addressOffset>
+          <addressOffset>0xC0</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -700,7 +712,7 @@
         </register>
         <register>
           <name>clk_counter</name>
-          <addressOffset>0x94</addressOffset>
+          <addressOffset>0xBC</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -712,7 +724,7 @@
         </register>
         <register>
           <name>clk_counter_match_val</name>
-          <addressOffset>0x90</addressOffset>
+          <addressOffset>0xB8</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -724,7 +736,7 @@
         </register>
         <register>
           <name>time1_value</name>
-          <addressOffset>0x8C</addressOffset>
+          <addressOffset>0xB4</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -736,7 +748,7 @@
         </register>
         <register>
           <name>time1_threshold</name>
-          <addressOffset>0x88</addressOffset>
+          <addressOffset>0xB0</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -748,7 +760,7 @@
         </register>
         <register>
           <name>time0_value</name>
-          <addressOffset>0x84</addressOffset>
+          <addressOffset>0xAC</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -760,7 +772,7 @@
         </register>
         <register>
           <name>time0_threshold</name>
-          <addressOffset>0x80</addressOffset>
+          <addressOffset>0xA8</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -772,7 +784,7 @@
         </register>
         <register>
           <name>rx_length</name>
-          <addressOffset>0x7C</addressOffset>
+          <addressOffset>0xA4</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -784,7 +796,7 @@
         </register>
         <register>
           <name>dtm_pkt_counter</name>
-          <addressOffset>0x78</addressOffset>
+          <addressOffset>0xA0</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -801,7 +813,7 @@
         </register>
         <register>
           <name>dtm_tx_pkt_config</name>
-          <addressOffset>0x74</addressOffset>
+          <addressOffset>0x9C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -813,7 +825,7 @@
         </register>
         <register>
           <name>dtm_config</name>
-          <addressOffset>0x70</addressOffset>
+          <addressOffset>0x98</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -845,7 +857,7 @@
         </register>
         <register>
           <name>test_control</name>
-          <addressOffset>0x6C</addressOffset>
+          <addressOffset>0x94</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -857,7 +869,7 @@
         </register>
         <register>
           <name>core_gck_cfg</name>
-          <addressOffset>0x68</addressOffset>
+          <addressOffset>0x90</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -874,7 +886,7 @@
         </register>
         <register>
           <name>tx_ccm_schedule_status</name>
-          <addressOffset>0x60</addressOffset>
+          <addressOffset>0x8C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -886,7 +898,7 @@
         </register>
         <register>
           <name>txrx_status</name>
-          <addressOffset>0x5C</addressOffset>
+          <addressOffset>0x88</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -923,7 +935,7 @@
         </register>
         <register>
           <name>tx_status</name>
-          <addressOffset>0x58</addressOffset>
+          <addressOffset>0x84</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -945,7 +957,7 @@
         </register>
         <register>
           <name>rx_status</name>
-          <addressOffset>0x54</addressOffset>
+          <addressOffset>0x80</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -976,8 +988,20 @@
           </fields>
         </register>
         <register>
+          <name>enhance_ack_cfg</name>
+          <addressOffset>0x7C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>tx_enh_ack_generate_done_notify</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
           <name>tx_abort_interrupt_control</name>
-          <addressOffset>0x48</addressOffset>
+          <addressOffset>0x78</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -989,7 +1013,7 @@
         </register>
         <register>
           <name>core_dummy_data</name>
-          <addressOffset>0x44</addressOffset>
+          <addressOffset>0x74</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1001,7 +1025,7 @@
         </register>
         <register>
           <name>coex_pti</name>
-          <addressOffset>0x40</addressOffset>
+          <addressOffset>0x70</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1023,7 +1047,7 @@
         </register>
         <register>
           <name>ack_frame_pending_en</name>
-          <addressOffset>0x3</addressOffset>
+          <addressOffset>0x6C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1040,7 +1064,7 @@
         </register>
         <register>
           <name>rx_abort_intr_ctrl</name>
-          <addressOffset>0x38</addressOffset>
+          <addressOffset>0x68</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1052,7 +1076,7 @@
         </register>
         <register>
           <name>event_status</name>
-          <addressOffset>0x34</addressOffset>
+          <addressOffset>0x64</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1064,7 +1088,7 @@
         </register>
         <register>
           <name>event_en</name>
-          <addressOffset>0x30</addressOffset>
+          <addressOffset>0x60</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1076,7 +1100,7 @@
         </register>
         <register>
           <name>ack_timeout</name>
-          <addressOffset>0x2C</addressOffset>
+          <addressOffset>0x5C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1088,7 +1112,7 @@
         </register>
         <register>
           <name>ifs</name>
-          <addressOffset>0x28</addressOffset>
+          <addressOffset>0x58</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1105,7 +1129,7 @@
         </register>
         <register>
           <name>ed_scan_cfg</name>
-          <addressOffset>0x24</addressOffset>
+          <addressOffset>0x54</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1142,7 +1166,7 @@
         </register>
         <register>
           <name>ed_scan_duration</name>
-          <addressOffset>0x20</addressOffset>
+          <addressOffset>0x50</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1159,19 +1183,19 @@
         </register>
         <register>
           <name>tx_power</name>
-          <addressOffset>0x1C</addressOffset>
+          <addressOffset>0x4C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
               <name>tx_power</name>
               <bitOffset>0</bitOffset>
-              <bitWidth>4</bitWidth>
+              <bitWidth>5</bitWidth>
             </field>
           </fields>
         </register>
         <register>
           <name>channel</name>
-          <addressOffset>0x18</addressOffset>
+          <addressOffset>0x48</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1182,48 +1206,192 @@
           </fields>
         </register>
         <register>
-          <name>extend_addr1</name>
-          <addressOffset>0x14</addressOffset>
+          <name>inf3_extend_addr1</name>
+          <addressOffset>0x44</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
-              <name>mac_extend_addr1</name>
+              <name>mac_inf3_extend_addr1</name>
               <bitOffset>0</bitOffset>
               <bitWidth>32</bitWidth>
             </field>
           </fields>
         </register>
         <register>
-          <name>extend_addr0</name>
-          <addressOffset>0x10</addressOffset>
+          <name>inf3_extend_addr0</name>
+          <addressOffset>0x40</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
-              <name>mac_extend_addr0</name>
+              <name>mac_inf3_extend_addr0</name>
               <bitOffset>0</bitOffset>
               <bitWidth>32</bitWidth>
             </field>
           </fields>
         </register>
         <register>
-          <name>pan_id</name>
-          <addressOffset>0xC</addressOffset>
+          <name>inf3_pan_id</name>
+          <addressOffset>0x3C</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
-              <name>mac_pan_id</name>
+              <name>mac_inf3_pan_id</name>
               <bitOffset>0</bitOffset>
               <bitWidth>16</bitWidth>
             </field>
           </fields>
         </register>
         <register>
-          <name>short_addr</name>
+          <name>inf3_short_addr</name>
+          <addressOffset>0x38</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf3_short_addr</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf2_extend_addr1</name>
+          <addressOffset>0x34</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf2_extend_addr1</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf2_extend_addr0</name>
+          <addressOffset>0x30</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf2_extend_addr0</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf2_pan_id</name>
+          <addressOffset>0x2C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf2_pan_id</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf2_short_addr</name>
+          <addressOffset>0x28</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf2_short_addr</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf1_extend_addr1</name>
+          <addressOffset>0x24</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf1_extend_addr1</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf1_extend_addr0</name>
+          <addressOffset>0x20</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf1_extend_addr0</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf1_pan_id</name>
+          <addressOffset>0x1C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf1_pan_id</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf1_short_addr</name>
+          <addressOffset>0x18</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf1_short_addr</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf0_extend_addr1</name>
+          <addressOffset>0x14</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf0_extend_addr1</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf0_extend_addr0</name>
+          <addressOffset>0x10</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf0_extend_addr0</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf0_pan_id</name>
+          <addressOffset>0xC</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_inf0_pan_id</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>16</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>inf0_short_addr</name>
           <addressOffset>0x8</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
-              <name>mac_short_addr</name>
+              <name>mac_inf0_short_addr</name>
               <bitOffset>0</bitOffset>
               <bitWidth>16</bitWidth>
             </field>
@@ -1237,6 +1405,11 @@
             <field>
               <name>hw_auto_ack_tx_en</name>
               <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>hw_enhance_ack_tx_en</name>
+              <bitOffset>1</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
@@ -1299,6 +1472,26 @@
               <bitOffset>27</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
+            <field>
+              <name>mac_inf0_enable</name>
+              <bitOffset>28</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>mac_inf1_enable</name>
+              <bitOffset>29</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>mac_inf2_enable</name>
+              <bitOffset>30</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>mac_inf3_enable</name>
+              <bitOffset>31</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
           </fields>
         </register>
         <register>
@@ -1317,11 +1510,11 @@
     </peripheral>
     <peripheral>
       <name>coex</name>
-      <baseAddress>0x60049000</baseAddress>
+      <baseAddress>0x600AF400</baseAddress>
       <registers>
         <register>
           <name>coex_date</name>
-          <addressOffset>0xC4</addressOffset>
+          <addressOffset>0xE4</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1330,10 +1523,174 @@
               <bitWidth>28</bitWidth>
             </field>
           </fields>
-        </register>      
+        </register>
+        <register>
+          <name>coex_dbg</name>
+          <addressOffset>0xE0</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_internal_pti_raw</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_internal_grant</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_external_grant</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_internal_pti_after_offset</name>
+              <bitOffset>12</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_rx_grant</name>
+              <bitOffset>16</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_tx_grant</name>
+              <bitOffset>20</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_stop_rf_conf</name>
+          <addressOffset>0xDC</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_in1_allow_stop_rf</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_in2_allow_stop_rf</name>
+              <bitOffset>1</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_in3_allow_stop_rf</name>
+              <bitOffset>2</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_modem_idle_allow_stop_rf</name>
+              <bitOffset>3</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src3_rx_pti_offset</name>
+          <addressOffset>0xD8</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src3_rx_pti_offset</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src3_pti</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src3_tx_flag</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src2_rx_pti_offset</name>
+          <addressOffset>0xD4</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src2_rx_pti_offset</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src2_pti</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src2_tx_flag</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src1_rx_pti_offset</name>
+          <addressOffset>0xD0</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src1_rx_pti_offset</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src1_pti</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src1_tx_flag</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src0_rx_pti_offset</name>
+          <addressOffset>0xCC</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src0_rx_pti_offset</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src0_pti</name>
+              <bitOffset>4</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>coex_src0_tx_flag</name>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src3_sel</name>
+          <addressOffset>0xC8</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src3_select</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>2</bitWidth>
+            </field>
+          </fields>
+        </register>
         <register>
           <name>ocex_src2_select</name>
-          <addressOffset>0xC0</addressOffset>
+          <addressOffset>0xC4</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1345,7 +1702,7 @@
         </register>
         <register>
           <name>ocex_src1_select</name>
-          <addressOffset>0xBC</addressOffset>
+          <addressOffset>0xC0</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
@@ -1357,13 +1714,25 @@
         </register>
         <register>
           <name>ocex_src0_select</name>
-          <addressOffset>0xB8</addressOffset>
+          <addressOffset>0xBC</addressOffset>
           <size>0x20</size>
           <fields>
             <field>
               <name>coex_src0_sel</name>
               <bitOffset>0</bitOffset>
               <bitWidth>2</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>coex_src3_disbale</name>
+          <addressOffset>0xB8</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>coex_src3_dis</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
             </field>
           </fields>
         </register>
@@ -1428,6 +1797,16 @@
             <field>
               <name>coex_switch_filter_ena</name>
               <bitOffset>12</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_switch_filter_mode</name>
+              <bitOffset>13</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>coex_enable_force_rx</name>
+              <bitOffset>14</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
           </fields>
@@ -2171,64 +2550,5 @@
         </register>
       </registers>
     </peripheral>
-    <peripheral>
-      <name>etm</name>
-      <baseAddress>0x60044000</baseAddress>
-      <registers>
-        <register>
-          <name>etm_ch0_task_id</name>
-          <addressOffset>0x1C</addressOffset>
-          <size>0x20</size>
-        </register>
-        <register>
-          <name>etm_ch0_evt_id</name>
-          <addressOffset>0x18</addressOffset>
-          <size>0x20</size>
-        </register>
-        <register>
-          <name>etm_chenclr_ad0</name>
-          <addressOffset>0x8</addressOffset>
-          <size>0x20</size>
-        </register>
-        <register>
-          <name>etm_chenset_ad0</name>
-          <addressOffset>0x4</addressOffset>
-          <size>0x20</size>
-        </register>
-        <register>
-          <name>etm_chen_ad0</name>
-          <addressOffset>0x0</addressOffset>
-          <size>0x20</size>
-        </register>
-        <register>
-          <name>etm_clk_en</name>
-          <addressOffset>0xDC</addressOffset>
-          <size>0x20</size>
-        </register>        
-      </registers>
-    </peripheral>    
-    <peripheral>
-      <name>clkrst</name>
-      <baseAddress>0x6004B000</baseAddress>
-      <registers>
-        <register>
-          <name>clkrst_modclk_conf</name>
-          <addressOffset>0xC</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>clkrst_etm_clk_active</name>
-              <bitOffset>3</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>clkrst_etm_clk_sel</name>
-              <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-          </fields>
-        </register>
-      </registers>
-    </peripheral>      
   </peripherals>
 </device>
