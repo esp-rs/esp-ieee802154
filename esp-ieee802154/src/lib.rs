@@ -34,8 +34,8 @@ extern "C" {
 
 /// Enable the IEEE802.15.4 radio
 pub fn esp_ieee802154_enable() {
-    esp_phy_enable();
     ieee802154_enable();
+    esp_phy_enable();
     ieee802154_mac_init();
 
     unsafe { log::info!("date={:x}", ieee802154().mac_date.read().bits()) };
@@ -214,12 +214,20 @@ fn rx_init() {
 }
 
 fn enable_rx() {
-    // set_next_rx_buffer();
+    set_next_rx_buffer();
     ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneRx);
 
     ieee802154_hal_set_cmd(Ieee802154Cmd::Ieee802154CmdRxStart);
 
     // ieee802154_state = IEEE802154_STATE_RX;
+}
+
+static mut RX_BUFFER: [u8; 128] = [0u8; 128]; // just for testing
+
+fn set_next_rx_buffer() {
+    unsafe {
+        ieee802154_hal_set_rx_addr(RX_BUFFER.as_mut_ptr() as *mut u8);
+    }
 }
 
 #[inline(always)]
@@ -290,5 +298,12 @@ fn ZB_MAC() {
 
     if events & (Ieee802154Event::Ieee802154EventTxDone as u16) != 0 {
         log::info!("tx done");
+    }
+
+    if events & (Ieee802154Event::Ieee802154EventRxDone as u16) != 0 {
+        log::info!("rx done");
+        unsafe {
+            log::info!("{:x?}", RX_BUFFER);
+        }
     }
 }

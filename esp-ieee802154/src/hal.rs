@@ -340,3 +340,10 @@ pub fn ieee802154_hal_clear_events(events: u16) {
 pub fn ieee802154_hal_set_transmit_security(enable: bool) {
     ieee802154().sec_ctrl.modify(|_, w| w.sec_en().bit(enable));
 }
+
+#[inline(always)]
+pub fn ieee802154_hal_set_rx_addr(addr: *mut u8) {
+    ieee802154()
+        .rxdma_addr
+        .modify(|_, w| w.rxdma_addr().variant(addr as u32));
+}

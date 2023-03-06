@@ -135,6 +135,7 @@ fn main() -> ! {
     ieee802154_receive();
     println!("after receive");
 
+    // TODO should call receive again once we got something - otherwise we won't get anything more
     loop {}
 }
 
