@@ -72,9 +72,9 @@ pub fn ieee802154_pib_init() {
             channel: 11,
             pending_mode: Ieee802154PendingMode::Ieee802154AutoPendingDisable,
             multipan_mask: 1 << IEEE802154_MULTIPAN_0,
-            panid: [0u16; 4],
-            short_addr: [0u16; IEEE802154_MULTIPAN_MAX],
-            ext_addr: [[0u8; IEEE802154_FRAME_EXT_ADDR_SIZE]; IEEE802154_MULTIPAN_MAX],
+            panid: [0xffu16; 4],
+            short_addr: [65535u16; IEEE802154_MULTIPAN_MAX],
+            ext_addr: [[0xffu8; IEEE802154_FRAME_EXT_ADDR_SIZE]; IEEE802154_MULTIPAN_MAX],
             cca_threshold: CONFIG_IEEE802154_CCA_THRESHOLD,
             cca_mode: Ieee802154CcaMode::Ieee802154CcaModeEd,
         });

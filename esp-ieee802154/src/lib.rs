@@ -155,7 +155,7 @@ pub fn tx_init(frame: *const u8) {
     let tx_frame = frame;
     // stop_current_operation();
     ieee802154_pib_update();
-    //ieee802154_sec_update();
+    ieee802154_sec_update();
 
     ieee802154_hal_set_tx_addr(tx_frame);
 
@@ -188,6 +188,45 @@ pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
     });
 
     return 0; // ESP_OK;
+}
+
+pub fn ieee802154_receive() -> i32 {
+    // if (((ieee802154_state == IEEE802154_STATE_RX)
+    //     || (ieee802154_state == IEEE802154_STATE_TX_ACK))
+    //     && (!ieee802154_pib_is_pending()))
+    // {
+    //     // already in rx state, don't abort current rx operation
+    //     return ESP_OK;
+    // }
+
+    critical_section::with(|_| {
+        rx_init();
+
+        enable_rx();
+    });
+
+    return 0; // ESP-OK
+}
+
+fn rx_init() {
+    // stop_current_operation();
+    ieee802154_pib_update();
+}
+
+fn enable_rx() {
+    // set_next_rx_buffer();
+    ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneRx);
+
+    ieee802154_hal_set_cmd(Ieee802154Cmd::Ieee802154CmdRxStart);
+
+    // ieee802154_state = IEEE802154_STATE_RX;
+}
+
+#[inline(always)]
+fn ieee802154_sec_update() {
+    let is_security = false;
+    ieee802154_hal_set_transmit_security(is_security);
+    // ieee802154_sec_clr_transmit_security();
 }
 
 // pub fn ieee802154_set_promiscuous(enable: bool) {

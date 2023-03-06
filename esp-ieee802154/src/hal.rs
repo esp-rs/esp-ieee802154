@@ -335,3 +335,8 @@ pub fn ieee802154_hal_clear_events(events: u16) {
         .event_status
         .modify(|r, w| unsafe { w.event_status().bits(r.event_status().bits() & events) });
 }
+
+#[inline(always)]
+pub fn ieee802154_hal_set_transmit_security(enable: bool) {
+    ieee802154().sec_ctrl.modify(|_, w| w.sec_en().bit(enable));
+}
