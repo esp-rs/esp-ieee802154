@@ -1,9 +1,11 @@
 #![no_std]
 #![feature(c_variadic)]
 
+use esp32c6_hal::interrupt;
 use hal::disable_events;
-use pib::ieee802154_pib_init;
-use util::{get_test_mode, set_ack_pti};
+use pib::{ieee802154_pib_init, ieee802154_pib_update};
+use util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
+use utils::ieee802154;
 
 use self::{
     binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
@@ -35,6 +37,8 @@ pub fn esp_ieee802154_enable() {
     esp_phy_enable();
     ieee802154_enable();
     ieee802154_mac_init();
+
+    unsafe { log::info!("date={:x}", ieee802154().mac_date.read().bits()) };
 }
 
 /// Enable the PHY
@@ -109,32 +113,88 @@ fn ieee802154_mac_init() {
     set_ed_sample_mode(Ieee802154EdSampleMode::Ieee802154EdSampleAvg);
 
     set_ack_pti();
-    // ieee802154_set_txrx_pti(IEEE802154_SCENE_IDLE);
-    // #elif CONFIG_IDF_TARGET_ESP32H2
-    //     REG_WRITE(IEEE802154_COEX_PTI_REG, 0x86);
-    // #endif
+    ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneIdle);
+
+    unsafe {
+        bt_bb_set_zb_tx_on_delay(50); // set tx on delay for libbtbb.a
+    }
+    ieee802154()
+        .rxon_delay
+        .modify(|_, w| w.rxon_delay().variant(50));
+
+    // esp_intr_alloc(ETS_ZB_MAC_SOURCE, 0, ieee802154_isr, NULL, NULL);
+    esp32c6_hal::interrupt::enable(
+        esp32c6_hal::peripherals::Interrupt::ZB_MAC,
+        esp32c6_hal::interrupt::Priority::Priority1,
+    )
+    .unwrap();
+    unsafe {
+        esp32c6_hal::riscv::interrupt::enable();
+    }
+
+    // esp_receive_ack_timeout_timer_init(); // TODO timer stuff
 
     /*
-        #if CONFIG_IDF_ENV_FPGA
-            bt_bb_set_zb_tx_on_delay(80); // set tx on delay for libbtbb.a
-        #else
-            bt_bb_set_zb_tx_on_delay(50); // set tx on delay for libbtbb.a
-            REG_WRITE(IEEE802154_RXON_DELAY_REG, 50);
-        #endif
-
-        #if CONFIG_IDF_TARGET_ESP32H4
-            esp_intr_alloc(ETS_IEEE802154MAC_INTR_SOURCE, 0, ieee802154_isr, NULL, NULL);
-        #elif CONFIG_IDF_TARGET_ESP32C6
-            esp_intr_alloc(ETS_ZB_MAC_SOURCE, 0, ieee802154_isr, NULL, NULL);
-        #elif CONFIG_IDF_TARGET_ESP32H2
-            esp_intr_alloc(ETS_ZB_MAC_INTR_SOURCE, 0, ieee802154_isr, NULL, NULL);
-        #endif
-
-        esp_receive_ack_timeout_timer_init();
         memset(rx_frame, 0, sizeof(rx_frame));
         ieee802154_state = IEEE802154_STATE_IDLE;
     */
 }
+
+/*
+static bool start_ed(uint32_t duration)
+{
+    ieee802154_hal_enable_events(IEEE802154_EVENT_ED_DONE);
+    ieee802154_hal_set_ed_duration(duration);
+    ieee802154_hal_set_cmd(IEEE802154_CMD_ED_START);
+
+    return true;
+}
+*/
+
+pub fn tx_init(frame: *const u8) {
+    let tx_frame = frame;
+    // stop_current_operation();
+    ieee802154_pib_update();
+    //ieee802154_sec_update();
+
+    ieee802154_hal_set_tx_addr(tx_frame);
+
+    // if (ieee802154_frame_is_ack_required(frame)) {
+    //     // set rx pointer for ack frame
+    //     set_next_rx_buffer();
+    // }
+}
+
+pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
+    critical_section::with(|_cs| {
+        tx_init(frame);
+
+        ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneTx);
+
+        if cca {
+            // ieee802154_hal_disable_events(IEEE802154_EVENT_ED_DONE);
+            // ieee802154_hal_set_cmd(IEEE802154_CMD_CCA_TX_START);
+            // ieee802154_state = IEEE802154_STATE_TX_CCA;
+        } else {
+            ieee802154_hal_set_cmd(Ieee802154Cmd::Ieee802154CmdTxStart);
+            // if (ieee802154_frame_get_type(frame) == IEEE802154_FRAME_TYPE_ACK
+            //     && ieee802154_frame_get_version(frame) == IEEE802154_FRAME_VERSION_2)
+            // {
+            //     ieee802154_state = IEEE802154_STATE_TX_ENH_ACK;
+            // } else {
+            // ieee802154_state = IEEE802154_STATE_TX;
+            // }
+        }
+    });
+
+    return 0; // ESP_OK;
+}
+
+// pub fn ieee802154_set_promiscuous(enable: bool) {
+//     ieee802154_pib_set_promiscuous(enable);
+//     ieee802154_pib_set_auto_ack_rx(!enable);
+//     ieee802154_pib_set_auto_ack_tx(!enable);
+// }
 
 /// Enable the ETM clock
 fn etm_clk_enable() {
@@ -165,5 +225,31 @@ fn etm_clk_enable() {
                 | PCR_ETM_CLK_EN_M
                 | PCR_ETM_RST_EN,
         ); // Active ETM clock
+    }
+}
+
+use esp32c6_hal::prelude::interrupt;
+#[interrupt]
+fn ZB_MAC() {
+    log::info!("ZB_MAC interrupt");
+
+    let events = ieee802154_hal_get_events();
+    ieee802154_hal_clear_events(events);
+
+    log::info!("events = {:032b}", events);
+
+    if events & (Ieee802154Event::Ieee802154EventRxSfdDone as u16) != 0 {
+        // IEEE802154_STATE_TX && IEEE802154_STATE_TX_CCA && IEEE802154_STATE_TX_ENH_ACK for isr processing delay
+        log::info!("rx sfd done");
+    }
+
+    if events & (Ieee802154Event::Ieee802154EventTxSfdDone as u16) != 0 {
+        // IEEE802154_STATE_RX for isr processing delay, only 821
+        // IEEE802154_STATE_TX_ACK for workaround jira ZB-81.
+        log::info!("tx sfd done");
+    }
+
+    if events & (Ieee802154Event::Ieee802154EventTxDone as u16) != 0 {
+        log::info!("tx done");
     }
 }

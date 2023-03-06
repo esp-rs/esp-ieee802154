@@ -189,6 +189,14 @@ pub const ESP_ERR_FLASH_BASE: u32 = 24576;
 pub const ESP_ERR_HW_CRYPTO_BASE: u32 = 49152;
 pub const ESP_ERR_MEMPROT_BASE: u32 = 53248;
 pub const ESP_CAL_DATA_CHECK_FAIL: u32 = 1;
+pub const ESP_COEX_BLE_ST_MESH_CONFIG: u32 = 8;
+pub const ESP_COEX_BLE_ST_MESH_TRAFFIC: u32 = 16;
+pub const ESP_COEX_BLE_ST_MESH_STANDBY: u32 = 32;
+pub const ESP_COEX_BT_ST_A2DP_STREAMING: u32 = 16;
+pub const ESP_COEX_BT_ST_A2DP_PAUSED: u32 = 32;
+pub const COEX_ADAPTER_VERSION: u32 = 2;
+pub const COEX_ADAPTER_MAGIC: u32 = 3735928495;
+pub const COEX_ADAPTER_FUNCS_TIME_BLOCKING: u32 = 4294967295;
 pub type __int8_t = crate::binary::c_types::c_schar;
 pub type __uint8_t = crate::binary::c_types::c_uchar;
 pub type __int16_t = crate::binary::c_types::c_short;
@@ -2758,5 +2766,110 @@ extern "C" {
 extern "C" {
     #[doc = " @brief Store and load PHY digital registers.\n\n @param     backup_en  if backup_en is true, store PHY digital registers to memory. Otherwise load PHY digital registers from memory\n @param     mem_addr   Memory address to store and load PHY digital registers\n\n @return    memory size"]
     pub fn phy_dig_reg_backup(backup_en: bool, mem_addr: *mut u32) -> u8;
+}
+#[doc = "< Prefer to WiFi, WiFi will have more opportunity to use RF"]
+pub const esp_coex_prefer_t_ESP_COEX_PREFER_WIFI: esp_coex_prefer_t = 0;
+#[doc = "< Prefer to bluetooth, bluetooth will have more opportunity to use RF"]
+pub const esp_coex_prefer_t_ESP_COEX_PREFER_BT: esp_coex_prefer_t = 1;
+#[doc = "< Do balance of WiFi and bluetooth"]
+pub const esp_coex_prefer_t_ESP_COEX_PREFER_BALANCE: esp_coex_prefer_t = 2;
+#[doc = "< Prefer value numbers"]
+pub const esp_coex_prefer_t_ESP_COEX_PREFER_NUM: esp_coex_prefer_t = 3;
+#[doc = " @brief coex prefer value"]
+pub type esp_coex_prefer_t = crate::binary::c_types::c_uint;
+pub const external_coex_wire_t_EXTERN_COEX_WIRE_1: external_coex_wire_t = 0;
+pub const external_coex_wire_t_EXTERN_COEX_WIRE_2: external_coex_wire_t = 1;
+pub const external_coex_wire_t_EXTERN_COEX_WIRE_3: external_coex_wire_t = 2;
+pub const external_coex_wire_t_EXTERN_COEX_WIRE_NUM: external_coex_wire_t = 3;
+pub type external_coex_wire_t = crate::binary::c_types::c_uint;
+pub const esp_coex_status_type_t_ESP_COEX_ST_TYPE_WIFI: esp_coex_status_type_t = 0;
+pub const esp_coex_status_type_t_ESP_COEX_ST_TYPE_BLE: esp_coex_status_type_t = 1;
+pub const esp_coex_status_type_t_ESP_COEX_ST_TYPE_BT: esp_coex_status_type_t = 2;
+#[doc = " @brief coex status type"]
+pub type esp_coex_status_type_t = crate::binary::c_types::c_uint;
+extern "C" {
+    #[doc = " @brief Get software coexist version string\n\n @return : version string"]
+    pub fn esp_coex_version_get() -> *const crate::binary::c_types::c_char;
+}
+extern "C" {
+    #[doc = " @deprecated Use esp_coex_status_bit_set() and esp_coex_status_bit_clear() instead.\n  Set coexist preference of performance\n  For example, if prefer to bluetooth, then it will make A2DP(play audio via classic bt)\n  more smooth while wifi is runnning something.\n  If prefer to wifi, it will do similar things as prefer to bluetooth.\n  Default, it prefer to balance.\n\n  @param prefer : the prefer enumeration value\n  @return : ESP_OK - success, other - failed"]
+    pub fn esp_coex_preference_set(prefer: esp_coex_prefer_t) -> esp_err_t;
+}
+extern "C" {
+    #[doc = " @brief Set coex schm status\n @param type : WIFI/BLE/BT\n @param status : WIFI/BLE/BT STATUS\n @return : ESP_OK - success, other - failed"]
+    pub fn esp_coex_status_bit_set(type_: esp_coex_status_type_t, status: u32) -> esp_err_t;
+}
+extern "C" {
+    #[doc = " @brief Clear coex schm status\n @param type : WIFI/BLE/BT\n @param status : WIFI/BLE/BT STATUS\n @return : ESP_OK - success, other - failed"]
+    pub fn esp_coex_status_bit_clear(type_: esp_coex_status_type_t, status: u32) -> esp_err_t;
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct coex_adapter_funcs_t {
+    pub _version: i32,
+    pub _task_yield_from_isr: ::core::option::Option<unsafe extern "C" fn()>,
+    pub _semphr_create: ::core::option::Option<
+        unsafe extern "C" fn(max: u32, init: u32) -> *mut crate::binary::c_types::c_void,
+    >,
+    pub _semphr_delete:
+        ::core::option::Option<unsafe extern "C" fn(semphr: *mut crate::binary::c_types::c_void)>,
+    pub _semphr_take_from_isr: ::core::option::Option<
+        unsafe extern "C" fn(
+            semphr: *mut crate::binary::c_types::c_void,
+            hptw: *mut crate::binary::c_types::c_void,
+        ) -> i32,
+    >,
+    pub _semphr_give_from_isr: ::core::option::Option<
+        unsafe extern "C" fn(
+            semphr: *mut crate::binary::c_types::c_void,
+            hptw: *mut crate::binary::c_types::c_void,
+        ) -> i32,
+    >,
+    pub _semphr_take: ::core::option::Option<
+        unsafe extern "C" fn(
+            semphr: *mut crate::binary::c_types::c_void,
+            block_time_tick: u32,
+        ) -> i32,
+    >,
+    pub _semphr_give: ::core::option::Option<
+        unsafe extern "C" fn(semphr: *mut crate::binary::c_types::c_void) -> i32,
+    >,
+    pub _is_in_isr: ::core::option::Option<unsafe extern "C" fn() -> crate::binary::c_types::c_int>,
+    pub _malloc_internal: ::core::option::Option<
+        unsafe extern "C" fn(size: usize) -> *mut crate::binary::c_types::c_void,
+    >,
+    pub _free: ::core::option::Option<unsafe extern "C" fn(p: *mut crate::binary::c_types::c_void)>,
+    pub _esp_timer_get_time: ::core::option::Option<unsafe extern "C" fn() -> i64>,
+    pub _env_is_chip: ::core::option::Option<unsafe extern "C" fn() -> bool>,
+    pub _slowclk_cal_get: ::core::option::Option<unsafe extern "C" fn() -> u32>,
+    pub _timer_disarm:
+        ::core::option::Option<unsafe extern "C" fn(timer: *mut crate::binary::c_types::c_void)>,
+    pub _timer_done:
+        ::core::option::Option<unsafe extern "C" fn(ptimer: *mut crate::binary::c_types::c_void)>,
+    pub _timer_setfn: ::core::option::Option<
+        unsafe extern "C" fn(
+            ptimer: *mut crate::binary::c_types::c_void,
+            pfunction: *mut crate::binary::c_types::c_void,
+            parg: *mut crate::binary::c_types::c_void,
+        ),
+    >,
+    pub _timer_arm_us: ::core::option::Option<
+        unsafe extern "C" fn(ptimer: *mut crate::binary::c_types::c_void, us: u32, repeat: bool),
+    >,
+    pub _magic: i32,
+}
+extern "C" {
+    pub static mut g_coex_adapter_funcs: coex_adapter_funcs_t;
+}
+pub const ieee802154_coex_event_t_IEEE802154_RISK_TX: ieee802154_coex_event_t = 1;
+pub const ieee802154_coex_event_t_IEEE802154_TX_AT: ieee802154_coex_event_t = 2;
+pub const ieee802154_coex_event_t_IEEE802154_RX_AT: ieee802154_coex_event_t = 3;
+pub const ieee802154_coex_event_t_IEEE802154_ACK: ieee802154_coex_event_t = 4;
+pub const ieee802154_coex_event_t_IEEE802154_NORMAL: ieee802154_coex_event_t = 5;
+pub const ieee802154_coex_event_t_IEEE802154_IDLE_RX: ieee802154_coex_event_t = 6;
+pub const ieee802154_coex_event_t_IEEE802154_EVENT_MAX: ieee802154_coex_event_t = 7;
+pub type ieee802154_coex_event_t = crate::binary::c_types::c_uint;
+extern "C" {
+    pub fn esp_coex_ieee802154_pti_set(event: ieee802154_coex_event_t);
 }
 pub type __builtin_va_list = *mut crate::binary::c_types::c_char;

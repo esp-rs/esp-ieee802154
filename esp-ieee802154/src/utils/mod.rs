@@ -76,3 +76,11 @@ pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
 pub fn coex() -> &'static crate::ral::coex::RegisterBlock {
     unsafe { &*crate::ral::COEX::PTR }
 }
+
+pub fn freq_to_channel(freq: u8) -> u8 {
+    return (freq - 3) / 5 + 11;
+}
+
+pub fn channel_to_freq(channel: u8) -> u8 {
+    return (channel - 11) * 5 + 3;
+}

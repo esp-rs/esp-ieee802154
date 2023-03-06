@@ -149,6 +149,7 @@ fn generate_binary_includes(workspace: &Path, chip: Chip) -> Result<()> {
                     .display()
             ),
             format!("-DCONFIG_IDF_TARGET_{}", chip.to_string().to_uppercase()),
+            format!("-DCONFIG_SOC_IEEE802154_SUPPORTED=y"),
         ])
         .ctypes_prefix("crate::binary::c_types")
         .derive_debug(false)

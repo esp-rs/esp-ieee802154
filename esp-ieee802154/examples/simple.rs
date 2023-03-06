@@ -6,7 +6,7 @@ use esp32c6_hal::{
     peripherals::Peripherals,
     prelude::*,
     timer::TimerGroup,
-    Rtc, Uart,
+    Delay, Rtc, Uart,
 };
 use esp_backtrace as _;
 use esp_ieee802154::*;
@@ -42,6 +42,39 @@ fn main() -> ! {
 
     esp_ieee802154_enable();
     println!("Enabled");
+
+    unsafe {
+        const DR_REG_PLIC_MX_BASE: u32 = 0x20001000;
+        const PLIC_MXINT0_PRI_REG: u32 = DR_REG_PLIC_MX_BASE + 0x10;
+        println!(
+            "interrupt WIFI BB {}",
+            ((PLIC_MXINT0_PRI_REG + 3 * 4) as *mut u32).read_volatile()
+        );
+        ((PLIC_MXINT0_PRI_REG + 3 * 4) as *mut u32).write_volatile(0);
+
+        // try to disable the WIFI_BB interrupt
+        println!(
+            "interrupt WIFI BB {}",
+            ((0x60010000 + 3 * 4) as *mut u32).read_volatile()
+        );
+        ((0x60010000 + 3 * 4) as *mut u32).write_volatile(0);
+    }
+    // esp32c6_hal::interrupt::enable(
+    //     esp32c6_hal::peripherals::Interrupt::WIFI_BB,
+    //     esp32c6_hal::interrupt::Priority::Priority1,
+    // );
+
+    let mut delay = Delay::new(&clocks);
+    loop {
+        println!("call transmit");
+        let frame = &[
+            0x41, 0x88, 0, 0xCA, 0xDE, b'W', b'A', b'V', b'E', 0xE0, 0, 0,
+        ];
+        ieee802154_transmit(frame.as_ptr() as *const u8, false);
+        println!("called transmit");
+
+        delay.delay_ms(1000u32);
+    }
 
     loop {}
 }
@@ -122,6 +155,13 @@ pub(crate) fn wifi_clock_enable() {
     const CLK_CONF: u32 = 6 * 4;
 
     unsafe {
+        let magic = (MODEM_SYSCON + 4) as *mut u32;
+        magic.write_volatile(
+            magic.read_unaligned() |
+            1 << 23 | // clk_zb_apb_en
+            1 << 24, // clk_zb_mac_en
+        );
+
         let clk_conf1 = (MODEM_SYSCON + CLK_CONF1) as *mut u32;
         clk_conf1.write_volatile(
             clk_conf1.read_volatile() |
@@ -175,4 +215,9 @@ pub(crate) fn phy_enable_clock() {
 #[no_mangle]
 extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
     0
+}
+
+#[interrupt]
+fn WIFI_BB() {
+    //    println!("WIFI BB interrupt");
 }
