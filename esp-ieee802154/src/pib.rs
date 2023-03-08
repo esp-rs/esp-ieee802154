@@ -69,7 +69,7 @@ pub fn ieee802154_pib_init() {
             coordinator: false,
             rx_when_idle: false,
             txpower: 10,
-            channel: 15,
+            channel: 11,
             pending_mode: Ieee802154PendingMode::Ieee802154AutoPendingDisable,
             multipan_mask: 1 << IEEE802154_MULTIPAN_0,
             panid: [0u16; 4],

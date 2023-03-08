@@ -65,71 +65,25 @@ fn main() -> ! {
     // );
 
     let mut delay = Delay::new(&clocks);
-    // loop {
-    //     println!("call transmit");
-    //     let frame = &[
-    //         // 0x41, 0x88, 0, 0xCA, 0xDE, b'W', b'A', b'V', b'E', 0xE0, 0, 0,
-    //         14 * 3 + 12, // LEN?
-    //         0x41,
-    //         0x88,
-    //         0x40,
-    //         0xff,
-    //         0x01,
-    //         0xff,
-    //         0xff,
-    //         0x00,
-    //         0x00,
-    //         0x08,
-    //         0x02,
-    //         0xff,
-    //         0xff,
-    //         0x00,
-    //         0x00,
-    //         0x0a,
-    //         0xdb,
-    //         0x28,
-    //         0x0c,
-    //         0x00,
-    //         0x00,
-    //         0x00,
-    //         0x58,
-    //         0xc5,
-    //         0x0d,
-    //         0x00,
-    //         0x00,
-    //         0x6f,
-    //         0x0d,
-    //         0x00,
-    //         0x00,
-    //         0xf0,
-    //         0x98,
-    //         0xeb,
-    //         0x0e,
-    //         0x55,
-    //         0x79,
-    //         0x1a,
-    //         0x23,
-    //         0x0d,
-    //         0xd3,
-    //         0x87,
-    //         0x05,
-    //         0x1a,
-    //         0xd8,
-    //         0x17,
-    //         0x4a,
-    //         0xcc,
-    //         0xdc,
-    //         0x7c,
-    //         0x09,
-    //         0x70,
-    //         0xc7,
-    //         0x84,
-    //     ];
-    //     ieee802154_transmit(frame.as_ptr() as *const u8, false);
-    //     println!("called transmit");
+    loop {
+        // data need to be in SRAM
+        let mut frame: [u8; 55] = [
+            54, 0x41, 0x88, 0x44, 0xff, 0x01, 0xff, 0xff, 0x00, 0x00, //
+            b'H', b'e', b'l', b'l', b'o', b' ', b'W', b'o', b'r', b'l', b'd', b'!', b'H', b'e',
+            b'l', b'l', b'o', b' ', b'E', b'S', b'P', b'3', b'2', b'-', b'C', b'6', b'!', b' ',
+            b'8', b'0', b'2', b'.', b'1', b'5', b'.', b'4', b' ', b't', b'e', b's', b't', b'!',
+            b'!', //
+            0x00, 0x00,
+        ];
+        println!("FRAME: {:02x?}", frame);
+        println!("frame addr = {:x}", frame.as_ptr() as u32);
+        println!("call transmit");
+        ieee802154_transmit(frame.as_ptr() as *const u8, false);
+        println!("called transmit");
+        println!();
 
-    //     delay.delay_ms(1000u32);
-    // }
+        delay.delay_ms(1000u32);
+    }
 
     println!("before receive");
     ieee802154_receive();
