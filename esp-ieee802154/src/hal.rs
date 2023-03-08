@@ -1,10 +1,4 @@
-use crate::{
-    pib::Ieee802154CcaMode,
-    ral::ieee802154::{
-        inf0_pan_id::INF0_PAN_ID_SPEC, inf0_short_addr::INF0_SHORT_ADDR_SPEC, INF0_EXTEND_ADDR0,
-    },
-    utils::ieee802154,
-};
+use crate::{pib::Ieee802154CcaMode, utils::ieee802154};
 
 const IEEE802154_EVENT_EN: u16 = 0x00001FFF;
 
@@ -228,7 +222,7 @@ pub fn ieee802154_hal_set_multipan_enable_mask(mask: u8) {
 #[inline(always)]
 pub fn ieee802154_hal_set_multipan_panid(index: Ieee802154MultipanIndex, panid: u16) {
     unsafe {
-        let mut pan_id = ieee802154().inf0_pan_id.as_ptr().offset(4 * index as isize);
+        let pan_id = ieee802154().inf0_pan_id.as_ptr().offset(4 * index as isize);
         pan_id.write_volatile(panid as u32);
     }
 }
@@ -236,7 +230,7 @@ pub fn ieee802154_hal_set_multipan_panid(index: Ieee802154MultipanIndex, panid: 
 #[inline(always)]
 pub fn ieee802154_hal_set_multipan_short_addr(index: Ieee802154MultipanIndex, value: u16) {
     unsafe {
-        let mut short_addr = ieee802154()
+        let short_addr = ieee802154()
             .inf0_short_addr
             .as_ptr()
             .offset(4 * index as isize);
@@ -247,19 +241,19 @@ pub fn ieee802154_hal_set_multipan_short_addr(index: Ieee802154MultipanIndex, va
 #[inline(always)]
 pub fn ieee802154_hal_set_multipan_ext_addr(index: Ieee802154MultipanIndex, ext_addr: *const u8) {
     unsafe {
-        let mut ext_addr = ieee802154()
+        let mut ext_addr_ptr = ieee802154()
             .inf0_extend_addr0
             .as_ptr()
             .offset(4 * index as isize);
-        ext_addr.write_volatile(
+        ext_addr_ptr.write_volatile(
             ((ext_addr.offset(0).read_volatile() as u32) << 0)
                 | ((ext_addr.offset(1).read_volatile() as u32) << 8)
                 | ((ext_addr.offset(2).read_volatile() as u32) << 16)
                 | ((ext_addr.offset(3).read_volatile() as u32) << 24),
         );
 
-        ext_addr = ext_addr.offset(1);
-        ext_addr.write_volatile(
+        ext_addr_ptr = ext_addr_ptr.offset(1);
+        ext_addr_ptr.write_volatile(
             ((ext_addr.offset(4).read_volatile() as u32) << 0)
                 | ((ext_addr.offset(5).read_volatile() as u32) << 8)
                 | ((ext_addr.offset(6).read_volatile() as u32) << 16)

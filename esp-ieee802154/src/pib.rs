@@ -1,4 +1,4 @@
-use core::{cell::RefCell, default};
+use core::cell::RefCell;
 
 use critical_section::Mutex;
 
@@ -15,10 +15,10 @@ use crate::{
     utils::channel_to_freq,
 };
 
-const IEEE802154_MULTIPAN_MAX: usize = 4;
-const IEEE802154_FRAME_EXT_ADDR_SIZE: usize = 8;
-const IEEE802154_MULTIPAN_0: u8 = 0;
-const CONFIG_IEEE802154_CCA_THRESHOLD: i8 = 1;
+pub const IEEE802154_MULTIPAN_MAX: usize = 4;
+pub const IEEE802154_FRAME_EXT_ADDR_SIZE: usize = 8;
+pub const IEEE802154_MULTIPAN_0: u8 = 0;
+pub const CONFIG_IEEE802154_CCA_THRESHOLD: i8 = 1;
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub enum Ieee802154PendingMode {
@@ -81,12 +81,98 @@ pub fn ieee802154_pib_init() {
     });
 }
 
-// pub fn ieee802154_pib_set_promiscuous(enable: bool) {
-//     if (ieee802154_pib.promiscuous != enable) {
-//         ieee802154_pib.promiscuous = enable;
-//         set_pending();
-//     }
-// }
+pub fn ieee802154_pib_set_panid(index: u8, panid: u16) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().panid[index as usize] = panid;
+    });
+}
+
+pub fn ieee802154_pib_set_promiscuous(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().promiscuous = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_auto_ack_tx(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().auto_ack_tx = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_auto_ack_rx(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().auto_ack_rx = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_enhance_ack_tx(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().enhance_ack_tx = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_coordinator(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().coordinator = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_rx_when_idle(enable: bool) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().rx_when_idle = enable;
+    });
+}
+
+pub fn ieee802154_pib_set_tx_power(power: i8) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().txpower = power;
+    });
+}
+
+pub fn ieee802154_pib_set_channel(channel: u8) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().channel = channel;
+    });
+}
+
+pub fn ieee802154_pib_set_pending_mode(mode: Ieee802154PendingMode) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().pending_mode = mode;
+    });
+}
+
+pub fn ieee802154_pib_set_multipan_enable(mask: u8) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().multipan_mask = mask;
+    });
+}
+
+pub fn ieee802154_pib_set_short_address(index: u8, address: u16) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().short_addr[index as usize] = address;
+    });
+}
+
+pub fn ieee802154_pib_set_extended_address(
+    index: u8,
+    address: [u8; IEEE802154_FRAME_EXT_ADDR_SIZE],
+) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().ext_addr[index as usize] = address;
+    });
+}
+
+pub fn ieee802154_pib_set_cca_theshold(cca_threshold: i8) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().cca_threshold = cca_threshold;
+    });
+}
+
+pub fn ieee802154_pib_set_cca_mode(mode: Ieee802154CcaMode) {
+    critical_section::with(|cs| {
+        PIB.borrow_ref_mut(cs).as_mut().unwrap().cca_mode = mode;
+    });
+}
 
 pub fn ieee802154_pib_update() {
     // if (ieee802154_pib_is_pending()) {
@@ -98,7 +184,7 @@ pub fn ieee802154_pib_update() {
         ieee802154_hal_set_power(ieee802154_txpower_convert(pib.txpower));
 
         ieee802154_hal_set_multipan_enable_mask(pib.multipan_mask);
-        ieee802154_set_multipan_hal(pib.multipan_mask, &pib);
+        ieee802154_set_multipan_hal(&pib);
 
         ieee802154_hal_set_cca_mode(pib.cca_mode);
         ieee802154_hal_set_cca_threshold(pib.cca_threshold);
@@ -118,7 +204,7 @@ pub fn ieee802154_pib_update() {
     // }
 }
 
-pub fn ieee802154_set_multipan_hal(multipan_mask: u8, pib: &Ieee802154Pib) {
+pub fn ieee802154_set_multipan_hal(pib: &Ieee802154Pib) {
     for index in 0..IEEE802154_MULTIPAN_MAX {
         if (pib.multipan_mask & (1 << index)) != 0 {
             ieee802154_hal_set_multipan_panid(index.into(), pib.panid[index]);
@@ -135,7 +221,7 @@ const IEEE802154_TXPOWER_VALUE_MAX: i8 = 13;
 const IEEE802154_TXPOWER_VALUE_MIN: i8 = -32;
 
 pub fn ieee802154_txpower_convert(txpower: i8) -> u8 {
-    let mut ieee820154_txpower_value = 0;
+    let ieee820154_txpower_value;
     if txpower > IEEE802154_TXPOWER_VALUE_MAX {
         ieee820154_txpower_value = 15;
     } else if txpower < IEEE802154_TXPOWER_VALUE_MIN {

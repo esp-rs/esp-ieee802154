@@ -4,9 +4,9 @@ use critical_section::Mutex;
 
 use crate::{
     binary::include::{
-        esp_coex_ieee802154_pti_set, ieee802154_coex_event_t_IEEE802154_ACK,
-        ieee802154_coex_event_t_IEEE802154_IDLE_RX, ieee802154_coex_event_t_IEEE802154_NORMAL,
-        ieee802154_coex_event_t_IEEE802154_RX_AT, ieee802154_coex_event_t_IEEE802154_TX_AT,
+        ieee802154_coex_event_t_IEEE802154_ACK, ieee802154_coex_event_t_IEEE802154_IDLE_RX,
+        ieee802154_coex_event_t_IEEE802154_NORMAL, ieee802154_coex_event_t_IEEE802154_RX_AT,
+        ieee802154_coex_event_t_IEEE802154_TX_AT,
     },
     hal::{ieee802154_hal_set_ack_pti, ieee802154_hal_set_normal_pti},
 };

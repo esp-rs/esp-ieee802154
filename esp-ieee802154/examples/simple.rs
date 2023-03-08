@@ -6,7 +6,7 @@ use esp32c6_hal::{
     peripherals::Peripherals,
     prelude::*,
     timer::TimerGroup,
-    Delay, Rtc, Uart,
+    Delay, Rtc,
 };
 use esp_backtrace as _;
 use esp_ieee802154::*;
@@ -20,10 +20,8 @@ fn main() -> ! {
     let system = peripherals.PCR.split();
     let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
 
-    let mut uart0 = Uart::new(peripherals.UART0);
     let mut rtc = Rtc::new(peripherals.LP_CLKRST);
     let timer_group0 = TimerGroup::new(peripherals.TIMG0, &clocks);
-    let mut timer0 = timer_group0.timer0;
     let mut wdt0 = timer_group0.wdt;
     let timer_group1 = TimerGroup::new(peripherals.TIMG1, &clocks);
     let mut wdt1 = timer_group1.wdt;
@@ -65,25 +63,33 @@ fn main() -> ! {
     // );
 
     let mut delay = Delay::new(&clocks);
-    loop {
-        // data need to be in SRAM
-        let mut frame: [u8; 55] = [
-            54, 0x41, 0x88, 0x44, 0xff, 0x01, 0xff, 0xff, 0x00, 0x00, //
-            b'H', b'e', b'l', b'l', b'o', b' ', b'W', b'o', b'r', b'l', b'd', b'!', b'H', b'e',
-            b'l', b'l', b'o', b' ', b'E', b'S', b'P', b'3', b'2', b'-', b'C', b'6', b'!', b' ',
-            b'8', b'0', b'2', b'.', b'1', b'5', b'.', b'4', b' ', b't', b'e', b's', b't', b'!',
-            b'!', //
-            0x00, 0x00,
-        ];
-        println!("FRAME: {:02x?}", frame);
-        println!("frame addr = {:x}", frame.as_ptr() as u32);
-        println!("call transmit");
-        ieee802154_transmit(frame.as_ptr() as *const u8, false);
-        println!("called transmit");
-        println!();
+    delay.delay_ms(10u32);
 
-        delay.delay_ms(1000u32);
-    }
+    // set_channel(11);
+    // loop {
+    //     // data need to be in SRAM
+    //     let mut frame: [u8; 55] = [
+    //         54, 0x41, 0x88, 0x44, 0xff, 0x01, 0xff, 0xff, 0x00, 0x00, //
+    //         b'H', b'e', b'l', b'l', b'o', b' ', b'W', b'o', b'r', b'l', b'd', b'!', b'H', b'e',
+    //         b'l', b'l', b'o', b' ', b'E', b'S', b'P', b'3', b'2', b'-', b'C', b'6', b'!', b' ',
+    //         b'8', b'0', b'2', b'.', b'1', b'5', b'.', b'4', b' ', b't', b'e', b's', b't', b'!',
+    //         b'!', //
+    //         0x00, 0x00,
+    //     ];
+    //     println!("FRAME: {:02x?}", frame);
+    //     println!("frame addr = {:x}", frame.as_ptr() as u32);
+    //     println!("call transmit");
+    //     ieee802154_transmit(frame.as_ptr() as *const u8, false);
+    //     println!("called transmit");
+    //     println!();
+
+    //     delay.delay_ms(1000u32);
+    // }
+
+    set_channel(15);
+    // set_promiscuous(false);
+    // set_panid(0, 0x8349);
+    // set_short_address(0, 0x7b2b);
 
     println!("before receive");
     ieee802154_receive();

@@ -1,9 +1,8 @@
 #![no_std]
 #![feature(c_variadic)]
 
-use esp32c6_hal::interrupt;
 use hal::disable_events;
-use pib::{ieee802154_pib_init, ieee802154_pib_update};
+use pib::*;
 use util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
 use utils::ieee802154;
 
@@ -38,7 +37,7 @@ pub fn esp_ieee802154_enable() {
     esp_phy_enable();
     ieee802154_mac_init();
 
-    unsafe { log::info!("date={:x}", ieee802154().mac_date.read().bits()) };
+    log::info!("date={:x}", ieee802154().mac_date.read().bits());
 }
 
 /// Enable the PHY
@@ -222,12 +221,72 @@ fn enable_rx() {
     // ieee802154_state = IEEE802154_STATE_RX;
 }
 
-static mut RX_BUFFER: [u8; 128] = [0u8; 128]; // just for testing
+static mut RX_BUFFER: [u8; 129] = [0u8; 129]; // just for testing
 
 fn set_next_rx_buffer() {
     unsafe {
         ieee802154_hal_set_rx_addr(RX_BUFFER.as_mut_ptr() as *mut u8);
     }
+}
+
+pub fn set_promiscuous(enable: bool) {
+    ieee802154_pib_set_promiscuous(enable);
+}
+
+pub fn set_auto_ack_tx(enable: bool) {
+    ieee802154_pib_set_auto_ack_tx(enable);
+}
+
+pub fn set_auto_ack_rx(enable: bool) {
+    ieee802154_pib_set_auto_ack_rx(enable);
+}
+
+pub fn set_enhance_ack_tx(enable: bool) {
+    ieee802154_pib_set_enhance_ack_tx(enable);
+}
+
+pub fn set_coordinator(enable: bool) {
+    ieee802154_pib_set_coordinator(enable);
+}
+
+pub fn set_rx_when_idle(enable: bool) {
+    ieee802154_pib_set_rx_when_idle(enable);
+}
+
+pub fn set_tx_power(power: i8) {
+    ieee802154_pib_set_tx_power(power);
+}
+
+pub fn set_channel(channel: u8) {
+    ieee802154_pib_set_channel(channel);
+}
+
+pub fn set_pending_mode(mode: Ieee802154PendingMode) {
+    ieee802154_pib_set_pending_mode(mode);
+}
+
+pub fn set_multipan_enable(mask: u8) {
+    ieee802154_pib_set_multipan_enable(mask);
+}
+
+pub fn set_short_address(index: u8, address: u16) {
+    ieee802154_pib_set_short_address(index, address);
+}
+
+pub fn set_extended_address(index: u8, address: [u8; IEEE802154_FRAME_EXT_ADDR_SIZE]) {
+    ieee802154_pib_set_extended_address(index, address);
+}
+
+pub fn set_cca_theshold(cca_threshold: i8) {
+    ieee802154_pib_set_cca_theshold(cca_threshold);
+}
+
+pub fn set_cca_mode(mode: Ieee802154CcaMode) {
+    ieee802154_pib_set_cca_mode(mode);
+}
+
+pub fn set_panid(index: u8, id: u16) {
+    ieee802154_pib_set_panid(index, id);
 }
 
 #[inline(always)]
