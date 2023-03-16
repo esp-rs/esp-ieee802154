@@ -2,8 +2,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(unused)]
-use core::{marker::PhantomData, ops::Deref};
-
+use core::marker::PhantomData;
+use core::ops::Deref;
 #[allow(unused_imports)]
 use generic::*;
 #[doc = r"Common register and bit access and modify traits"]
@@ -706,7 +706,7 @@ pub struct IEEE802154 {
 unsafe impl Send for IEEE802154 {}
 impl IEEE802154 {
     #[doc = r"Pointer to the register block"]
-    pub const PTR: *const ieee802154::RegisterBlock = 0x6004_7000 as *const _;
+    pub const PTR: *const ieee802154::RegisterBlock = 0x600a_3000 as *const _;
     #[doc = r"Return the pointer to the register block"]
     #[inline(always)]
     pub const fn ptr() -> *const ieee802154::RegisterBlock {
@@ -730,190 +730,634 @@ pub mod ieee802154 {
     #[doc = r"Register block"]
     #[repr(C)]
     pub struct RegisterBlock {
-        _reserved_0_command: [u8; 0x08],
+        #[doc = "0x00 - "]
+        pub command: COMMAND,
+        #[doc = "0x04 - "]
+        pub ctrl_cfg: CTRL_CFG,
         #[doc = "0x08 - "]
-        pub short_addr: SHORT_ADDR,
+        pub inf0_short_addr: INF0_SHORT_ADDR,
         #[doc = "0x0c - "]
-        pub pan_id: PAN_ID,
+        pub inf0_pan_id: INF0_PAN_ID,
         #[doc = "0x10 - "]
-        pub extend_addr0: EXTEND_ADDR0,
+        pub inf0_extend_addr0: INF0_EXTEND_ADDR0,
         #[doc = "0x14 - "]
-        pub extend_addr1: EXTEND_ADDR1,
+        pub inf0_extend_addr1: INF0_EXTEND_ADDR1,
         #[doc = "0x18 - "]
-        pub channel: CHANNEL,
+        pub inf1_short_addr: INF1_SHORT_ADDR,
         #[doc = "0x1c - "]
-        pub tx_power: TX_POWER,
+        pub inf1_pan_id: INF1_PAN_ID,
         #[doc = "0x20 - "]
-        pub ed_scan_duration: ED_SCAN_DURATION,
+        pub inf1_extend_addr0: INF1_EXTEND_ADDR0,
         #[doc = "0x24 - "]
-        pub ed_scan_cfg: ED_SCAN_CFG,
+        pub inf1_extend_addr1: INF1_EXTEND_ADDR1,
         #[doc = "0x28 - "]
-        pub ifs: IFS,
+        pub inf2_short_addr: INF2_SHORT_ADDR,
         #[doc = "0x2c - "]
-        pub ack_timeout: ACK_TIMEOUT,
+        pub inf2_pan_id: INF2_PAN_ID,
         #[doc = "0x30 - "]
-        pub event_en: EVENT_EN,
+        pub inf2_extend_addr0: INF2_EXTEND_ADDR0,
         #[doc = "0x34 - "]
-        pub event_status: EVENT_STATUS,
+        pub inf2_extend_addr1: INF2_EXTEND_ADDR1,
         #[doc = "0x38 - "]
-        pub rx_abort_intr_ctrl: RX_ABORT_INTR_CTRL,
-        _reserved14: [u8; 0x04],
+        pub inf3_short_addr: INF3_SHORT_ADDR,
+        #[doc = "0x3c - "]
+        pub inf3_pan_id: INF3_PAN_ID,
         #[doc = "0x40 - "]
-        pub coex_pti: COEX_PTI,
+        pub inf3_extend_addr0: INF3_EXTEND_ADDR0,
         #[doc = "0x44 - "]
-        pub core_dummy_data: CORE_DUMMY_DATA,
+        pub inf3_extend_addr1: INF3_EXTEND_ADDR1,
         #[doc = "0x48 - "]
-        pub tx_abort_interrupt_control: TX_ABORT_INTERRUPT_CONTROL,
-        _reserved17: [u8; 0x08],
+        pub channel: CHANNEL,
+        #[doc = "0x4c - "]
+        pub tx_power: TX_POWER,
+        #[doc = "0x50 - "]
+        pub ed_scan_duration: ED_SCAN_DURATION,
         #[doc = "0x54 - "]
-        pub rx_status: RX_STATUS,
+        pub ed_scan_cfg: ED_SCAN_CFG,
         #[doc = "0x58 - "]
-        pub tx_status: TX_STATUS,
+        pub ifs: IFS,
         #[doc = "0x5c - "]
-        pub txrx_status: TXRX_STATUS,
+        pub ack_timeout: ACK_TIMEOUT,
         #[doc = "0x60 - "]
-        pub tx_ccm_schedule_status: TX_CCM_SCHEDULE_STATUS,
-        _reserved21: [u8; 0x04],
+        pub event_en: EVENT_EN,
+        #[doc = "0x64 - "]
+        pub event_status: EVENT_STATUS,
         #[doc = "0x68 - "]
-        pub core_gck_cfg: CORE_GCK_CFG,
+        pub rx_abort_intr_ctrl: RX_ABORT_INTR_CTRL,
         #[doc = "0x6c - "]
-        pub test_control: TEST_CONTROL,
+        pub ack_frame_pending_en: ACK_FRAME_PENDING_EN,
         #[doc = "0x70 - "]
-        pub dtm_config: DTM_CONFIG,
+        pub coex_pti: COEX_PTI,
         #[doc = "0x74 - "]
-        pub dtm_tx_pkt_config: DTM_TX_PKT_CONFIG,
+        pub core_dummy_data: CORE_DUMMY_DATA,
         #[doc = "0x78 - "]
-        pub dtm_pkt_counter: DTM_PKT_COUNTER,
+        pub tx_abort_interrupt_control: TX_ABORT_INTERRUPT_CONTROL,
         #[doc = "0x7c - "]
-        pub rx_length: RX_LENGTH,
+        pub enhance_ack_cfg: ENHANCE_ACK_CFG,
         #[doc = "0x80 - "]
-        pub time0_threshold: TIME0_THRESHOLD,
+        pub rx_status: RX_STATUS,
         #[doc = "0x84 - "]
-        pub time0_value: TIME0_VALUE,
+        pub tx_status: TX_STATUS,
         #[doc = "0x88 - "]
-        pub time1_threshold: TIME1_THRESHOLD,
+        pub txrx_status: TXRX_STATUS,
         #[doc = "0x8c - "]
-        pub time1_value: TIME1_VALUE,
+        pub tx_ccm_schedule_status: TX_CCM_SCHEDULE_STATUS,
         #[doc = "0x90 - "]
-        pub clk_counter_match_val: CLK_COUNTER_MATCH_VAL,
+        pub core_gck_cfg: CORE_GCK_CFG,
         #[doc = "0x94 - "]
-        pub clk_counter: CLK_COUNTER,
+        pub test_control: TEST_CONTROL,
         #[doc = "0x98 - "]
-        pub ifs_counter: IFS_COUNTER,
-        _reserved34: [u8; 0x04],
+        pub dtm_config: DTM_CONFIG,
+        #[doc = "0x9c - "]
+        pub dtm_tx_pkt_config: DTM_TX_PKT_CONFIG,
         #[doc = "0xa0 - "]
-        pub sfd_wait_symbol: SFD_WAIT_SYMBOL,
+        pub dtm_pkt_counter: DTM_PKT_COUNTER,
         #[doc = "0xa4 - "]
-        pub txrx_path_delay: TXRX_PATH_DELAY,
+        pub rx_length: RX_LENGTH,
         #[doc = "0xa8 - "]
-        pub bb_clk: BB_CLK,
+        pub time0_threshold: TIME0_THRESHOLD,
         #[doc = "0xac - "]
-        pub paon_delay: PAON_DELAY,
+        pub time0_value: TIME0_VALUE,
         #[doc = "0xb0 - "]
-        pub txon_delay: TXON_DELAY,
+        pub time1_threshold: TIME1_THRESHOLD,
         #[doc = "0xb4 - "]
-        pub txen_stop_delay: TXEN_STOP_DELAY,
+        pub time1_value: TIME1_VALUE,
         #[doc = "0xb8 - "]
-        pub txoff_delay: TXOFF_DELAY,
+        pub clk_counter_match_val: CLK_COUNTER_MATCH_VAL,
         #[doc = "0xbc - "]
-        pub rxon_delay: RXON_DELAY,
+        pub clk_counter: CLK_COUNTER,
         #[doc = "0xc0 - "]
-        pub txrx_switch_delay: TXRX_SWITCH_DELAY,
+        pub ifs_counter: IFS_COUNTER,
         #[doc = "0xc4 - "]
-        pub cont_rx_delay: CONT_RX_DELAY,
+        pub sfd_wait_symbol: SFD_WAIT_SYMBOL,
         #[doc = "0xc8 - "]
-        pub dcdc_ctrl: DCDC_CTRL,
+        pub txrx_path_delay: TXRX_PATH_DELAY,
         #[doc = "0xcc - "]
-        pub debug_ctrl: DEBUG_CTRL,
+        pub bb_clk: BB_CLK,
         #[doc = "0xd0 - "]
         pub txdma_addr: TXDMA_ADDR,
         #[doc = "0xd4 - "]
         pub txdma_ctrl_state: TXDMA_CTRL_STATE,
         #[doc = "0xd8 - "]
         pub txdma_err: TXDMA_ERR,
-        _reserved49: [u8; 0x04],
+        _reserved55: [u8; 0x04],
         #[doc = "0xe0 - "]
         pub rxdma_addr: RXDMA_ADDR,
         #[doc = "0xe4 - "]
         pub rxdma_ctrl_state: RXDMA_CTRL_STATE,
         #[doc = "0xe8 - "]
         pub rxdma_err: RXDMA_ERR,
-        _reserved52: [u8; 0x04],
+        _reserved58: [u8; 0x04],
         #[doc = "0xf0 - "]
         pub dma_gck_cfg: DMA_GCK_CFG,
         #[doc = "0xf4 - "]
         pub dma_dummy: DMA_DUMMY,
-        _reserved54: [u8; 0x08],
+        _reserved60: [u8; 0x08],
         #[doc = "0x100 - "]
-        pub sec_ctrl: SEC_CTRL,
-        _reserved55: [u8; 0x04],
+        pub paon_delay: PAON_DELAY,
+        #[doc = "0x104 - "]
+        pub txon_delay: TXON_DELAY,
         #[doc = "0x108 - "]
-        pub sec_extend_address0: SEC_EXTEND_ADDRESS0,
+        pub txen_stop_delay: TXEN_STOP_DELAY,
         #[doc = "0x10c - "]
-        pub sec_extend_address1: SEC_EXTEND_ADDRESS1,
+        pub txoff_delay: TXOFF_DELAY,
         #[doc = "0x110 - "]
-        pub sec_key0: SEC_KEY0,
+        pub rxon_delay: RXON_DELAY,
         #[doc = "0x114 - "]
-        pub sec_key1: SEC_KEY1,
+        pub txrx_switch_delay: TXRX_SWITCH_DELAY,
         #[doc = "0x118 - "]
-        pub sec_key2: SEC_KEY2,
+        pub cont_rx_delay: CONT_RX_DELAY,
         #[doc = "0x11c - "]
-        pub sec_key3: SEC_KEY3,
+        pub dcdc_ctrl: DCDC_CTRL,
         #[doc = "0x120 - "]
-        pub sfd_timeout_cnt: SFD_TIMEOUT_CNT,
-        #[doc = "0x124 - "]
-        pub crc_error_cnt: CRC_ERROR_CNT,
+        pub debug_ctrl: DEBUG_CTRL,
+        _reserved69: [u8; 0x04],
         #[doc = "0x128 - "]
-        pub ed_abort_cnt: ED_ABORT_CNT,
+        pub sec_ctrl: SEC_CTRL,
         #[doc = "0x12c - "]
-        pub cca_fail_cnt: CCA_FAIL_CNT,
+        pub sec_extend_address0: SEC_EXTEND_ADDRESS0,
         #[doc = "0x130 - "]
-        pub rx_filter_fail_cnt: RX_FILTER_FAIL_CNT,
+        pub sec_extend_address1: SEC_EXTEND_ADDRESS1,
         #[doc = "0x134 - "]
-        pub no_rss_detect_cnt: NO_RSS_DETECT_CNT,
+        pub sec_key0: SEC_KEY0,
         #[doc = "0x138 - "]
-        pub rx_abort_coex_cnt: RX_ABORT_COEX_CNT,
+        pub sec_key1: SEC_KEY1,
         #[doc = "0x13c - "]
-        pub rx_restart_cnt: RX_RESTART_CNT,
+        pub sec_key2: SEC_KEY2,
         #[doc = "0x140 - "]
-        pub tx_ack_abort_coex_cnt: TX_ACK_ABORT_COEX_CNT,
+        pub sec_key3: SEC_KEY3,
         #[doc = "0x144 - "]
-        pub ed_scan_coex_cnt: ED_SCAN_COEX_CNT,
+        pub sfd_timeout_cnt: SFD_TIMEOUT_CNT,
         #[doc = "0x148 - "]
-        pub rx_ack_abort_coex_cnt: RX_ACK_ABORT_COEX_CNT,
+        pub crc_error_cnt: CRC_ERROR_CNT,
         #[doc = "0x14c - "]
-        pub rx_ack_timeout_cnt: RX_ACK_TIMEOUT_CNT,
+        pub ed_abort_cnt: ED_ABORT_CNT,
         #[doc = "0x150 - "]
-        pub tx_break_coex_cnt: TX_BREAK_COEX_CNT,
+        pub cca_fail_cnt: CCA_FAIL_CNT,
         #[doc = "0x154 - "]
+        pub rx_filter_fail_cnt: RX_FILTER_FAIL_CNT,
+        #[doc = "0x158 - "]
+        pub no_rss_detect_cnt: NO_RSS_DETECT_CNT,
+        #[doc = "0x15c - "]
+        pub rx_abort_coex_cnt: RX_ABORT_COEX_CNT,
+        #[doc = "0x160 - "]
+        pub rx_restart_cnt: RX_RESTART_CNT,
+        #[doc = "0x164 - "]
+        pub tx_ack_abort_coex_cnt: TX_ACK_ABORT_COEX_CNT,
+        #[doc = "0x168 - "]
+        pub ed_scan_coex_cnt: ED_SCAN_COEX_CNT,
+        #[doc = "0x16c - "]
+        pub rx_ack_abort_coex_cnt: RX_ACK_ABORT_COEX_CNT,
+        #[doc = "0x170 - "]
+        pub rx_ack_timeout_cnt: RX_ACK_TIMEOUT_CNT,
+        #[doc = "0x174 - "]
+        pub tx_break_coex_cnt: TX_BREAK_COEX_CNT,
+        #[doc = "0x178 - "]
         pub tx_security_error_cnt: TX_SECURITY_ERROR_CNT,
-        _reserved_75_cca_busy_cnt: [u8; 0x04],
+        #[doc = "0x17c - "]
+        pub cca_busy_cnt: CCA_BUSY_CNT,
+        #[doc = "0x180 - "]
+        pub error_cnt_clear: ERROR_CNT_CLEAR,
+        _reserved_92_mac_date: [u8; 0x04],
+        #[doc = "0x188 - "]
+        pub debug_sel_cfg1: DEBUG_SEL_CFG1,
+        #[doc = "0x18c - "]
+        pub mac_date: MAC_DATE,
     }
     impl RegisterBlock {
-        #[doc = "0x00 - "]
+        #[doc = "0x184 - "]
         #[inline(always)]
-        pub const fn command(&self) -> &COMMAND {
-            unsafe { &*(self as *const Self).cast::<u8>().add(0usize).cast() }
+        pub const fn mac_date(&self) -> &MAC_DATE {
+            unsafe { &*(self as *const Self).cast::<u8>().add(388usize).cast() }
         }
-        #[doc = "0x03 - "]
+        #[doc = "0x184 - "]
         #[inline(always)]
-        pub const fn ack_frame_pending_en(&self) -> &ACK_FRAME_PENDING_EN {
-            unsafe { &*(self as *const Self).cast::<u8>().add(3usize).cast() }
+        pub const fn debug_sel_cfg0(&self) -> &DEBUG_SEL_CFG0 {
+            unsafe { &*(self as *const Self).cast::<u8>().add(388usize).cast() }
         }
-        #[doc = "0x04 - "]
-        #[inline(always)]
-        pub const fn ctrl_cfg(&self) -> &CTRL_CFG {
-            unsafe { &*(self as *const Self).cast::<u8>().add(4usize).cast() }
+    }
+    #[doc = "mac_date (rw) register accessor: an alias for `Reg<MAC_DATE_SPEC>`"]
+    pub type MAC_DATE = crate::ral::Reg<mac_date::MAC_DATE_SPEC>;
+    #[doc = ""]
+    pub mod mac_date {
+        #[doc = "Register `mac_date` reader"]
+        pub struct R(crate::ral::R<MAC_DATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
         }
-        #[doc = "0x158 - "]
-        #[inline(always)]
-        pub const fn cca_busy_cnt(&self) -> &CCA_BUSY_CNT {
-            unsafe { &*(self as *const Self).cast::<u8>().add(344usize).cast() }
+        impl From<crate::ral::R<MAC_DATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<MAC_DATE_SPEC>) -> Self {
+                R(reader)
+            }
         }
-        #[doc = "0x158 - "]
-        #[inline(always)]
-        pub const fn error_cnt_clear(&self) -> &ERROR_CNT_CLEAR {
-            unsafe { &*(self as *const Self).cast::<u8>().add(344usize).cast() }
+        #[doc = "Register `mac_date` writer"]
+        pub struct W(crate::ral::W<MAC_DATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<MAC_DATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<MAC_DATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_date` reader - "]
+        pub type MAC_DATE_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_date` writer - "]
+        pub type MAC_DATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, MAC_DATE_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_date(&self) -> MAC_DATE_R {
+                MAC_DATE_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_date(&mut self) -> MAC_DATE_W<0> {
+                MAC_DATE_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mac_date](index.html) module"]
+        pub struct MAC_DATE_SPEC;
+        impl crate::ral::RegisterSpec for MAC_DATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [mac_date::R](R) reader structure"]
+        impl crate::ral::Readable for MAC_DATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [mac_date::W](W) writer structure"]
+        impl crate::ral::Writable for MAC_DATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "debug_sel_cfg1 (rw) register accessor: an alias for `Reg<DEBUG_SEL_CFG1_SPEC>`"]
+    pub type DEBUG_SEL_CFG1 = crate::ral::Reg<debug_sel_cfg1::DEBUG_SEL_CFG1_SPEC>;
+    #[doc = ""]
+    pub mod debug_sel_cfg1 {
+        #[doc = "Register `debug_sel_cfg1` reader"]
+        pub struct R(crate::ral::R<DEBUG_SEL_CFG1_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<DEBUG_SEL_CFG1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<DEBUG_SEL_CFG1_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<DEBUG_SEL_CFG1_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `debug_sel_cfg1` writer"]
+        pub struct W(crate::ral::W<DEBUG_SEL_CFG1_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<DEBUG_SEL_CFG1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<DEBUG_SEL_CFG1_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<DEBUG_SEL_CFG1_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `debug_field4_sel` reader - "]
+        pub type DEBUG_FIELD4_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field4_sel` writer - "]
+        pub type DEBUG_FIELD4_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG1_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field5_sel` reader - "]
+        pub type DEBUG_FIELD5_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field5_sel` writer - "]
+        pub type DEBUG_FIELD5_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG1_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field6_sel` reader - "]
+        pub type DEBUG_FIELD6_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field6_sel` writer - "]
+        pub type DEBUG_FIELD6_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG1_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field7_sel` reader - "]
+        pub type DEBUG_FIELD7_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field7_sel` writer - "]
+        pub type DEBUG_FIELD7_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG1_SPEC, u8, u8, 5, O>;
+        impl R {
+            #[doc = "Bits 0:4"]
+            #[inline(always)]
+            pub fn debug_field4_sel(&self) -> DEBUG_FIELD4_SEL_R {
+                DEBUG_FIELD4_SEL_R::new((self.bits & 0x1f) as u8)
+            }
+            #[doc = "Bits 8:12"]
+            #[inline(always)]
+            pub fn debug_field5_sel(&self) -> DEBUG_FIELD5_SEL_R {
+                DEBUG_FIELD5_SEL_R::new(((self.bits >> 8) & 0x1f) as u8)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            pub fn debug_field6_sel(&self) -> DEBUG_FIELD6_SEL_R {
+                DEBUG_FIELD6_SEL_R::new(((self.bits >> 16) & 0x1f) as u8)
+            }
+            #[doc = "Bits 24:28"]
+            #[inline(always)]
+            pub fn debug_field7_sel(&self) -> DEBUG_FIELD7_SEL_R {
+                DEBUG_FIELD7_SEL_R::new(((self.bits >> 24) & 0x1f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:4"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field4_sel(&mut self) -> DEBUG_FIELD4_SEL_W<0> {
+                DEBUG_FIELD4_SEL_W::new(self)
+            }
+            #[doc = "Bits 8:12"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field5_sel(&mut self) -> DEBUG_FIELD5_SEL_W<8> {
+                DEBUG_FIELD5_SEL_W::new(self)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field6_sel(&mut self) -> DEBUG_FIELD6_SEL_W<16> {
+                DEBUG_FIELD6_SEL_W::new(self)
+            }
+            #[doc = "Bits 24:28"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field7_sel(&mut self) -> DEBUG_FIELD7_SEL_W<24> {
+                DEBUG_FIELD7_SEL_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [debug_sel_cfg1](index.html) module"]
+        pub struct DEBUG_SEL_CFG1_SPEC;
+        impl crate::ral::RegisterSpec for DEBUG_SEL_CFG1_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [debug_sel_cfg1::R](R) reader structure"]
+        impl crate::ral::Readable for DEBUG_SEL_CFG1_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [debug_sel_cfg1::W](W) writer structure"]
+        impl crate::ral::Writable for DEBUG_SEL_CFG1_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "debug_sel_cfg0 (rw) register accessor: an alias for `Reg<DEBUG_SEL_CFG0_SPEC>`"]
+    pub type DEBUG_SEL_CFG0 = crate::ral::Reg<debug_sel_cfg0::DEBUG_SEL_CFG0_SPEC>;
+    #[doc = ""]
+    pub mod debug_sel_cfg0 {
+        #[doc = "Register `debug_sel_cfg0` reader"]
+        pub struct R(crate::ral::R<DEBUG_SEL_CFG0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<DEBUG_SEL_CFG0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<DEBUG_SEL_CFG0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<DEBUG_SEL_CFG0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `debug_sel_cfg0` writer"]
+        pub struct W(crate::ral::W<DEBUG_SEL_CFG0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<DEBUG_SEL_CFG0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<DEBUG_SEL_CFG0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<DEBUG_SEL_CFG0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `debug_field0_sel` reader - "]
+        pub type DEBUG_FIELD0_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field0_sel` writer - "]
+        pub type DEBUG_FIELD0_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG0_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field1_sel` reader - "]
+        pub type DEBUG_FIELD1_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field1_sel` writer - "]
+        pub type DEBUG_FIELD1_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG0_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field2_sel` reader - "]
+        pub type DEBUG_FIELD2_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field2_sel` writer - "]
+        pub type DEBUG_FIELD2_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG0_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `debug_field3_sel` reader - "]
+        pub type DEBUG_FIELD3_SEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `debug_field3_sel` writer - "]
+        pub type DEBUG_FIELD3_SEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DEBUG_SEL_CFG0_SPEC, u8, u8, 5, O>;
+        impl R {
+            #[doc = "Bits 0:4"]
+            #[inline(always)]
+            pub fn debug_field0_sel(&self) -> DEBUG_FIELD0_SEL_R {
+                DEBUG_FIELD0_SEL_R::new((self.bits & 0x1f) as u8)
+            }
+            #[doc = "Bits 8:12"]
+            #[inline(always)]
+            pub fn debug_field1_sel(&self) -> DEBUG_FIELD1_SEL_R {
+                DEBUG_FIELD1_SEL_R::new(((self.bits >> 8) & 0x1f) as u8)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            pub fn debug_field2_sel(&self) -> DEBUG_FIELD2_SEL_R {
+                DEBUG_FIELD2_SEL_R::new(((self.bits >> 16) & 0x1f) as u8)
+            }
+            #[doc = "Bits 24:28"]
+            #[inline(always)]
+            pub fn debug_field3_sel(&self) -> DEBUG_FIELD3_SEL_R {
+                DEBUG_FIELD3_SEL_R::new(((self.bits >> 24) & 0x1f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:4"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field0_sel(&mut self) -> DEBUG_FIELD0_SEL_W<0> {
+                DEBUG_FIELD0_SEL_W::new(self)
+            }
+            #[doc = "Bits 8:12"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field1_sel(&mut self) -> DEBUG_FIELD1_SEL_W<8> {
+                DEBUG_FIELD1_SEL_W::new(self)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field2_sel(&mut self) -> DEBUG_FIELD2_SEL_W<16> {
+                DEBUG_FIELD2_SEL_W::new(self)
+            }
+            #[doc = "Bits 24:28"]
+            #[inline(always)]
+            #[must_use]
+            pub fn debug_field3_sel(&mut self) -> DEBUG_FIELD3_SEL_W<24> {
+                DEBUG_FIELD3_SEL_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [debug_sel_cfg0](index.html) module"]
+        pub struct DEBUG_SEL_CFG0_SPEC;
+        impl crate::ral::RegisterSpec for DEBUG_SEL_CFG0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [debug_sel_cfg0::R](R) reader structure"]
+        impl crate::ral::Readable for DEBUG_SEL_CFG0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [debug_sel_cfg0::W](W) writer structure"]
+        impl crate::ral::Writable for DEBUG_SEL_CFG0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "mac_date (rw) register accessor: an alias for `Reg<MAC_DATE_SPEC>`"]
+    pub type MAC_DATE = crate::ral::Reg<mac_date::MAC_DATE_SPEC>;
+    #[doc = ""]
+    pub mod mac_date {
+        #[doc = "Register `mac_date` reader"]
+        pub struct R(crate::ral::R<MAC_DATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<MAC_DATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<MAC_DATE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `mac_date` writer"]
+        pub struct W(crate::ral::W<MAC_DATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<MAC_DATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<MAC_DATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_date` reader - "]
+        pub type MAC_DATE_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_date` writer - "]
+        pub type MAC_DATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, MAC_DATE_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_date(&self) -> MAC_DATE_R {
+                MAC_DATE_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_date(&mut self) -> MAC_DATE_W<0> {
+                MAC_DATE_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mac_date](index.html) module"]
+        pub struct MAC_DATE_SPEC;
+        impl crate::ral::RegisterSpec for MAC_DATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [mac_date::R](R) reader structure"]
+        impl crate::ral::Readable for MAC_DATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [mac_date::W](W) writer structure"]
+        impl crate::ral::Writable for MAC_DATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
     #[doc = "error_cnt_clear (rw) register accessor: an alias for `Reg<ERROR_CNT_CLEAR_SPEC>`"]
@@ -956,288 +1400,248 @@ pub mod ieee802154 {
                 W(writer)
             }
         }
-        #[doc = "Field `ieee802154_cca_busy_cnt_clear` reader - "]
-        pub type IEEE802154_CCA_BUSY_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_cca_busy_cnt_clear` writer - "]
-        pub type IEEE802154_CCA_BUSY_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `cca_busy_cnt_clear` reader - "]
+        pub type CCA_BUSY_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `cca_busy_cnt_clear` writer - "]
+        pub type CCA_BUSY_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_tx_security_error_cnt_clear` reader - "]
-        pub type IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_tx_security_error_cnt_clear` writer - "]
-        pub type IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `tx_security_error_cnt_clear` reader - "]
+        pub type TX_SECURITY_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `tx_security_error_cnt_clear` writer - "]
+        pub type TX_SECURITY_ERROR_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_tx_break_coex_cnt_clear` reader - "]
-        pub type IEEE802154_TX_BREAK_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_tx_break_coex_cnt_clear` writer - "]
-        pub type IEEE802154_TX_BREAK_COEX_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `tx_break_coex_cnt_clear` reader - "]
+        pub type TX_BREAK_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `tx_break_coex_cnt_clear` writer - "]
+        pub type TX_BREAK_COEX_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_rx_ack_timeout_cnt_clear` reader - "]
-        pub type IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_rx_ack_timeout_cnt_clear` writer - "]
-        pub type IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `rx_ack_timeout_cnt_clear` reader - "]
+        pub type RX_ACK_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rx_ack_timeout_cnt_clear` writer - "]
+        pub type RX_ACK_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_rx_ack_abort_coex_cnt_clear` reader - "]
-        pub type IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_rx_ack_abort_coex_cnt_clear` writer - "]
-        pub type IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `rx_ack_abort_coex_cnt_clear` reader - "]
+        pub type RX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rx_ack_abort_coex_cnt_clear` writer - "]
+        pub type RX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_ed_scan_coex_cnt_clear` reader - "]
-        pub type IEEE802154_ED_SCAN_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_ed_scan_coex_cnt_clear` writer - "]
-        pub type IEEE802154_ED_SCAN_COEX_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `ed_scan_coex_cnt_clear` reader - "]
+        pub type ED_SCAN_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `ed_scan_coex_cnt_clear` writer - "]
+        pub type ED_SCAN_COEX_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_tx_ack_abort_coex_cnt_clear` reader - "]
-        pub type IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_tx_ack_abort_coex_cnt_clear` writer - "]
-        pub type IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `tx_ack_abort_coex_cnt_clear` reader - "]
+        pub type TX_ACK_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `tx_ack_abort_coex_cnt_clear` writer - "]
+        pub type TX_ACK_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_rx_restart_cnt_clear` reader - "]
-        pub type IEEE802154_RX_RESTART_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_rx_restart_cnt_clear` writer - "]
-        pub type IEEE802154_RX_RESTART_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `rx_restart_cnt_clear` reader - "]
+        pub type RX_RESTART_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rx_restart_cnt_clear` writer - "]
+        pub type RX_RESTART_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_rx_abort_coex_cnt_clear` reader - "]
-        pub type IEEE802154_RX_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_rx_abort_coex_cnt_clear` writer - "]
-        pub type IEEE802154_RX_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `rx_abort_coex_cnt_clear` reader - "]
+        pub type RX_ABORT_COEX_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rx_abort_coex_cnt_clear` writer - "]
+        pub type RX_ABORT_COEX_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_no_rss_detect_cnt_clear` reader - "]
-        pub type IEEE802154_NO_RSS_DETECT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_no_rss_detect_cnt_clear` writer - "]
-        pub type IEEE802154_NO_RSS_DETECT_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `no_rss_detect_cnt_clear` reader - "]
+        pub type NO_RSS_DETECT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `no_rss_detect_cnt_clear` writer - "]
+        pub type NO_RSS_DETECT_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_rx_filter_fail_cnt_clear` reader - "]
-        pub type IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_rx_filter_fail_cnt_clear` writer - "]
-        pub type IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `rx_filter_fail_cnt_clear` reader - "]
+        pub type RX_FILTER_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rx_filter_fail_cnt_clear` writer - "]
+        pub type RX_FILTER_FAIL_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_cca_fail_cnt_clear` reader - "]
-        pub type IEEE802154_CCA_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_cca_fail_cnt_clear` writer - "]
-        pub type IEEE802154_CCA_FAIL_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `cca_fail_cnt_clear` reader - "]
+        pub type CCA_FAIL_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `cca_fail_cnt_clear` writer - "]
+        pub type CCA_FAIL_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_ed_abort_cnt_clear` reader - "]
-        pub type IEEE802154_ED_ABORT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_ed_abort_cnt_clear` writer - "]
-        pub type IEEE802154_ED_ABORT_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `ed_abort_cnt_clear` reader - "]
+        pub type ED_ABORT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `ed_abort_cnt_clear` writer - "]
+        pub type ED_ABORT_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_crc_error_cnt_clear` reader - "]
-        pub type IEEE802154_CRC_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_crc_error_cnt_clear` writer - "]
-        pub type IEEE802154_CRC_ERROR_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `crc_error_cnt_clear` reader - "]
+        pub type CRC_ERROR_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `crc_error_cnt_clear` writer - "]
+        pub type CRC_ERROR_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
-        #[doc = "Field `ieee802154_sfd_timeout_cnt_clear` reader - "]
-        pub type IEEE802154_SFD_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `ieee802154_sfd_timeout_cnt_clear` writer - "]
-        pub type IEEE802154_SFD_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
+        #[doc = "Field `sfd_timeout_cnt_clear` reader - "]
+        pub type SFD_TIMEOUT_CNT_CLEAR_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `sfd_timeout_cnt_clear` writer - "]
+        pub type SFD_TIMEOUT_CNT_CLEAR_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, ERROR_CNT_CLEAR_SPEC, bool, O>;
         impl R {
             #[doc = "Bit 0"]
             #[inline(always)]
-            pub fn ieee802154_cca_busy_cnt_clear(&self) -> IEEE802154_CCA_BUSY_CNT_CLEAR_R {
-                IEEE802154_CCA_BUSY_CNT_CLEAR_R::new((self.bits & 1) != 0)
+            pub fn cca_busy_cnt_clear(&self) -> CCA_BUSY_CNT_CLEAR_R {
+                CCA_BUSY_CNT_CLEAR_R::new((self.bits & 1) != 0)
             }
             #[doc = "Bit 1"]
             #[inline(always)]
-            pub fn ieee802154_tx_security_error_cnt_clear(
-                &self,
-            ) -> IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R {
-                IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_R::new(((self.bits >> 1) & 1) != 0)
+            pub fn tx_security_error_cnt_clear(&self) -> TX_SECURITY_ERROR_CNT_CLEAR_R {
+                TX_SECURITY_ERROR_CNT_CLEAR_R::new(((self.bits >> 1) & 1) != 0)
             }
             #[doc = "Bit 2"]
             #[inline(always)]
-            pub fn ieee802154_tx_break_coex_cnt_clear(
-                &self,
-            ) -> IEEE802154_TX_BREAK_COEX_CNT_CLEAR_R {
-                IEEE802154_TX_BREAK_COEX_CNT_CLEAR_R::new(((self.bits >> 2) & 1) != 0)
+            pub fn tx_break_coex_cnt_clear(&self) -> TX_BREAK_COEX_CNT_CLEAR_R {
+                TX_BREAK_COEX_CNT_CLEAR_R::new(((self.bits >> 2) & 1) != 0)
             }
             #[doc = "Bit 3"]
             #[inline(always)]
-            pub fn ieee802154_rx_ack_timeout_cnt_clear(
-                &self,
-            ) -> IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R {
-                IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 3) & 1) != 0)
+            pub fn rx_ack_timeout_cnt_clear(&self) -> RX_ACK_TIMEOUT_CNT_CLEAR_R {
+                RX_ACK_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 3) & 1) != 0)
             }
             #[doc = "Bit 4"]
             #[inline(always)]
-            pub fn ieee802154_rx_ack_abort_coex_cnt_clear(
-                &self,
-            ) -> IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R {
-                IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 4) & 1) != 0)
+            pub fn rx_ack_abort_coex_cnt_clear(&self) -> RX_ACK_ABORT_COEX_CNT_CLEAR_R {
+                RX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 4) & 1) != 0)
             }
             #[doc = "Bit 5"]
             #[inline(always)]
-            pub fn ieee802154_ed_scan_coex_cnt_clear(&self) -> IEEE802154_ED_SCAN_COEX_CNT_CLEAR_R {
-                IEEE802154_ED_SCAN_COEX_CNT_CLEAR_R::new(((self.bits >> 5) & 1) != 0)
+            pub fn ed_scan_coex_cnt_clear(&self) -> ED_SCAN_COEX_CNT_CLEAR_R {
+                ED_SCAN_COEX_CNT_CLEAR_R::new(((self.bits >> 5) & 1) != 0)
             }
             #[doc = "Bit 6"]
             #[inline(always)]
-            pub fn ieee802154_tx_ack_abort_coex_cnt_clear(
-                &self,
-            ) -> IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R {
-                IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 6) & 1) != 0)
+            pub fn tx_ack_abort_coex_cnt_clear(&self) -> TX_ACK_ABORT_COEX_CNT_CLEAR_R {
+                TX_ACK_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 6) & 1) != 0)
             }
             #[doc = "Bit 7"]
             #[inline(always)]
-            pub fn ieee802154_rx_restart_cnt_clear(&self) -> IEEE802154_RX_RESTART_CNT_CLEAR_R {
-                IEEE802154_RX_RESTART_CNT_CLEAR_R::new(((self.bits >> 7) & 1) != 0)
+            pub fn rx_restart_cnt_clear(&self) -> RX_RESTART_CNT_CLEAR_R {
+                RX_RESTART_CNT_CLEAR_R::new(((self.bits >> 7) & 1) != 0)
             }
             #[doc = "Bit 8"]
             #[inline(always)]
-            pub fn ieee802154_rx_abort_coex_cnt_clear(
-                &self,
-            ) -> IEEE802154_RX_ABORT_COEX_CNT_CLEAR_R {
-                IEEE802154_RX_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 8) & 1) != 0)
+            pub fn rx_abort_coex_cnt_clear(&self) -> RX_ABORT_COEX_CNT_CLEAR_R {
+                RX_ABORT_COEX_CNT_CLEAR_R::new(((self.bits >> 8) & 1) != 0)
             }
             #[doc = "Bit 9"]
             #[inline(always)]
-            pub fn ieee802154_no_rss_detect_cnt_clear(
-                &self,
-            ) -> IEEE802154_NO_RSS_DETECT_CNT_CLEAR_R {
-                IEEE802154_NO_RSS_DETECT_CNT_CLEAR_R::new(((self.bits >> 9) & 1) != 0)
+            pub fn no_rss_detect_cnt_clear(&self) -> NO_RSS_DETECT_CNT_CLEAR_R {
+                NO_RSS_DETECT_CNT_CLEAR_R::new(((self.bits >> 9) & 1) != 0)
             }
             #[doc = "Bit 10"]
             #[inline(always)]
-            pub fn ieee802154_rx_filter_fail_cnt_clear(
-                &self,
-            ) -> IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_R {
-                IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_R::new(((self.bits >> 10) & 1) != 0)
+            pub fn rx_filter_fail_cnt_clear(&self) -> RX_FILTER_FAIL_CNT_CLEAR_R {
+                RX_FILTER_FAIL_CNT_CLEAR_R::new(((self.bits >> 10) & 1) != 0)
             }
             #[doc = "Bit 11"]
             #[inline(always)]
-            pub fn ieee802154_cca_fail_cnt_clear(&self) -> IEEE802154_CCA_FAIL_CNT_CLEAR_R {
-                IEEE802154_CCA_FAIL_CNT_CLEAR_R::new(((self.bits >> 11) & 1) != 0)
+            pub fn cca_fail_cnt_clear(&self) -> CCA_FAIL_CNT_CLEAR_R {
+                CCA_FAIL_CNT_CLEAR_R::new(((self.bits >> 11) & 1) != 0)
             }
             #[doc = "Bit 12"]
             #[inline(always)]
-            pub fn ieee802154_ed_abort_cnt_clear(&self) -> IEEE802154_ED_ABORT_CNT_CLEAR_R {
-                IEEE802154_ED_ABORT_CNT_CLEAR_R::new(((self.bits >> 12) & 1) != 0)
+            pub fn ed_abort_cnt_clear(&self) -> ED_ABORT_CNT_CLEAR_R {
+                ED_ABORT_CNT_CLEAR_R::new(((self.bits >> 12) & 1) != 0)
             }
             #[doc = "Bit 13"]
             #[inline(always)]
-            pub fn ieee802154_crc_error_cnt_clear(&self) -> IEEE802154_CRC_ERROR_CNT_CLEAR_R {
-                IEEE802154_CRC_ERROR_CNT_CLEAR_R::new(((self.bits >> 13) & 1) != 0)
+            pub fn crc_error_cnt_clear(&self) -> CRC_ERROR_CNT_CLEAR_R {
+                CRC_ERROR_CNT_CLEAR_R::new(((self.bits >> 13) & 1) != 0)
             }
             #[doc = "Bit 14"]
             #[inline(always)]
-            pub fn ieee802154_sfd_timeout_cnt_clear(&self) -> IEEE802154_SFD_TIMEOUT_CNT_CLEAR_R {
-                IEEE802154_SFD_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 14) & 1) != 0)
+            pub fn sfd_timeout_cnt_clear(&self) -> SFD_TIMEOUT_CNT_CLEAR_R {
+                SFD_TIMEOUT_CNT_CLEAR_R::new(((self.bits >> 14) & 1) != 0)
             }
         }
         impl W {
             #[doc = "Bit 0"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_cca_busy_cnt_clear(&mut self) -> IEEE802154_CCA_BUSY_CNT_CLEAR_W<0> {
-                IEEE802154_CCA_BUSY_CNT_CLEAR_W::new(self)
+            pub fn cca_busy_cnt_clear(&mut self) -> CCA_BUSY_CNT_CLEAR_W<0> {
+                CCA_BUSY_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 1"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_tx_security_error_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W<1> {
-                IEEE802154_TX_SECURITY_ERROR_CNT_CLEAR_W::new(self)
+            pub fn tx_security_error_cnt_clear(&mut self) -> TX_SECURITY_ERROR_CNT_CLEAR_W<1> {
+                TX_SECURITY_ERROR_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 2"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_tx_break_coex_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_TX_BREAK_COEX_CNT_CLEAR_W<2> {
-                IEEE802154_TX_BREAK_COEX_CNT_CLEAR_W::new(self)
+            pub fn tx_break_coex_cnt_clear(&mut self) -> TX_BREAK_COEX_CNT_CLEAR_W<2> {
+                TX_BREAK_COEX_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 3"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_rx_ack_timeout_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W<3> {
-                IEEE802154_RX_ACK_TIMEOUT_CNT_CLEAR_W::new(self)
+            pub fn rx_ack_timeout_cnt_clear(&mut self) -> RX_ACK_TIMEOUT_CNT_CLEAR_W<3> {
+                RX_ACK_TIMEOUT_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 4"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_rx_ack_abort_coex_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W<4> {
-                IEEE802154_RX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
+            pub fn rx_ack_abort_coex_cnt_clear(&mut self) -> RX_ACK_ABORT_COEX_CNT_CLEAR_W<4> {
+                RX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 5"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_ed_scan_coex_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_ED_SCAN_COEX_CNT_CLEAR_W<5> {
-                IEEE802154_ED_SCAN_COEX_CNT_CLEAR_W::new(self)
+            pub fn ed_scan_coex_cnt_clear(&mut self) -> ED_SCAN_COEX_CNT_CLEAR_W<5> {
+                ED_SCAN_COEX_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 6"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_tx_ack_abort_coex_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W<6> {
-                IEEE802154_TX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
+            pub fn tx_ack_abort_coex_cnt_clear(&mut self) -> TX_ACK_ABORT_COEX_CNT_CLEAR_W<6> {
+                TX_ACK_ABORT_COEX_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 7"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_rx_restart_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_RX_RESTART_CNT_CLEAR_W<7> {
-                IEEE802154_RX_RESTART_CNT_CLEAR_W::new(self)
+            pub fn rx_restart_cnt_clear(&mut self) -> RX_RESTART_CNT_CLEAR_W<7> {
+                RX_RESTART_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 8"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_rx_abort_coex_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_RX_ABORT_COEX_CNT_CLEAR_W<8> {
-                IEEE802154_RX_ABORT_COEX_CNT_CLEAR_W::new(self)
+            pub fn rx_abort_coex_cnt_clear(&mut self) -> RX_ABORT_COEX_CNT_CLEAR_W<8> {
+                RX_ABORT_COEX_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 9"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_no_rss_detect_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_NO_RSS_DETECT_CNT_CLEAR_W<9> {
-                IEEE802154_NO_RSS_DETECT_CNT_CLEAR_W::new(self)
+            pub fn no_rss_detect_cnt_clear(&mut self) -> NO_RSS_DETECT_CNT_CLEAR_W<9> {
+                NO_RSS_DETECT_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 10"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_rx_filter_fail_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_W<10> {
-                IEEE802154_RX_FILTER_FAIL_CNT_CLEAR_W::new(self)
+            pub fn rx_filter_fail_cnt_clear(&mut self) -> RX_FILTER_FAIL_CNT_CLEAR_W<10> {
+                RX_FILTER_FAIL_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 11"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_cca_fail_cnt_clear(&mut self) -> IEEE802154_CCA_FAIL_CNT_CLEAR_W<11> {
-                IEEE802154_CCA_FAIL_CNT_CLEAR_W::new(self)
+            pub fn cca_fail_cnt_clear(&mut self) -> CCA_FAIL_CNT_CLEAR_W<11> {
+                CCA_FAIL_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 12"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_ed_abort_cnt_clear(&mut self) -> IEEE802154_ED_ABORT_CNT_CLEAR_W<12> {
-                IEEE802154_ED_ABORT_CNT_CLEAR_W::new(self)
+            pub fn ed_abort_cnt_clear(&mut self) -> ED_ABORT_CNT_CLEAR_W<12> {
+                ED_ABORT_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 13"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_crc_error_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_CRC_ERROR_CNT_CLEAR_W<13> {
-                IEEE802154_CRC_ERROR_CNT_CLEAR_W::new(self)
+            pub fn crc_error_cnt_clear(&mut self) -> CRC_ERROR_CNT_CLEAR_W<13> {
+                CRC_ERROR_CNT_CLEAR_W::new(self)
             }
             #[doc = "Bit 14"]
             #[inline(always)]
             #[must_use]
-            pub fn ieee802154_sfd_timeout_cnt_clear(
-                &mut self,
-            ) -> IEEE802154_SFD_TIMEOUT_CNT_CLEAR_W<14> {
-                IEEE802154_SFD_TIMEOUT_CNT_CLEAR_W::new(self)
+            pub fn sfd_timeout_cnt_clear(&mut self) -> SFD_TIMEOUT_CNT_CLEAR_W<14> {
+                SFD_TIMEOUT_CNT_CLEAR_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -3084,758 +3488,6 @@ pub mod ieee802154 {
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
-    #[doc = "dma_dummy (rw) register accessor: an alias for `Reg<DMA_DUMMY_SPEC>`"]
-    pub type DMA_DUMMY = crate::ral::Reg<dma_dummy::DMA_DUMMY_SPEC>;
-    #[doc = ""]
-    pub mod dma_dummy {
-        #[doc = "Register `dma_dummy` reader"]
-        pub struct R(crate::ral::R<DMA_DUMMY_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<DMA_DUMMY_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<DMA_DUMMY_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<DMA_DUMMY_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `dma_dummy` writer"]
-        pub struct W(crate::ral::W<DMA_DUMMY_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<DMA_DUMMY_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<DMA_DUMMY_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<DMA_DUMMY_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `dma_dummy_data` reader - "]
-        pub type DMA_DUMMY_DATA_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `dma_dummy_data` writer - "]
-        pub type DMA_DUMMY_DATA_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, DMA_DUMMY_SPEC, u32, u32, 32, O>;
-        impl R {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            pub fn dma_dummy_data(&self) -> DMA_DUMMY_DATA_R {
-                DMA_DUMMY_DATA_R::new(self.bits)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            #[must_use]
-            pub fn dma_dummy_data(&mut self) -> DMA_DUMMY_DATA_W<0> {
-                DMA_DUMMY_DATA_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dma_dummy](index.html) module"]
-        pub struct DMA_DUMMY_SPEC;
-        impl crate::ral::RegisterSpec for DMA_DUMMY_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [dma_dummy::R](R) reader structure"]
-        impl crate::ral::Readable for DMA_DUMMY_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [dma_dummy::W](W) writer structure"]
-        impl crate::ral::Writable for DMA_DUMMY_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "dma_gck_cfg (rw) register accessor: an alias for `Reg<DMA_GCK_CFG_SPEC>`"]
-    pub type DMA_GCK_CFG = crate::ral::Reg<dma_gck_cfg::DMA_GCK_CFG_SPEC>;
-    #[doc = ""]
-    pub mod dma_gck_cfg {
-        #[doc = "Register `dma_gck_cfg` reader"]
-        pub struct R(crate::ral::R<DMA_GCK_CFG_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<DMA_GCK_CFG_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<DMA_GCK_CFG_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<DMA_GCK_CFG_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `dma_gck_cfg` writer"]
-        pub struct W(crate::ral::W<DMA_GCK_CFG_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<DMA_GCK_CFG_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<DMA_GCK_CFG_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<DMA_GCK_CFG_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `dma_gck_cfg` reader - "]
-        pub type DMA_GCK_CFG_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `dma_gck_cfg` writer - "]
-        pub type DMA_GCK_CFG_W<'a, const O: u8> =
-            crate::ral::BitWriter<'a, u32, DMA_GCK_CFG_SPEC, bool, O>;
-        impl R {
-            #[doc = "Bit 0"]
-            #[inline(always)]
-            pub fn dma_gck_cfg(&self) -> DMA_GCK_CFG_R {
-                DMA_GCK_CFG_R::new((self.bits & 1) != 0)
-            }
-        }
-        impl W {
-            #[doc = "Bit 0"]
-            #[inline(always)]
-            #[must_use]
-            pub fn dma_gck_cfg(&mut self) -> DMA_GCK_CFG_W<0> {
-                DMA_GCK_CFG_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dma_gck_cfg](index.html) module"]
-        pub struct DMA_GCK_CFG_SPEC;
-        impl crate::ral::RegisterSpec for DMA_GCK_CFG_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [dma_gck_cfg::R](R) reader structure"]
-        impl crate::ral::Readable for DMA_GCK_CFG_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [dma_gck_cfg::W](W) writer structure"]
-        impl crate::ral::Writable for DMA_GCK_CFG_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "rxdma_err (rw) register accessor: an alias for `Reg<RXDMA_ERR_SPEC>`"]
-    pub type RXDMA_ERR = crate::ral::Reg<rxdma_err::RXDMA_ERR_SPEC>;
-    #[doc = ""]
-    pub mod rxdma_err {
-        #[doc = "Register `rxdma_err` reader"]
-        pub struct R(crate::ral::R<RXDMA_ERR_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<RXDMA_ERR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<RXDMA_ERR_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<RXDMA_ERR_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `rxdma_err` writer"]
-        pub struct W(crate::ral::W<RXDMA_ERR_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<RXDMA_ERR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<RXDMA_ERR_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<RXDMA_ERR_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `rxdma_err` reader - "]
-        pub type RXDMA_ERR_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `rxdma_err` writer - "]
-        pub type RXDMA_ERR_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, RXDMA_ERR_SPEC, u8, u8, 4, O>;
-        impl R {
-            #[doc = "Bits 0:3"]
-            #[inline(always)]
-            pub fn rxdma_err(&self) -> RXDMA_ERR_R {
-                RXDMA_ERR_R::new((self.bits & 0x0f) as u8)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:3"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_err(&mut self) -> RXDMA_ERR_W<0> {
-                RXDMA_ERR_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_err](index.html) module"]
-        pub struct RXDMA_ERR_SPEC;
-        impl crate::ral::RegisterSpec for RXDMA_ERR_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [rxdma_err::R](R) reader structure"]
-        impl crate::ral::Readable for RXDMA_ERR_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [rxdma_err::W](W) writer structure"]
-        impl crate::ral::Writable for RXDMA_ERR_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "rxdma_ctrl_state (rw) register accessor: an alias for `Reg<RXDMA_CTRL_STATE_SPEC>`"]
-    pub type RXDMA_CTRL_STATE = crate::ral::Reg<rxdma_ctrl_state::RXDMA_CTRL_STATE_SPEC>;
-    #[doc = ""]
-    pub mod rxdma_ctrl_state {
-        #[doc = "Register `rxdma_ctrl_state` reader"]
-        pub struct R(crate::ral::R<RXDMA_CTRL_STATE_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<RXDMA_CTRL_STATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<RXDMA_CTRL_STATE_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<RXDMA_CTRL_STATE_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `rxdma_ctrl_state` writer"]
-        pub struct W(crate::ral::W<RXDMA_CTRL_STATE_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<RXDMA_CTRL_STATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<RXDMA_CTRL_STATE_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<RXDMA_CTRL_STATE_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `rxdma_water_level` reader - "]
-        pub type RXDMA_WATER_LEVEL_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `rxdma_water_level` writer - "]
-        pub type RXDMA_WATER_LEVEL_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
-        #[doc = "Field `rxdma_state` reader - "]
-        pub type RXDMA_STATE_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `rxdma_state` writer - "]
-        pub type RXDMA_STATE_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, u8, u8, 5, O>;
-        #[doc = "Field `rxdma_append_lqi_offset` reader - "]
-        pub type RXDMA_APPEND_LQI_OFFSET_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `rxdma_append_lqi_offset` writer - "]
-        pub type RXDMA_APPEND_LQI_OFFSET_W<'a, const O: u8> =
-            crate::ral::BitWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, bool, O>;
-        #[doc = "Field `rxdma_append_freq_offset` reader - "]
-        pub type RXDMA_APPEND_FREQ_OFFSET_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `rxdma_append_freq_offset` writer - "]
-        pub type RXDMA_APPEND_FREQ_OFFSET_W<'a, const O: u8> =
-            crate::ral::BitWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, bool, O>;
-        impl R {
-            #[doc = "Bits 0:2"]
-            #[inline(always)]
-            pub fn rxdma_water_level(&self) -> RXDMA_WATER_LEVEL_R {
-                RXDMA_WATER_LEVEL_R::new((self.bits & 7) as u8)
-            }
-            #[doc = "Bits 16:20"]
-            #[inline(always)]
-            pub fn rxdma_state(&self) -> RXDMA_STATE_R {
-                RXDMA_STATE_R::new(((self.bits >> 16) & 0x1f) as u8)
-            }
-            #[doc = "Bit 24"]
-            #[inline(always)]
-            pub fn rxdma_append_lqi_offset(&self) -> RXDMA_APPEND_LQI_OFFSET_R {
-                RXDMA_APPEND_LQI_OFFSET_R::new(((self.bits >> 24) & 1) != 0)
-            }
-            #[doc = "Bit 25"]
-            #[inline(always)]
-            pub fn rxdma_append_freq_offset(&self) -> RXDMA_APPEND_FREQ_OFFSET_R {
-                RXDMA_APPEND_FREQ_OFFSET_R::new(((self.bits >> 25) & 1) != 0)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:2"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_water_level(&mut self) -> RXDMA_WATER_LEVEL_W<0> {
-                RXDMA_WATER_LEVEL_W::new(self)
-            }
-            #[doc = "Bits 16:20"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_state(&mut self) -> RXDMA_STATE_W<16> {
-                RXDMA_STATE_W::new(self)
-            }
-            #[doc = "Bit 24"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_append_lqi_offset(&mut self) -> RXDMA_APPEND_LQI_OFFSET_W<24> {
-                RXDMA_APPEND_LQI_OFFSET_W::new(self)
-            }
-            #[doc = "Bit 25"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_append_freq_offset(&mut self) -> RXDMA_APPEND_FREQ_OFFSET_W<25> {
-                RXDMA_APPEND_FREQ_OFFSET_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_ctrl_state](index.html) module"]
-        pub struct RXDMA_CTRL_STATE_SPEC;
-        impl crate::ral::RegisterSpec for RXDMA_CTRL_STATE_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [rxdma_ctrl_state::R](R) reader structure"]
-        impl crate::ral::Readable for RXDMA_CTRL_STATE_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [rxdma_ctrl_state::W](W) writer structure"]
-        impl crate::ral::Writable for RXDMA_CTRL_STATE_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "rxdma_addr (rw) register accessor: an alias for `Reg<RXDMA_ADDR_SPEC>`"]
-    pub type RXDMA_ADDR = crate::ral::Reg<rxdma_addr::RXDMA_ADDR_SPEC>;
-    #[doc = ""]
-    pub mod rxdma_addr {
-        #[doc = "Register `rxdma_addr` reader"]
-        pub struct R(crate::ral::R<RXDMA_ADDR_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<RXDMA_ADDR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<RXDMA_ADDR_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<RXDMA_ADDR_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `rxdma_addr` writer"]
-        pub struct W(crate::ral::W<RXDMA_ADDR_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<RXDMA_ADDR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<RXDMA_ADDR_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<RXDMA_ADDR_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `rxdma_addr` reader - "]
-        pub type RXDMA_ADDR_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `rxdma_addr` writer - "]
-        pub type RXDMA_ADDR_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, RXDMA_ADDR_SPEC, u32, u32, 32, O>;
-        impl R {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            pub fn rxdma_addr(&self) -> RXDMA_ADDR_R {
-                RXDMA_ADDR_R::new(self.bits)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            #[must_use]
-            pub fn rxdma_addr(&mut self) -> RXDMA_ADDR_W<0> {
-                RXDMA_ADDR_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_addr](index.html) module"]
-        pub struct RXDMA_ADDR_SPEC;
-        impl crate::ral::RegisterSpec for RXDMA_ADDR_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [rxdma_addr::R](R) reader structure"]
-        impl crate::ral::Readable for RXDMA_ADDR_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [rxdma_addr::W](W) writer structure"]
-        impl crate::ral::Writable for RXDMA_ADDR_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "txdma_err (rw) register accessor: an alias for `Reg<TXDMA_ERR_SPEC>`"]
-    pub type TXDMA_ERR = crate::ral::Reg<txdma_err::TXDMA_ERR_SPEC>;
-    #[doc = ""]
-    pub mod txdma_err {
-        #[doc = "Register `txdma_err` reader"]
-        pub struct R(crate::ral::R<TXDMA_ERR_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<TXDMA_ERR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<TXDMA_ERR_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<TXDMA_ERR_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `txdma_err` writer"]
-        pub struct W(crate::ral::W<TXDMA_ERR_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<TXDMA_ERR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<TXDMA_ERR_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<TXDMA_ERR_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `txdma_err` reader - "]
-        pub type TXDMA_ERR_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `txdma_err` writer - "]
-        pub type TXDMA_ERR_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_ERR_SPEC, u8, u8, 4, O>;
-        impl R {
-            #[doc = "Bits 0:3"]
-            #[inline(always)]
-            pub fn txdma_err(&self) -> TXDMA_ERR_R {
-                TXDMA_ERR_R::new((self.bits & 0x0f) as u8)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:3"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_err(&mut self) -> TXDMA_ERR_W<0> {
-                TXDMA_ERR_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_err](index.html) module"]
-        pub struct TXDMA_ERR_SPEC;
-        impl crate::ral::RegisterSpec for TXDMA_ERR_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [txdma_err::R](R) reader structure"]
-        impl crate::ral::Readable for TXDMA_ERR_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [txdma_err::W](W) writer structure"]
-        impl crate::ral::Writable for TXDMA_ERR_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "txdma_ctrl_state (rw) register accessor: an alias for `Reg<TXDMA_CTRL_STATE_SPEC>`"]
-    pub type TXDMA_CTRL_STATE = crate::ral::Reg<txdma_ctrl_state::TXDMA_CTRL_STATE_SPEC>;
-    #[doc = ""]
-    pub mod txdma_ctrl_state {
-        #[doc = "Register `txdma_ctrl_state` reader"]
-        pub struct R(crate::ral::R<TXDMA_CTRL_STATE_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<TXDMA_CTRL_STATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<TXDMA_CTRL_STATE_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<TXDMA_CTRL_STATE_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `txdma_ctrl_state` writer"]
-        pub struct W(crate::ral::W<TXDMA_CTRL_STATE_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<TXDMA_CTRL_STATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<TXDMA_CTRL_STATE_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<TXDMA_CTRL_STATE_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `txdma_water_level` reader - "]
-        pub type TXDMA_WATER_LEVEL_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `txdma_water_level` writer - "]
-        pub type TXDMA_WATER_LEVEL_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
-        #[doc = "Field `txdma_fill_entry` reader - "]
-        pub type TXDMA_FILL_ENTRY_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `txdma_fill_entry` writer - "]
-        pub type TXDMA_FILL_ENTRY_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
-        #[doc = "Field `txdma_state` reader - "]
-        pub type TXDMA_STATE_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `txdma_state` writer - "]
-        pub type TXDMA_STATE_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 5, O>;
-        #[doc = "Field `txdma_fetch_byte_cnt` reader - "]
-        pub type TXDMA_FETCH_BYTE_CNT_R = crate::ral::FieldReader<u8, u8>;
-        #[doc = "Field `txdma_fetch_byte_cnt` writer - "]
-        pub type TXDMA_FETCH_BYTE_CNT_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 7, O>;
-        impl R {
-            #[doc = "Bits 0:2"]
-            #[inline(always)]
-            pub fn txdma_water_level(&self) -> TXDMA_WATER_LEVEL_R {
-                TXDMA_WATER_LEVEL_R::new((self.bits & 7) as u8)
-            }
-            #[doc = "Bits 4:6"]
-            #[inline(always)]
-            pub fn txdma_fill_entry(&self) -> TXDMA_FILL_ENTRY_R {
-                TXDMA_FILL_ENTRY_R::new(((self.bits >> 4) & 7) as u8)
-            }
-            #[doc = "Bits 16:20"]
-            #[inline(always)]
-            pub fn txdma_state(&self) -> TXDMA_STATE_R {
-                TXDMA_STATE_R::new(((self.bits >> 16) & 0x1f) as u8)
-            }
-            #[doc = "Bits 24:30"]
-            #[inline(always)]
-            pub fn txdma_fetch_byte_cnt(&self) -> TXDMA_FETCH_BYTE_CNT_R {
-                TXDMA_FETCH_BYTE_CNT_R::new(((self.bits >> 24) & 0x7f) as u8)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:2"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_water_level(&mut self) -> TXDMA_WATER_LEVEL_W<0> {
-                TXDMA_WATER_LEVEL_W::new(self)
-            }
-            #[doc = "Bits 4:6"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_fill_entry(&mut self) -> TXDMA_FILL_ENTRY_W<4> {
-                TXDMA_FILL_ENTRY_W::new(self)
-            }
-            #[doc = "Bits 16:20"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_state(&mut self) -> TXDMA_STATE_W<16> {
-                TXDMA_STATE_W::new(self)
-            }
-            #[doc = "Bits 24:30"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_fetch_byte_cnt(&mut self) -> TXDMA_FETCH_BYTE_CNT_W<24> {
-                TXDMA_FETCH_BYTE_CNT_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_ctrl_state](index.html) module"]
-        pub struct TXDMA_CTRL_STATE_SPEC;
-        impl crate::ral::RegisterSpec for TXDMA_CTRL_STATE_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [txdma_ctrl_state::R](R) reader structure"]
-        impl crate::ral::Readable for TXDMA_CTRL_STATE_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [txdma_ctrl_state::W](W) writer structure"]
-        impl crate::ral::Writable for TXDMA_CTRL_STATE_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "txdma_addr (rw) register accessor: an alias for `Reg<TXDMA_ADDR_SPEC>`"]
-    pub type TXDMA_ADDR = crate::ral::Reg<txdma_addr::TXDMA_ADDR_SPEC>;
-    #[doc = ""]
-    pub mod txdma_addr {
-        #[doc = "Register `txdma_addr` reader"]
-        pub struct R(crate::ral::R<TXDMA_ADDR_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<TXDMA_ADDR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<TXDMA_ADDR_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<TXDMA_ADDR_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `txdma_addr` writer"]
-        pub struct W(crate::ral::W<TXDMA_ADDR_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<TXDMA_ADDR_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<TXDMA_ADDR_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<TXDMA_ADDR_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `txdma_addr` reader - "]
-        pub type TXDMA_ADDR_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `txdma_addr` writer - "]
-        pub type TXDMA_ADDR_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TXDMA_ADDR_SPEC, u32, u32, 32, O>;
-        impl R {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            pub fn txdma_addr(&self) -> TXDMA_ADDR_R {
-                TXDMA_ADDR_R::new(self.bits)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            #[must_use]
-            pub fn txdma_addr(&mut self) -> TXDMA_ADDR_W<0> {
-                TXDMA_ADDR_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_addr](index.html) module"]
-        pub struct TXDMA_ADDR_SPEC;
-        impl crate::ral::RegisterSpec for TXDMA_ADDR_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [txdma_addr::R](R) reader structure"]
-        impl crate::ral::Readable for TXDMA_ADDR_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [txdma_addr::W](W) writer structure"]
-        impl crate::ral::Writable for TXDMA_ADDR_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
     #[doc = "debug_ctrl (rw) register accessor: an alias for `Reg<DEBUG_CTRL_SPEC>`"]
     pub type DEBUG_CTRL = crate::ral::Reg<debug_ctrl::DEBUG_CTRL_SPEC>;
     #[doc = ""]
@@ -4715,6 +4367,758 @@ pub mod ieee802154 {
         }
         #[doc = "`write(|w| ..)` method takes [paon_delay::W](W) writer structure"]
         impl crate::ral::Writable for PAON_DELAY_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "dma_dummy (rw) register accessor: an alias for `Reg<DMA_DUMMY_SPEC>`"]
+    pub type DMA_DUMMY = crate::ral::Reg<dma_dummy::DMA_DUMMY_SPEC>;
+    #[doc = ""]
+    pub mod dma_dummy {
+        #[doc = "Register `dma_dummy` reader"]
+        pub struct R(crate::ral::R<DMA_DUMMY_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<DMA_DUMMY_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<DMA_DUMMY_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<DMA_DUMMY_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `dma_dummy` writer"]
+        pub struct W(crate::ral::W<DMA_DUMMY_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<DMA_DUMMY_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<DMA_DUMMY_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<DMA_DUMMY_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `dma_dummy_data` reader - "]
+        pub type DMA_DUMMY_DATA_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `dma_dummy_data` writer - "]
+        pub type DMA_DUMMY_DATA_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, DMA_DUMMY_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn dma_dummy_data(&self) -> DMA_DUMMY_DATA_R {
+                DMA_DUMMY_DATA_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn dma_dummy_data(&mut self) -> DMA_DUMMY_DATA_W<0> {
+                DMA_DUMMY_DATA_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dma_dummy](index.html) module"]
+        pub struct DMA_DUMMY_SPEC;
+        impl crate::ral::RegisterSpec for DMA_DUMMY_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [dma_dummy::R](R) reader structure"]
+        impl crate::ral::Readable for DMA_DUMMY_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [dma_dummy::W](W) writer structure"]
+        impl crate::ral::Writable for DMA_DUMMY_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "dma_gck_cfg (rw) register accessor: an alias for `Reg<DMA_GCK_CFG_SPEC>`"]
+    pub type DMA_GCK_CFG = crate::ral::Reg<dma_gck_cfg::DMA_GCK_CFG_SPEC>;
+    #[doc = ""]
+    pub mod dma_gck_cfg {
+        #[doc = "Register `dma_gck_cfg` reader"]
+        pub struct R(crate::ral::R<DMA_GCK_CFG_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<DMA_GCK_CFG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<DMA_GCK_CFG_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<DMA_GCK_CFG_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `dma_gck_cfg` writer"]
+        pub struct W(crate::ral::W<DMA_GCK_CFG_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<DMA_GCK_CFG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<DMA_GCK_CFG_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<DMA_GCK_CFG_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `dma_gck_cfg` reader - "]
+        pub type DMA_GCK_CFG_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `dma_gck_cfg` writer - "]
+        pub type DMA_GCK_CFG_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, DMA_GCK_CFG_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            pub fn dma_gck_cfg(&self) -> DMA_GCK_CFG_R {
+                DMA_GCK_CFG_R::new((self.bits & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            #[must_use]
+            pub fn dma_gck_cfg(&mut self) -> DMA_GCK_CFG_W<0> {
+                DMA_GCK_CFG_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [dma_gck_cfg](index.html) module"]
+        pub struct DMA_GCK_CFG_SPEC;
+        impl crate::ral::RegisterSpec for DMA_GCK_CFG_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [dma_gck_cfg::R](R) reader structure"]
+        impl crate::ral::Readable for DMA_GCK_CFG_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [dma_gck_cfg::W](W) writer structure"]
+        impl crate::ral::Writable for DMA_GCK_CFG_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "rxdma_err (rw) register accessor: an alias for `Reg<RXDMA_ERR_SPEC>`"]
+    pub type RXDMA_ERR = crate::ral::Reg<rxdma_err::RXDMA_ERR_SPEC>;
+    #[doc = ""]
+    pub mod rxdma_err {
+        #[doc = "Register `rxdma_err` reader"]
+        pub struct R(crate::ral::R<RXDMA_ERR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<RXDMA_ERR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<RXDMA_ERR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<RXDMA_ERR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `rxdma_err` writer"]
+        pub struct W(crate::ral::W<RXDMA_ERR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<RXDMA_ERR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<RXDMA_ERR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<RXDMA_ERR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `rxdma_err` reader - "]
+        pub type RXDMA_ERR_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `rxdma_err` writer - "]
+        pub type RXDMA_ERR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, RXDMA_ERR_SPEC, u8, u8, 4, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn rxdma_err(&self) -> RXDMA_ERR_R {
+                RXDMA_ERR_R::new((self.bits & 0x0f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_err(&mut self) -> RXDMA_ERR_W<0> {
+                RXDMA_ERR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_err](index.html) module"]
+        pub struct RXDMA_ERR_SPEC;
+        impl crate::ral::RegisterSpec for RXDMA_ERR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [rxdma_err::R](R) reader structure"]
+        impl crate::ral::Readable for RXDMA_ERR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [rxdma_err::W](W) writer structure"]
+        impl crate::ral::Writable for RXDMA_ERR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "rxdma_ctrl_state (rw) register accessor: an alias for `Reg<RXDMA_CTRL_STATE_SPEC>`"]
+    pub type RXDMA_CTRL_STATE = crate::ral::Reg<rxdma_ctrl_state::RXDMA_CTRL_STATE_SPEC>;
+    #[doc = ""]
+    pub mod rxdma_ctrl_state {
+        #[doc = "Register `rxdma_ctrl_state` reader"]
+        pub struct R(crate::ral::R<RXDMA_CTRL_STATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<RXDMA_CTRL_STATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<RXDMA_CTRL_STATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<RXDMA_CTRL_STATE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `rxdma_ctrl_state` writer"]
+        pub struct W(crate::ral::W<RXDMA_CTRL_STATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<RXDMA_CTRL_STATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<RXDMA_CTRL_STATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<RXDMA_CTRL_STATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `rxdma_water_level` reader - "]
+        pub type RXDMA_WATER_LEVEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `rxdma_water_level` writer - "]
+        pub type RXDMA_WATER_LEVEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
+        #[doc = "Field `rxdma_state` reader - "]
+        pub type RXDMA_STATE_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `rxdma_state` writer - "]
+        pub type RXDMA_STATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `rxdma_append_lqi_offset` reader - "]
+        pub type RXDMA_APPEND_LQI_OFFSET_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rxdma_append_lqi_offset` writer - "]
+        pub type RXDMA_APPEND_LQI_OFFSET_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, bool, O>;
+        #[doc = "Field `rxdma_append_freq_offset` reader - "]
+        pub type RXDMA_APPEND_FREQ_OFFSET_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `rxdma_append_freq_offset` writer - "]
+        pub type RXDMA_APPEND_FREQ_OFFSET_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, RXDMA_CTRL_STATE_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bits 0:2"]
+            #[inline(always)]
+            pub fn rxdma_water_level(&self) -> RXDMA_WATER_LEVEL_R {
+                RXDMA_WATER_LEVEL_R::new((self.bits & 7) as u8)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            pub fn rxdma_state(&self) -> RXDMA_STATE_R {
+                RXDMA_STATE_R::new(((self.bits >> 16) & 0x1f) as u8)
+            }
+            #[doc = "Bit 24"]
+            #[inline(always)]
+            pub fn rxdma_append_lqi_offset(&self) -> RXDMA_APPEND_LQI_OFFSET_R {
+                RXDMA_APPEND_LQI_OFFSET_R::new(((self.bits >> 24) & 1) != 0)
+            }
+            #[doc = "Bit 25"]
+            #[inline(always)]
+            pub fn rxdma_append_freq_offset(&self) -> RXDMA_APPEND_FREQ_OFFSET_R {
+                RXDMA_APPEND_FREQ_OFFSET_R::new(((self.bits >> 25) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:2"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_water_level(&mut self) -> RXDMA_WATER_LEVEL_W<0> {
+                RXDMA_WATER_LEVEL_W::new(self)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_state(&mut self) -> RXDMA_STATE_W<16> {
+                RXDMA_STATE_W::new(self)
+            }
+            #[doc = "Bit 24"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_append_lqi_offset(&mut self) -> RXDMA_APPEND_LQI_OFFSET_W<24> {
+                RXDMA_APPEND_LQI_OFFSET_W::new(self)
+            }
+            #[doc = "Bit 25"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_append_freq_offset(&mut self) -> RXDMA_APPEND_FREQ_OFFSET_W<25> {
+                RXDMA_APPEND_FREQ_OFFSET_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_ctrl_state](index.html) module"]
+        pub struct RXDMA_CTRL_STATE_SPEC;
+        impl crate::ral::RegisterSpec for RXDMA_CTRL_STATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [rxdma_ctrl_state::R](R) reader structure"]
+        impl crate::ral::Readable for RXDMA_CTRL_STATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [rxdma_ctrl_state::W](W) writer structure"]
+        impl crate::ral::Writable for RXDMA_CTRL_STATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "rxdma_addr (rw) register accessor: an alias for `Reg<RXDMA_ADDR_SPEC>`"]
+    pub type RXDMA_ADDR = crate::ral::Reg<rxdma_addr::RXDMA_ADDR_SPEC>;
+    #[doc = ""]
+    pub mod rxdma_addr {
+        #[doc = "Register `rxdma_addr` reader"]
+        pub struct R(crate::ral::R<RXDMA_ADDR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<RXDMA_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<RXDMA_ADDR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<RXDMA_ADDR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `rxdma_addr` writer"]
+        pub struct W(crate::ral::W<RXDMA_ADDR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<RXDMA_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<RXDMA_ADDR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<RXDMA_ADDR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `rxdma_addr` reader - "]
+        pub type RXDMA_ADDR_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `rxdma_addr` writer - "]
+        pub type RXDMA_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, RXDMA_ADDR_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn rxdma_addr(&self) -> RXDMA_ADDR_R {
+                RXDMA_ADDR_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn rxdma_addr(&mut self) -> RXDMA_ADDR_W<0> {
+                RXDMA_ADDR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [rxdma_addr](index.html) module"]
+        pub struct RXDMA_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for RXDMA_ADDR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [rxdma_addr::R](R) reader structure"]
+        impl crate::ral::Readable for RXDMA_ADDR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [rxdma_addr::W](W) writer structure"]
+        impl crate::ral::Writable for RXDMA_ADDR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "txdma_err (rw) register accessor: an alias for `Reg<TXDMA_ERR_SPEC>`"]
+    pub type TXDMA_ERR = crate::ral::Reg<txdma_err::TXDMA_ERR_SPEC>;
+    #[doc = ""]
+    pub mod txdma_err {
+        #[doc = "Register `txdma_err` reader"]
+        pub struct R(crate::ral::R<TXDMA_ERR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<TXDMA_ERR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<TXDMA_ERR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<TXDMA_ERR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `txdma_err` writer"]
+        pub struct W(crate::ral::W<TXDMA_ERR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<TXDMA_ERR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<TXDMA_ERR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<TXDMA_ERR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `txdma_err` reader - "]
+        pub type TXDMA_ERR_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `txdma_err` writer - "]
+        pub type TXDMA_ERR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_ERR_SPEC, u8, u8, 4, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn txdma_err(&self) -> TXDMA_ERR_R {
+                TXDMA_ERR_R::new((self.bits & 0x0f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_err(&mut self) -> TXDMA_ERR_W<0> {
+                TXDMA_ERR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_err](index.html) module"]
+        pub struct TXDMA_ERR_SPEC;
+        impl crate::ral::RegisterSpec for TXDMA_ERR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [txdma_err::R](R) reader structure"]
+        impl crate::ral::Readable for TXDMA_ERR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [txdma_err::W](W) writer structure"]
+        impl crate::ral::Writable for TXDMA_ERR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "txdma_ctrl_state (rw) register accessor: an alias for `Reg<TXDMA_CTRL_STATE_SPEC>`"]
+    pub type TXDMA_CTRL_STATE = crate::ral::Reg<txdma_ctrl_state::TXDMA_CTRL_STATE_SPEC>;
+    #[doc = ""]
+    pub mod txdma_ctrl_state {
+        #[doc = "Register `txdma_ctrl_state` reader"]
+        pub struct R(crate::ral::R<TXDMA_CTRL_STATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<TXDMA_CTRL_STATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<TXDMA_CTRL_STATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<TXDMA_CTRL_STATE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `txdma_ctrl_state` writer"]
+        pub struct W(crate::ral::W<TXDMA_CTRL_STATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<TXDMA_CTRL_STATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<TXDMA_CTRL_STATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<TXDMA_CTRL_STATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `txdma_water_level` reader - "]
+        pub type TXDMA_WATER_LEVEL_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `txdma_water_level` writer - "]
+        pub type TXDMA_WATER_LEVEL_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
+        #[doc = "Field `txdma_fill_entry` reader - "]
+        pub type TXDMA_FILL_ENTRY_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `txdma_fill_entry` writer - "]
+        pub type TXDMA_FILL_ENTRY_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 3, O>;
+        #[doc = "Field `txdma_state` reader - "]
+        pub type TXDMA_STATE_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `txdma_state` writer - "]
+        pub type TXDMA_STATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 5, O>;
+        #[doc = "Field `txdma_fetch_byte_cnt` reader - "]
+        pub type TXDMA_FETCH_BYTE_CNT_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `txdma_fetch_byte_cnt` writer - "]
+        pub type TXDMA_FETCH_BYTE_CNT_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_CTRL_STATE_SPEC, u8, u8, 7, O>;
+        impl R {
+            #[doc = "Bits 0:2"]
+            #[inline(always)]
+            pub fn txdma_water_level(&self) -> TXDMA_WATER_LEVEL_R {
+                TXDMA_WATER_LEVEL_R::new((self.bits & 7) as u8)
+            }
+            #[doc = "Bits 4:6"]
+            #[inline(always)]
+            pub fn txdma_fill_entry(&self) -> TXDMA_FILL_ENTRY_R {
+                TXDMA_FILL_ENTRY_R::new(((self.bits >> 4) & 7) as u8)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            pub fn txdma_state(&self) -> TXDMA_STATE_R {
+                TXDMA_STATE_R::new(((self.bits >> 16) & 0x1f) as u8)
+            }
+            #[doc = "Bits 24:30"]
+            #[inline(always)]
+            pub fn txdma_fetch_byte_cnt(&self) -> TXDMA_FETCH_BYTE_CNT_R {
+                TXDMA_FETCH_BYTE_CNT_R::new(((self.bits >> 24) & 0x7f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:2"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_water_level(&mut self) -> TXDMA_WATER_LEVEL_W<0> {
+                TXDMA_WATER_LEVEL_W::new(self)
+            }
+            #[doc = "Bits 4:6"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_fill_entry(&mut self) -> TXDMA_FILL_ENTRY_W<4> {
+                TXDMA_FILL_ENTRY_W::new(self)
+            }
+            #[doc = "Bits 16:20"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_state(&mut self) -> TXDMA_STATE_W<16> {
+                TXDMA_STATE_W::new(self)
+            }
+            #[doc = "Bits 24:30"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_fetch_byte_cnt(&mut self) -> TXDMA_FETCH_BYTE_CNT_W<24> {
+                TXDMA_FETCH_BYTE_CNT_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_ctrl_state](index.html) module"]
+        pub struct TXDMA_CTRL_STATE_SPEC;
+        impl crate::ral::RegisterSpec for TXDMA_CTRL_STATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [txdma_ctrl_state::R](R) reader structure"]
+        impl crate::ral::Readable for TXDMA_CTRL_STATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [txdma_ctrl_state::W](W) writer structure"]
+        impl crate::ral::Writable for TXDMA_CTRL_STATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "txdma_addr (rw) register accessor: an alias for `Reg<TXDMA_ADDR_SPEC>`"]
+    pub type TXDMA_ADDR = crate::ral::Reg<txdma_addr::TXDMA_ADDR_SPEC>;
+    #[doc = ""]
+    pub mod txdma_addr {
+        #[doc = "Register `txdma_addr` reader"]
+        pub struct R(crate::ral::R<TXDMA_ADDR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<TXDMA_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<TXDMA_ADDR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<TXDMA_ADDR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `txdma_addr` writer"]
+        pub struct W(crate::ral::W<TXDMA_ADDR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<TXDMA_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<TXDMA_ADDR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<TXDMA_ADDR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `txdma_addr` reader - "]
+        pub type TXDMA_ADDR_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `txdma_addr` writer - "]
+        pub type TXDMA_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, TXDMA_ADDR_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn txdma_addr(&self) -> TXDMA_ADDR_R {
+                TXDMA_ADDR_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn txdma_addr(&mut self) -> TXDMA_ADDR_W<0> {
+                TXDMA_ADDR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [txdma_addr](index.html) module"]
+        pub struct TXDMA_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for TXDMA_ADDR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [txdma_addr::R](R) reader structure"]
+        impl crate::ral::Readable for TXDMA_ADDR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [txdma_addr::W](W) writer structure"]
+        impl crate::ral::Writable for TXDMA_ADDR_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
@@ -6666,6 +7070,90 @@ pub mod ieee802154 {
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
+    #[doc = "enhance_ack_cfg (rw) register accessor: an alias for `Reg<ENHANCE_ACK_CFG_SPEC>`"]
+    pub type ENHANCE_ACK_CFG = crate::ral::Reg<enhance_ack_cfg::ENHANCE_ACK_CFG_SPEC>;
+    #[doc = ""]
+    pub mod enhance_ack_cfg {
+        #[doc = "Register `enhance_ack_cfg` reader"]
+        pub struct R(crate::ral::R<ENHANCE_ACK_CFG_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<ENHANCE_ACK_CFG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<ENHANCE_ACK_CFG_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<ENHANCE_ACK_CFG_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `enhance_ack_cfg` writer"]
+        pub struct W(crate::ral::W<ENHANCE_ACK_CFG_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<ENHANCE_ACK_CFG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<ENHANCE_ACK_CFG_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<ENHANCE_ACK_CFG_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `tx_enh_ack_generate_done_notify` reader - "]
+        pub type TX_ENH_ACK_GENERATE_DONE_NOTIFY_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `tx_enh_ack_generate_done_notify` writer - "]
+        pub type TX_ENH_ACK_GENERATE_DONE_NOTIFY_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, ENHANCE_ACK_CFG_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn tx_enh_ack_generate_done_notify(&self) -> TX_ENH_ACK_GENERATE_DONE_NOTIFY_R {
+                TX_ENH_ACK_GENERATE_DONE_NOTIFY_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn tx_enh_ack_generate_done_notify(
+                &mut self,
+            ) -> TX_ENH_ACK_GENERATE_DONE_NOTIFY_W<0> {
+                TX_ENH_ACK_GENERATE_DONE_NOTIFY_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [enhance_ack_cfg](index.html) module"]
+        pub struct ENHANCE_ACK_CFG_SPEC;
+        impl crate::ral::RegisterSpec for ENHANCE_ACK_CFG_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [enhance_ack_cfg::R](R) reader structure"]
+        impl crate::ral::Readable for ENHANCE_ACK_CFG_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [enhance_ack_cfg::W](W) writer structure"]
+        impl crate::ral::Writable for ENHANCE_ACK_CFG_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
     #[doc = "tx_abort_interrupt_control (rw) register accessor: an alias for `Reg<TX_ABORT_INTERRUPT_CONTROL_SPEC>`"]
     pub type TX_ABORT_INTERRUPT_CONTROL =
         crate::ral::Reg<tx_abort_interrupt_control::TX_ABORT_INTERRUPT_CONTROL_SPEC>;
@@ -7773,16 +8261,16 @@ pub mod ieee802154 {
         pub type TX_POWER_R = crate::ral::FieldReader<u8, u8>;
         #[doc = "Field `tx_power` writer - "]
         pub type TX_POWER_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, TX_POWER_SPEC, u8, u8, 4, O>;
+            crate::ral::FieldWriter<'a, u32, TX_POWER_SPEC, u8, u8, 5, O>;
         impl R {
-            #[doc = "Bits 0:3"]
+            #[doc = "Bits 0:4"]
             #[inline(always)]
             pub fn tx_power(&self) -> TX_POWER_R {
-                TX_POWER_R::new((self.bits & 0x0f) as u8)
+                TX_POWER_R::new((self.bits & 0x1f) as u8)
             }
         }
         impl W {
-            #[doc = "Bits 0:3"]
+            #[doc = "Bits 0:4"]
             #[inline(always)]
             #[must_use]
             pub fn tx_power(&mut self) -> TX_POWER_W<0> {
@@ -7893,29 +8381,29 @@ pub mod ieee802154 {
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
-    #[doc = "extend_addr1 (rw) register accessor: an alias for `Reg<EXTEND_ADDR1_SPEC>`"]
-    pub type EXTEND_ADDR1 = crate::ral::Reg<extend_addr1::EXTEND_ADDR1_SPEC>;
+    #[doc = "inf3_extend_addr1 (rw) register accessor: an alias for `Reg<INF3_EXTEND_ADDR1_SPEC>`"]
+    pub type INF3_EXTEND_ADDR1 = crate::ral::Reg<inf3_extend_addr1::INF3_EXTEND_ADDR1_SPEC>;
     #[doc = ""]
-    pub mod extend_addr1 {
-        #[doc = "Register `extend_addr1` reader"]
-        pub struct R(crate::ral::R<EXTEND_ADDR1_SPEC>);
+    pub mod inf3_extend_addr1 {
+        #[doc = "Register `inf3_extend_addr1` reader"]
+        pub struct R(crate::ral::R<INF3_EXTEND_ADDR1_SPEC>);
         impl core::ops::Deref for R {
-            type Target = crate::ral::R<EXTEND_ADDR1_SPEC>;
+            type Target = crate::ral::R<INF3_EXTEND_ADDR1_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
         }
-        impl From<crate::ral::R<EXTEND_ADDR1_SPEC>> for R {
+        impl From<crate::ral::R<INF3_EXTEND_ADDR1_SPEC>> for R {
             #[inline(always)]
-            fn from(reader: crate::ral::R<EXTEND_ADDR1_SPEC>) -> Self {
+            fn from(reader: crate::ral::R<INF3_EXTEND_ADDR1_SPEC>) -> Self {
                 R(reader)
             }
         }
-        #[doc = "Register `extend_addr1` writer"]
-        pub struct W(crate::ral::W<EXTEND_ADDR1_SPEC>);
+        #[doc = "Register `inf3_extend_addr1` writer"]
+        pub struct W(crate::ral::W<INF3_EXTEND_ADDR1_SPEC>);
         impl core::ops::Deref for W {
-            type Target = crate::ral::W<EXTEND_ADDR1_SPEC>;
+            type Target = crate::ral::W<INF3_EXTEND_ADDR1_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
@@ -7927,30 +8415,30 @@ pub mod ieee802154 {
                 &mut self.0
             }
         }
-        impl From<crate::ral::W<EXTEND_ADDR1_SPEC>> for W {
+        impl From<crate::ral::W<INF3_EXTEND_ADDR1_SPEC>> for W {
             #[inline(always)]
-            fn from(writer: crate::ral::W<EXTEND_ADDR1_SPEC>) -> Self {
+            fn from(writer: crate::ral::W<INF3_EXTEND_ADDR1_SPEC>) -> Self {
                 W(writer)
             }
         }
-        #[doc = "Field `mac_extend_addr1` reader - "]
-        pub type MAC_EXTEND_ADDR1_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `mac_extend_addr1` writer - "]
-        pub type MAC_EXTEND_ADDR1_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, EXTEND_ADDR1_SPEC, u32, u32, 32, O>;
+        #[doc = "Field `mac_inf3_extend_addr1` reader - "]
+        pub type MAC_INF3_EXTEND_ADDR1_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf3_extend_addr1` writer - "]
+        pub type MAC_INF3_EXTEND_ADDR1_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF3_EXTEND_ADDR1_SPEC, u32, u32, 32, O>;
         impl R {
             #[doc = "Bits 0:31"]
             #[inline(always)]
-            pub fn mac_extend_addr1(&self) -> MAC_EXTEND_ADDR1_R {
-                MAC_EXTEND_ADDR1_R::new(self.bits)
+            pub fn mac_inf3_extend_addr1(&self) -> MAC_INF3_EXTEND_ADDR1_R {
+                MAC_INF3_EXTEND_ADDR1_R::new(self.bits)
             }
         }
         impl W {
             #[doc = "Bits 0:31"]
             #[inline(always)]
             #[must_use]
-            pub fn mac_extend_addr1(&mut self) -> MAC_EXTEND_ADDR1_W<0> {
-                MAC_EXTEND_ADDR1_W::new(self)
+            pub fn mac_inf3_extend_addr1(&mut self) -> MAC_INF3_EXTEND_ADDR1_W<0> {
+                MAC_INF3_EXTEND_ADDR1_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -7959,45 +8447,45 @@ pub mod ieee802154 {
                 self
             }
         }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [extend_addr1](index.html) module"]
-        pub struct EXTEND_ADDR1_SPEC;
-        impl crate::ral::RegisterSpec for EXTEND_ADDR1_SPEC {
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf3_extend_addr1](index.html) module"]
+        pub struct INF3_EXTEND_ADDR1_SPEC;
+        impl crate::ral::RegisterSpec for INF3_EXTEND_ADDR1_SPEC {
             type Ux = u32;
         }
-        #[doc = "`read()` method returns [extend_addr1::R](R) reader structure"]
-        impl crate::ral::Readable for EXTEND_ADDR1_SPEC {
+        #[doc = "`read()` method returns [inf3_extend_addr1::R](R) reader structure"]
+        impl crate::ral::Readable for INF3_EXTEND_ADDR1_SPEC {
             type Reader = R;
         }
-        #[doc = "`write(|w| ..)` method takes [extend_addr1::W](W) writer structure"]
-        impl crate::ral::Writable for EXTEND_ADDR1_SPEC {
+        #[doc = "`write(|w| ..)` method takes [inf3_extend_addr1::W](W) writer structure"]
+        impl crate::ral::Writable for INF3_EXTEND_ADDR1_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
-    #[doc = "extend_addr0 (rw) register accessor: an alias for `Reg<EXTEND_ADDR0_SPEC>`"]
-    pub type EXTEND_ADDR0 = crate::ral::Reg<extend_addr0::EXTEND_ADDR0_SPEC>;
+    #[doc = "inf3_extend_addr0 (rw) register accessor: an alias for `Reg<INF3_EXTEND_ADDR0_SPEC>`"]
+    pub type INF3_EXTEND_ADDR0 = crate::ral::Reg<inf3_extend_addr0::INF3_EXTEND_ADDR0_SPEC>;
     #[doc = ""]
-    pub mod extend_addr0 {
-        #[doc = "Register `extend_addr0` reader"]
-        pub struct R(crate::ral::R<EXTEND_ADDR0_SPEC>);
+    pub mod inf3_extend_addr0 {
+        #[doc = "Register `inf3_extend_addr0` reader"]
+        pub struct R(crate::ral::R<INF3_EXTEND_ADDR0_SPEC>);
         impl core::ops::Deref for R {
-            type Target = crate::ral::R<EXTEND_ADDR0_SPEC>;
+            type Target = crate::ral::R<INF3_EXTEND_ADDR0_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
         }
-        impl From<crate::ral::R<EXTEND_ADDR0_SPEC>> for R {
+        impl From<crate::ral::R<INF3_EXTEND_ADDR0_SPEC>> for R {
             #[inline(always)]
-            fn from(reader: crate::ral::R<EXTEND_ADDR0_SPEC>) -> Self {
+            fn from(reader: crate::ral::R<INF3_EXTEND_ADDR0_SPEC>) -> Self {
                 R(reader)
             }
         }
-        #[doc = "Register `extend_addr0` writer"]
-        pub struct W(crate::ral::W<EXTEND_ADDR0_SPEC>);
+        #[doc = "Register `inf3_extend_addr0` writer"]
+        pub struct W(crate::ral::W<INF3_EXTEND_ADDR0_SPEC>);
         impl core::ops::Deref for W {
-            type Target = crate::ral::W<EXTEND_ADDR0_SPEC>;
+            type Target = crate::ral::W<INF3_EXTEND_ADDR0_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
@@ -8009,30 +8497,30 @@ pub mod ieee802154 {
                 &mut self.0
             }
         }
-        impl From<crate::ral::W<EXTEND_ADDR0_SPEC>> for W {
+        impl From<crate::ral::W<INF3_EXTEND_ADDR0_SPEC>> for W {
             #[inline(always)]
-            fn from(writer: crate::ral::W<EXTEND_ADDR0_SPEC>) -> Self {
+            fn from(writer: crate::ral::W<INF3_EXTEND_ADDR0_SPEC>) -> Self {
                 W(writer)
             }
         }
-        #[doc = "Field `mac_extend_addr0` reader - "]
-        pub type MAC_EXTEND_ADDR0_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `mac_extend_addr0` writer - "]
-        pub type MAC_EXTEND_ADDR0_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, EXTEND_ADDR0_SPEC, u32, u32, 32, O>;
+        #[doc = "Field `mac_inf3_extend_addr0` reader - "]
+        pub type MAC_INF3_EXTEND_ADDR0_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf3_extend_addr0` writer - "]
+        pub type MAC_INF3_EXTEND_ADDR0_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF3_EXTEND_ADDR0_SPEC, u32, u32, 32, O>;
         impl R {
             #[doc = "Bits 0:31"]
             #[inline(always)]
-            pub fn mac_extend_addr0(&self) -> MAC_EXTEND_ADDR0_R {
-                MAC_EXTEND_ADDR0_R::new(self.bits)
+            pub fn mac_inf3_extend_addr0(&self) -> MAC_INF3_EXTEND_ADDR0_R {
+                MAC_INF3_EXTEND_ADDR0_R::new(self.bits)
             }
         }
         impl W {
             #[doc = "Bits 0:31"]
             #[inline(always)]
             #[must_use]
-            pub fn mac_extend_addr0(&mut self) -> MAC_EXTEND_ADDR0_W<0> {
-                MAC_EXTEND_ADDR0_W::new(self)
+            pub fn mac_inf3_extend_addr0(&mut self) -> MAC_INF3_EXTEND_ADDR0_W<0> {
+                MAC_INF3_EXTEND_ADDR0_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -8041,45 +8529,45 @@ pub mod ieee802154 {
                 self
             }
         }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [extend_addr0](index.html) module"]
-        pub struct EXTEND_ADDR0_SPEC;
-        impl crate::ral::RegisterSpec for EXTEND_ADDR0_SPEC {
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf3_extend_addr0](index.html) module"]
+        pub struct INF3_EXTEND_ADDR0_SPEC;
+        impl crate::ral::RegisterSpec for INF3_EXTEND_ADDR0_SPEC {
             type Ux = u32;
         }
-        #[doc = "`read()` method returns [extend_addr0::R](R) reader structure"]
-        impl crate::ral::Readable for EXTEND_ADDR0_SPEC {
+        #[doc = "`read()` method returns [inf3_extend_addr0::R](R) reader structure"]
+        impl crate::ral::Readable for INF3_EXTEND_ADDR0_SPEC {
             type Reader = R;
         }
-        #[doc = "`write(|w| ..)` method takes [extend_addr0::W](W) writer structure"]
-        impl crate::ral::Writable for EXTEND_ADDR0_SPEC {
+        #[doc = "`write(|w| ..)` method takes [inf3_extend_addr0::W](W) writer structure"]
+        impl crate::ral::Writable for INF3_EXTEND_ADDR0_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
-    #[doc = "pan_id (rw) register accessor: an alias for `Reg<PAN_ID_SPEC>`"]
-    pub type PAN_ID = crate::ral::Reg<pan_id::PAN_ID_SPEC>;
+    #[doc = "inf3_pan_id (rw) register accessor: an alias for `Reg<INF3_PAN_ID_SPEC>`"]
+    pub type INF3_PAN_ID = crate::ral::Reg<inf3_pan_id::INF3_PAN_ID_SPEC>;
     #[doc = ""]
-    pub mod pan_id {
-        #[doc = "Register `pan_id` reader"]
-        pub struct R(crate::ral::R<PAN_ID_SPEC>);
+    pub mod inf3_pan_id {
+        #[doc = "Register `inf3_pan_id` reader"]
+        pub struct R(crate::ral::R<INF3_PAN_ID_SPEC>);
         impl core::ops::Deref for R {
-            type Target = crate::ral::R<PAN_ID_SPEC>;
+            type Target = crate::ral::R<INF3_PAN_ID_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
         }
-        impl From<crate::ral::R<PAN_ID_SPEC>> for R {
+        impl From<crate::ral::R<INF3_PAN_ID_SPEC>> for R {
             #[inline(always)]
-            fn from(reader: crate::ral::R<PAN_ID_SPEC>) -> Self {
+            fn from(reader: crate::ral::R<INF3_PAN_ID_SPEC>) -> Self {
                 R(reader)
             }
         }
-        #[doc = "Register `pan_id` writer"]
-        pub struct W(crate::ral::W<PAN_ID_SPEC>);
+        #[doc = "Register `inf3_pan_id` writer"]
+        pub struct W(crate::ral::W<INF3_PAN_ID_SPEC>);
         impl core::ops::Deref for W {
-            type Target = crate::ral::W<PAN_ID_SPEC>;
+            type Target = crate::ral::W<INF3_PAN_ID_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
@@ -8091,30 +8579,30 @@ pub mod ieee802154 {
                 &mut self.0
             }
         }
-        impl From<crate::ral::W<PAN_ID_SPEC>> for W {
+        impl From<crate::ral::W<INF3_PAN_ID_SPEC>> for W {
             #[inline(always)]
-            fn from(writer: crate::ral::W<PAN_ID_SPEC>) -> Self {
+            fn from(writer: crate::ral::W<INF3_PAN_ID_SPEC>) -> Self {
                 W(writer)
             }
         }
-        #[doc = "Field `mac_pan_id` reader - "]
-        pub type MAC_PAN_ID_R = crate::ral::FieldReader<u16, u16>;
-        #[doc = "Field `mac_pan_id` writer - "]
-        pub type MAC_PAN_ID_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, PAN_ID_SPEC, u16, u16, 16, O>;
+        #[doc = "Field `mac_inf3_pan_id` reader - "]
+        pub type MAC_INF3_PAN_ID_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf3_pan_id` writer - "]
+        pub type MAC_INF3_PAN_ID_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF3_PAN_ID_SPEC, u16, u16, 16, O>;
         impl R {
             #[doc = "Bits 0:15"]
             #[inline(always)]
-            pub fn mac_pan_id(&self) -> MAC_PAN_ID_R {
-                MAC_PAN_ID_R::new((self.bits & 0xffff) as u16)
+            pub fn mac_inf3_pan_id(&self) -> MAC_INF3_PAN_ID_R {
+                MAC_INF3_PAN_ID_R::new((self.bits & 0xffff) as u16)
             }
         }
         impl W {
             #[doc = "Bits 0:15"]
             #[inline(always)]
             #[must_use]
-            pub fn mac_pan_id(&mut self) -> MAC_PAN_ID_W<0> {
-                MAC_PAN_ID_W::new(self)
+            pub fn mac_inf3_pan_id(&mut self) -> MAC_INF3_PAN_ID_W<0> {
+                MAC_INF3_PAN_ID_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -8123,45 +8611,45 @@ pub mod ieee802154 {
                 self
             }
         }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [pan_id](index.html) module"]
-        pub struct PAN_ID_SPEC;
-        impl crate::ral::RegisterSpec for PAN_ID_SPEC {
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf3_pan_id](index.html) module"]
+        pub struct INF3_PAN_ID_SPEC;
+        impl crate::ral::RegisterSpec for INF3_PAN_ID_SPEC {
             type Ux = u32;
         }
-        #[doc = "`read()` method returns [pan_id::R](R) reader structure"]
-        impl crate::ral::Readable for PAN_ID_SPEC {
+        #[doc = "`read()` method returns [inf3_pan_id::R](R) reader structure"]
+        impl crate::ral::Readable for INF3_PAN_ID_SPEC {
             type Reader = R;
         }
-        #[doc = "`write(|w| ..)` method takes [pan_id::W](W) writer structure"]
-        impl crate::ral::Writable for PAN_ID_SPEC {
+        #[doc = "`write(|w| ..)` method takes [inf3_pan_id::W](W) writer structure"]
+        impl crate::ral::Writable for INF3_PAN_ID_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
         }
     }
-    #[doc = "short_addr (rw) register accessor: an alias for `Reg<SHORT_ADDR_SPEC>`"]
-    pub type SHORT_ADDR = crate::ral::Reg<short_addr::SHORT_ADDR_SPEC>;
+    #[doc = "inf3_short_addr (rw) register accessor: an alias for `Reg<INF3_SHORT_ADDR_SPEC>`"]
+    pub type INF3_SHORT_ADDR = crate::ral::Reg<inf3_short_addr::INF3_SHORT_ADDR_SPEC>;
     #[doc = ""]
-    pub mod short_addr {
-        #[doc = "Register `short_addr` reader"]
-        pub struct R(crate::ral::R<SHORT_ADDR_SPEC>);
+    pub mod inf3_short_addr {
+        #[doc = "Register `inf3_short_addr` reader"]
+        pub struct R(crate::ral::R<INF3_SHORT_ADDR_SPEC>);
         impl core::ops::Deref for R {
-            type Target = crate::ral::R<SHORT_ADDR_SPEC>;
+            type Target = crate::ral::R<INF3_SHORT_ADDR_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
             }
         }
-        impl From<crate::ral::R<SHORT_ADDR_SPEC>> for R {
+        impl From<crate::ral::R<INF3_SHORT_ADDR_SPEC>> for R {
             #[inline(always)]
-            fn from(reader: crate::ral::R<SHORT_ADDR_SPEC>) -> Self {
+            fn from(reader: crate::ral::R<INF3_SHORT_ADDR_SPEC>) -> Self {
                 R(reader)
             }
         }
-        #[doc = "Register `short_addr` writer"]
-        pub struct W(crate::ral::W<SHORT_ADDR_SPEC>);
+        #[doc = "Register `inf3_short_addr` writer"]
+        pub struct W(crate::ral::W<INF3_SHORT_ADDR_SPEC>);
         impl core::ops::Deref for W {
-            type Target = crate::ral::W<SHORT_ADDR_SPEC>;
+            type Target = crate::ral::W<INF3_SHORT_ADDR_SPEC>;
             #[inline(always)]
             fn deref(&self) -> &Self::Target {
                 &self.0
@@ -8173,30 +8661,30 @@ pub mod ieee802154 {
                 &mut self.0
             }
         }
-        impl From<crate::ral::W<SHORT_ADDR_SPEC>> for W {
+        impl From<crate::ral::W<INF3_SHORT_ADDR_SPEC>> for W {
             #[inline(always)]
-            fn from(writer: crate::ral::W<SHORT_ADDR_SPEC>) -> Self {
+            fn from(writer: crate::ral::W<INF3_SHORT_ADDR_SPEC>) -> Self {
                 W(writer)
             }
         }
-        #[doc = "Field `mac_short_addr` reader - "]
-        pub type MAC_SHORT_ADDR_R = crate::ral::FieldReader<u16, u16>;
-        #[doc = "Field `mac_short_addr` writer - "]
-        pub type MAC_SHORT_ADDR_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, SHORT_ADDR_SPEC, u16, u16, 16, O>;
+        #[doc = "Field `mac_inf3_short_addr` reader - "]
+        pub type MAC_INF3_SHORT_ADDR_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf3_short_addr` writer - "]
+        pub type MAC_INF3_SHORT_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF3_SHORT_ADDR_SPEC, u16, u16, 16, O>;
         impl R {
             #[doc = "Bits 0:15"]
             #[inline(always)]
-            pub fn mac_short_addr(&self) -> MAC_SHORT_ADDR_R {
-                MAC_SHORT_ADDR_R::new((self.bits & 0xffff) as u16)
+            pub fn mac_inf3_short_addr(&self) -> MAC_INF3_SHORT_ADDR_R {
+                MAC_INF3_SHORT_ADDR_R::new((self.bits & 0xffff) as u16)
             }
         }
         impl W {
             #[doc = "Bits 0:15"]
             #[inline(always)]
             #[must_use]
-            pub fn mac_short_addr(&mut self) -> MAC_SHORT_ADDR_W<0> {
-                MAC_SHORT_ADDR_W::new(self)
+            pub fn mac_inf3_short_addr(&mut self) -> MAC_INF3_SHORT_ADDR_W<0> {
+                MAC_INF3_SHORT_ADDR_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -8205,17 +8693,1001 @@ pub mod ieee802154 {
                 self
             }
         }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [short_addr](index.html) module"]
-        pub struct SHORT_ADDR_SPEC;
-        impl crate::ral::RegisterSpec for SHORT_ADDR_SPEC {
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf3_short_addr](index.html) module"]
+        pub struct INF3_SHORT_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for INF3_SHORT_ADDR_SPEC {
             type Ux = u32;
         }
-        #[doc = "`read()` method returns [short_addr::R](R) reader structure"]
-        impl crate::ral::Readable for SHORT_ADDR_SPEC {
+        #[doc = "`read()` method returns [inf3_short_addr::R](R) reader structure"]
+        impl crate::ral::Readable for INF3_SHORT_ADDR_SPEC {
             type Reader = R;
         }
-        #[doc = "`write(|w| ..)` method takes [short_addr::W](W) writer structure"]
-        impl crate::ral::Writable for SHORT_ADDR_SPEC {
+        #[doc = "`write(|w| ..)` method takes [inf3_short_addr::W](W) writer structure"]
+        impl crate::ral::Writable for INF3_SHORT_ADDR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf2_extend_addr1 (rw) register accessor: an alias for `Reg<INF2_EXTEND_ADDR1_SPEC>`"]
+    pub type INF2_EXTEND_ADDR1 = crate::ral::Reg<inf2_extend_addr1::INF2_EXTEND_ADDR1_SPEC>;
+    #[doc = ""]
+    pub mod inf2_extend_addr1 {
+        #[doc = "Register `inf2_extend_addr1` reader"]
+        pub struct R(crate::ral::R<INF2_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF2_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF2_EXTEND_ADDR1_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF2_EXTEND_ADDR1_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf2_extend_addr1` writer"]
+        pub struct W(crate::ral::W<INF2_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF2_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF2_EXTEND_ADDR1_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF2_EXTEND_ADDR1_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf2_extend_addr1` reader - "]
+        pub type MAC_INF2_EXTEND_ADDR1_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf2_extend_addr1` writer - "]
+        pub type MAC_INF2_EXTEND_ADDR1_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF2_EXTEND_ADDR1_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf2_extend_addr1(&self) -> MAC_INF2_EXTEND_ADDR1_R {
+                MAC_INF2_EXTEND_ADDR1_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf2_extend_addr1(&mut self) -> MAC_INF2_EXTEND_ADDR1_W<0> {
+                MAC_INF2_EXTEND_ADDR1_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf2_extend_addr1](index.html) module"]
+        pub struct INF2_EXTEND_ADDR1_SPEC;
+        impl crate::ral::RegisterSpec for INF2_EXTEND_ADDR1_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf2_extend_addr1::R](R) reader structure"]
+        impl crate::ral::Readable for INF2_EXTEND_ADDR1_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf2_extend_addr1::W](W) writer structure"]
+        impl crate::ral::Writable for INF2_EXTEND_ADDR1_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf2_extend_addr0 (rw) register accessor: an alias for `Reg<INF2_EXTEND_ADDR0_SPEC>`"]
+    pub type INF2_EXTEND_ADDR0 = crate::ral::Reg<inf2_extend_addr0::INF2_EXTEND_ADDR0_SPEC>;
+    #[doc = ""]
+    pub mod inf2_extend_addr0 {
+        #[doc = "Register `inf2_extend_addr0` reader"]
+        pub struct R(crate::ral::R<INF2_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF2_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF2_EXTEND_ADDR0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF2_EXTEND_ADDR0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf2_extend_addr0` writer"]
+        pub struct W(crate::ral::W<INF2_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF2_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF2_EXTEND_ADDR0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF2_EXTEND_ADDR0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf2_extend_addr0` reader - "]
+        pub type MAC_INF2_EXTEND_ADDR0_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf2_extend_addr0` writer - "]
+        pub type MAC_INF2_EXTEND_ADDR0_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF2_EXTEND_ADDR0_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf2_extend_addr0(&self) -> MAC_INF2_EXTEND_ADDR0_R {
+                MAC_INF2_EXTEND_ADDR0_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf2_extend_addr0(&mut self) -> MAC_INF2_EXTEND_ADDR0_W<0> {
+                MAC_INF2_EXTEND_ADDR0_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf2_extend_addr0](index.html) module"]
+        pub struct INF2_EXTEND_ADDR0_SPEC;
+        impl crate::ral::RegisterSpec for INF2_EXTEND_ADDR0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf2_extend_addr0::R](R) reader structure"]
+        impl crate::ral::Readable for INF2_EXTEND_ADDR0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf2_extend_addr0::W](W) writer structure"]
+        impl crate::ral::Writable for INF2_EXTEND_ADDR0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf2_pan_id (rw) register accessor: an alias for `Reg<INF2_PAN_ID_SPEC>`"]
+    pub type INF2_PAN_ID = crate::ral::Reg<inf2_pan_id::INF2_PAN_ID_SPEC>;
+    #[doc = ""]
+    pub mod inf2_pan_id {
+        #[doc = "Register `inf2_pan_id` reader"]
+        pub struct R(crate::ral::R<INF2_PAN_ID_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF2_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF2_PAN_ID_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF2_PAN_ID_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf2_pan_id` writer"]
+        pub struct W(crate::ral::W<INF2_PAN_ID_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF2_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF2_PAN_ID_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF2_PAN_ID_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf2_pan_id` reader - "]
+        pub type MAC_INF2_PAN_ID_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf2_pan_id` writer - "]
+        pub type MAC_INF2_PAN_ID_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF2_PAN_ID_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf2_pan_id(&self) -> MAC_INF2_PAN_ID_R {
+                MAC_INF2_PAN_ID_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf2_pan_id(&mut self) -> MAC_INF2_PAN_ID_W<0> {
+                MAC_INF2_PAN_ID_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf2_pan_id](index.html) module"]
+        pub struct INF2_PAN_ID_SPEC;
+        impl crate::ral::RegisterSpec for INF2_PAN_ID_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf2_pan_id::R](R) reader structure"]
+        impl crate::ral::Readable for INF2_PAN_ID_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf2_pan_id::W](W) writer structure"]
+        impl crate::ral::Writable for INF2_PAN_ID_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf2_short_addr (rw) register accessor: an alias for `Reg<INF2_SHORT_ADDR_SPEC>`"]
+    pub type INF2_SHORT_ADDR = crate::ral::Reg<inf2_short_addr::INF2_SHORT_ADDR_SPEC>;
+    #[doc = ""]
+    pub mod inf2_short_addr {
+        #[doc = "Register `inf2_short_addr` reader"]
+        pub struct R(crate::ral::R<INF2_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF2_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF2_SHORT_ADDR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF2_SHORT_ADDR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf2_short_addr` writer"]
+        pub struct W(crate::ral::W<INF2_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF2_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF2_SHORT_ADDR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF2_SHORT_ADDR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf2_short_addr` reader - "]
+        pub type MAC_INF2_SHORT_ADDR_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf2_short_addr` writer - "]
+        pub type MAC_INF2_SHORT_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF2_SHORT_ADDR_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf2_short_addr(&self) -> MAC_INF2_SHORT_ADDR_R {
+                MAC_INF2_SHORT_ADDR_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf2_short_addr(&mut self) -> MAC_INF2_SHORT_ADDR_W<0> {
+                MAC_INF2_SHORT_ADDR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf2_short_addr](index.html) module"]
+        pub struct INF2_SHORT_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for INF2_SHORT_ADDR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf2_short_addr::R](R) reader structure"]
+        impl crate::ral::Readable for INF2_SHORT_ADDR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf2_short_addr::W](W) writer structure"]
+        impl crate::ral::Writable for INF2_SHORT_ADDR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf1_extend_addr1 (rw) register accessor: an alias for `Reg<INF1_EXTEND_ADDR1_SPEC>`"]
+    pub type INF1_EXTEND_ADDR1 = crate::ral::Reg<inf1_extend_addr1::INF1_EXTEND_ADDR1_SPEC>;
+    #[doc = ""]
+    pub mod inf1_extend_addr1 {
+        #[doc = "Register `inf1_extend_addr1` reader"]
+        pub struct R(crate::ral::R<INF1_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF1_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF1_EXTEND_ADDR1_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF1_EXTEND_ADDR1_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf1_extend_addr1` writer"]
+        pub struct W(crate::ral::W<INF1_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF1_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF1_EXTEND_ADDR1_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF1_EXTEND_ADDR1_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf1_extend_addr1` reader - "]
+        pub type MAC_INF1_EXTEND_ADDR1_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf1_extend_addr1` writer - "]
+        pub type MAC_INF1_EXTEND_ADDR1_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF1_EXTEND_ADDR1_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf1_extend_addr1(&self) -> MAC_INF1_EXTEND_ADDR1_R {
+                MAC_INF1_EXTEND_ADDR1_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf1_extend_addr1(&mut self) -> MAC_INF1_EXTEND_ADDR1_W<0> {
+                MAC_INF1_EXTEND_ADDR1_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf1_extend_addr1](index.html) module"]
+        pub struct INF1_EXTEND_ADDR1_SPEC;
+        impl crate::ral::RegisterSpec for INF1_EXTEND_ADDR1_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf1_extend_addr1::R](R) reader structure"]
+        impl crate::ral::Readable for INF1_EXTEND_ADDR1_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf1_extend_addr1::W](W) writer structure"]
+        impl crate::ral::Writable for INF1_EXTEND_ADDR1_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf1_extend_addr0 (rw) register accessor: an alias for `Reg<INF1_EXTEND_ADDR0_SPEC>`"]
+    pub type INF1_EXTEND_ADDR0 = crate::ral::Reg<inf1_extend_addr0::INF1_EXTEND_ADDR0_SPEC>;
+    #[doc = ""]
+    pub mod inf1_extend_addr0 {
+        #[doc = "Register `inf1_extend_addr0` reader"]
+        pub struct R(crate::ral::R<INF1_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF1_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF1_EXTEND_ADDR0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF1_EXTEND_ADDR0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf1_extend_addr0` writer"]
+        pub struct W(crate::ral::W<INF1_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF1_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF1_EXTEND_ADDR0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF1_EXTEND_ADDR0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf1_extend_addr0` reader - "]
+        pub type MAC_INF1_EXTEND_ADDR0_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf1_extend_addr0` writer - "]
+        pub type MAC_INF1_EXTEND_ADDR0_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF1_EXTEND_ADDR0_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf1_extend_addr0(&self) -> MAC_INF1_EXTEND_ADDR0_R {
+                MAC_INF1_EXTEND_ADDR0_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf1_extend_addr0(&mut self) -> MAC_INF1_EXTEND_ADDR0_W<0> {
+                MAC_INF1_EXTEND_ADDR0_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf1_extend_addr0](index.html) module"]
+        pub struct INF1_EXTEND_ADDR0_SPEC;
+        impl crate::ral::RegisterSpec for INF1_EXTEND_ADDR0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf1_extend_addr0::R](R) reader structure"]
+        impl crate::ral::Readable for INF1_EXTEND_ADDR0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf1_extend_addr0::W](W) writer structure"]
+        impl crate::ral::Writable for INF1_EXTEND_ADDR0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf1_pan_id (rw) register accessor: an alias for `Reg<INF1_PAN_ID_SPEC>`"]
+    pub type INF1_PAN_ID = crate::ral::Reg<inf1_pan_id::INF1_PAN_ID_SPEC>;
+    #[doc = ""]
+    pub mod inf1_pan_id {
+        #[doc = "Register `inf1_pan_id` reader"]
+        pub struct R(crate::ral::R<INF1_PAN_ID_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF1_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF1_PAN_ID_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF1_PAN_ID_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf1_pan_id` writer"]
+        pub struct W(crate::ral::W<INF1_PAN_ID_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF1_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF1_PAN_ID_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF1_PAN_ID_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf1_pan_id` reader - "]
+        pub type MAC_INF1_PAN_ID_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf1_pan_id` writer - "]
+        pub type MAC_INF1_PAN_ID_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF1_PAN_ID_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf1_pan_id(&self) -> MAC_INF1_PAN_ID_R {
+                MAC_INF1_PAN_ID_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf1_pan_id(&mut self) -> MAC_INF1_PAN_ID_W<0> {
+                MAC_INF1_PAN_ID_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf1_pan_id](index.html) module"]
+        pub struct INF1_PAN_ID_SPEC;
+        impl crate::ral::RegisterSpec for INF1_PAN_ID_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf1_pan_id::R](R) reader structure"]
+        impl crate::ral::Readable for INF1_PAN_ID_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf1_pan_id::W](W) writer structure"]
+        impl crate::ral::Writable for INF1_PAN_ID_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf1_short_addr (rw) register accessor: an alias for `Reg<INF1_SHORT_ADDR_SPEC>`"]
+    pub type INF1_SHORT_ADDR = crate::ral::Reg<inf1_short_addr::INF1_SHORT_ADDR_SPEC>;
+    #[doc = ""]
+    pub mod inf1_short_addr {
+        #[doc = "Register `inf1_short_addr` reader"]
+        pub struct R(crate::ral::R<INF1_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF1_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF1_SHORT_ADDR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF1_SHORT_ADDR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf1_short_addr` writer"]
+        pub struct W(crate::ral::W<INF1_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF1_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF1_SHORT_ADDR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF1_SHORT_ADDR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf1_short_addr` reader - "]
+        pub type MAC_INF1_SHORT_ADDR_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf1_short_addr` writer - "]
+        pub type MAC_INF1_SHORT_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF1_SHORT_ADDR_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf1_short_addr(&self) -> MAC_INF1_SHORT_ADDR_R {
+                MAC_INF1_SHORT_ADDR_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf1_short_addr(&mut self) -> MAC_INF1_SHORT_ADDR_W<0> {
+                MAC_INF1_SHORT_ADDR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf1_short_addr](index.html) module"]
+        pub struct INF1_SHORT_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for INF1_SHORT_ADDR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf1_short_addr::R](R) reader structure"]
+        impl crate::ral::Readable for INF1_SHORT_ADDR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf1_short_addr::W](W) writer structure"]
+        impl crate::ral::Writable for INF1_SHORT_ADDR_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf0_extend_addr1 (rw) register accessor: an alias for `Reg<INF0_EXTEND_ADDR1_SPEC>`"]
+    pub type INF0_EXTEND_ADDR1 = crate::ral::Reg<inf0_extend_addr1::INF0_EXTEND_ADDR1_SPEC>;
+    #[doc = ""]
+    pub mod inf0_extend_addr1 {
+        #[doc = "Register `inf0_extend_addr1` reader"]
+        pub struct R(crate::ral::R<INF0_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF0_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF0_EXTEND_ADDR1_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF0_EXTEND_ADDR1_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf0_extend_addr1` writer"]
+        pub struct W(crate::ral::W<INF0_EXTEND_ADDR1_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF0_EXTEND_ADDR1_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF0_EXTEND_ADDR1_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF0_EXTEND_ADDR1_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf0_extend_addr1` reader - "]
+        pub type MAC_INF0_EXTEND_ADDR1_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf0_extend_addr1` writer - "]
+        pub type MAC_INF0_EXTEND_ADDR1_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF0_EXTEND_ADDR1_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf0_extend_addr1(&self) -> MAC_INF0_EXTEND_ADDR1_R {
+                MAC_INF0_EXTEND_ADDR1_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf0_extend_addr1(&mut self) -> MAC_INF0_EXTEND_ADDR1_W<0> {
+                MAC_INF0_EXTEND_ADDR1_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf0_extend_addr1](index.html) module"]
+        pub struct INF0_EXTEND_ADDR1_SPEC;
+        impl crate::ral::RegisterSpec for INF0_EXTEND_ADDR1_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf0_extend_addr1::R](R) reader structure"]
+        impl crate::ral::Readable for INF0_EXTEND_ADDR1_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf0_extend_addr1::W](W) writer structure"]
+        impl crate::ral::Writable for INF0_EXTEND_ADDR1_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf0_extend_addr0 (rw) register accessor: an alias for `Reg<INF0_EXTEND_ADDR0_SPEC>`"]
+    pub type INF0_EXTEND_ADDR0 = crate::ral::Reg<inf0_extend_addr0::INF0_EXTEND_ADDR0_SPEC>;
+    #[doc = ""]
+    pub mod inf0_extend_addr0 {
+        #[doc = "Register `inf0_extend_addr0` reader"]
+        pub struct R(crate::ral::R<INF0_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF0_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF0_EXTEND_ADDR0_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF0_EXTEND_ADDR0_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf0_extend_addr0` writer"]
+        pub struct W(crate::ral::W<INF0_EXTEND_ADDR0_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF0_EXTEND_ADDR0_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF0_EXTEND_ADDR0_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF0_EXTEND_ADDR0_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf0_extend_addr0` reader - "]
+        pub type MAC_INF0_EXTEND_ADDR0_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_inf0_extend_addr0` writer - "]
+        pub type MAC_INF0_EXTEND_ADDR0_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF0_EXTEND_ADDR0_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_inf0_extend_addr0(&self) -> MAC_INF0_EXTEND_ADDR0_R {
+                MAC_INF0_EXTEND_ADDR0_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf0_extend_addr0(&mut self) -> MAC_INF0_EXTEND_ADDR0_W<0> {
+                MAC_INF0_EXTEND_ADDR0_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf0_extend_addr0](index.html) module"]
+        pub struct INF0_EXTEND_ADDR0_SPEC;
+        impl crate::ral::RegisterSpec for INF0_EXTEND_ADDR0_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf0_extend_addr0::R](R) reader structure"]
+        impl crate::ral::Readable for INF0_EXTEND_ADDR0_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf0_extend_addr0::W](W) writer structure"]
+        impl crate::ral::Writable for INF0_EXTEND_ADDR0_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf0_pan_id (rw) register accessor: an alias for `Reg<INF0_PAN_ID_SPEC>`"]
+    pub type INF0_PAN_ID = crate::ral::Reg<inf0_pan_id::INF0_PAN_ID_SPEC>;
+    #[doc = ""]
+    pub mod inf0_pan_id {
+        #[doc = "Register `inf0_pan_id` reader"]
+        pub struct R(crate::ral::R<INF0_PAN_ID_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF0_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF0_PAN_ID_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF0_PAN_ID_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf0_pan_id` writer"]
+        pub struct W(crate::ral::W<INF0_PAN_ID_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF0_PAN_ID_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF0_PAN_ID_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF0_PAN_ID_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf0_pan_id` reader - "]
+        pub type MAC_INF0_PAN_ID_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf0_pan_id` writer - "]
+        pub type MAC_INF0_PAN_ID_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF0_PAN_ID_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf0_pan_id(&self) -> MAC_INF0_PAN_ID_R {
+                MAC_INF0_PAN_ID_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf0_pan_id(&mut self) -> MAC_INF0_PAN_ID_W<0> {
+                MAC_INF0_PAN_ID_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf0_pan_id](index.html) module"]
+        pub struct INF0_PAN_ID_SPEC;
+        impl crate::ral::RegisterSpec for INF0_PAN_ID_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf0_pan_id::R](R) reader structure"]
+        impl crate::ral::Readable for INF0_PAN_ID_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf0_pan_id::W](W) writer structure"]
+        impl crate::ral::Writable for INF0_PAN_ID_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "inf0_short_addr (rw) register accessor: an alias for `Reg<INF0_SHORT_ADDR_SPEC>`"]
+    pub type INF0_SHORT_ADDR = crate::ral::Reg<inf0_short_addr::INF0_SHORT_ADDR_SPEC>;
+    #[doc = ""]
+    pub mod inf0_short_addr {
+        #[doc = "Register `inf0_short_addr` reader"]
+        pub struct R(crate::ral::R<INF0_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<INF0_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<INF0_SHORT_ADDR_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<INF0_SHORT_ADDR_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `inf0_short_addr` writer"]
+        pub struct W(crate::ral::W<INF0_SHORT_ADDR_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<INF0_SHORT_ADDR_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<INF0_SHORT_ADDR_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<INF0_SHORT_ADDR_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_inf0_short_addr` reader - "]
+        pub type MAC_INF0_SHORT_ADDR_R = crate::ral::FieldReader<u16, u16>;
+        #[doc = "Field `mac_inf0_short_addr` writer - "]
+        pub type MAC_INF0_SHORT_ADDR_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, INF0_SHORT_ADDR_SPEC, u16, u16, 16, O>;
+        impl R {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            pub fn mac_inf0_short_addr(&self) -> MAC_INF0_SHORT_ADDR_R {
+                MAC_INF0_SHORT_ADDR_R::new((self.bits & 0xffff) as u16)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf0_short_addr(&mut self) -> MAC_INF0_SHORT_ADDR_W<0> {
+                MAC_INF0_SHORT_ADDR_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [inf0_short_addr](index.html) module"]
+        pub struct INF0_SHORT_ADDR_SPEC;
+        impl crate::ral::RegisterSpec for INF0_SHORT_ADDR_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [inf0_short_addr::R](R) reader structure"]
+        impl crate::ral::Readable for INF0_SHORT_ADDR_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [inf0_short_addr::W](W) writer structure"]
+        impl crate::ral::Writable for INF0_SHORT_ADDR_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
@@ -8265,6 +9737,11 @@ pub mod ieee802154 {
         pub type HW_AUTO_ACK_TX_EN_R = crate::ral::BitReader<bool>;
         #[doc = "Field `hw_auto_ack_tx_en` writer - "]
         pub type HW_AUTO_ACK_TX_EN_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
+        #[doc = "Field `hw_enhance_ack_tx_en` reader - "]
+        pub type HW_ENHANCE_ACK_TX_EN_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `hw_enhance_ack_tx_en` writer - "]
+        pub type HW_ENHANCE_ACK_TX_EN_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
         #[doc = "Field `hw_auto_ack_rx_en` reader - "]
         pub type HW_AUTO_ACK_RX_EN_R = crate::ral::BitReader<bool>;
@@ -8326,11 +9803,36 @@ pub mod ieee802154 {
         #[doc = "Field `rx_done_trigger_idle` writer - "]
         pub type RX_DONE_TRIGGER_IDLE_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
+        #[doc = "Field `mac_inf0_enable` reader - "]
+        pub type MAC_INF0_ENABLE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `mac_inf0_enable` writer - "]
+        pub type MAC_INF0_ENABLE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
+        #[doc = "Field `mac_inf1_enable` reader - "]
+        pub type MAC_INF1_ENABLE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `mac_inf1_enable` writer - "]
+        pub type MAC_INF1_ENABLE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
+        #[doc = "Field `mac_inf2_enable` reader - "]
+        pub type MAC_INF2_ENABLE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `mac_inf2_enable` writer - "]
+        pub type MAC_INF2_ENABLE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
+        #[doc = "Field `mac_inf3_enable` reader - "]
+        pub type MAC_INF3_ENABLE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `mac_inf3_enable` writer - "]
+        pub type MAC_INF3_ENABLE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, CTRL_CFG_SPEC, bool, O>;
         impl R {
             #[doc = "Bit 0"]
             #[inline(always)]
             pub fn hw_auto_ack_tx_en(&self) -> HW_AUTO_ACK_TX_EN_R {
                 HW_AUTO_ACK_TX_EN_R::new((self.bits & 1) != 0)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            pub fn hw_enhance_ack_tx_en(&self) -> HW_ENHANCE_ACK_TX_EN_R {
+                HW_ENHANCE_ACK_TX_EN_R::new(((self.bits >> 1) & 1) != 0)
             }
             #[doc = "Bit 3"]
             #[inline(always)]
@@ -8392,6 +9894,26 @@ pub mod ieee802154 {
             pub fn rx_done_trigger_idle(&self) -> RX_DONE_TRIGGER_IDLE_R {
                 RX_DONE_TRIGGER_IDLE_R::new(((self.bits >> 27) & 1) != 0)
             }
+            #[doc = "Bit 28"]
+            #[inline(always)]
+            pub fn mac_inf0_enable(&self) -> MAC_INF0_ENABLE_R {
+                MAC_INF0_ENABLE_R::new(((self.bits >> 28) & 1) != 0)
+            }
+            #[doc = "Bit 29"]
+            #[inline(always)]
+            pub fn mac_inf1_enable(&self) -> MAC_INF1_ENABLE_R {
+                MAC_INF1_ENABLE_R::new(((self.bits >> 29) & 1) != 0)
+            }
+            #[doc = "Bit 30"]
+            #[inline(always)]
+            pub fn mac_inf2_enable(&self) -> MAC_INF2_ENABLE_R {
+                MAC_INF2_ENABLE_R::new(((self.bits >> 30) & 1) != 0)
+            }
+            #[doc = "Bit 31"]
+            #[inline(always)]
+            pub fn mac_inf3_enable(&self) -> MAC_INF3_ENABLE_R {
+                MAC_INF3_ENABLE_R::new(((self.bits >> 31) & 1) != 0)
+            }
         }
         impl W {
             #[doc = "Bit 0"]
@@ -8399,6 +9921,12 @@ pub mod ieee802154 {
             #[must_use]
             pub fn hw_auto_ack_tx_en(&mut self) -> HW_AUTO_ACK_TX_EN_W<0> {
                 HW_AUTO_ACK_TX_EN_W::new(self)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            #[must_use]
+            pub fn hw_enhance_ack_tx_en(&mut self) -> HW_ENHANCE_ACK_TX_EN_W<1> {
+                HW_ENHANCE_ACK_TX_EN_W::new(self)
             }
             #[doc = "Bit 3"]
             #[inline(always)]
@@ -8471,6 +9999,30 @@ pub mod ieee802154 {
             #[must_use]
             pub fn rx_done_trigger_idle(&mut self) -> RX_DONE_TRIGGER_IDLE_W<27> {
                 RX_DONE_TRIGGER_IDLE_W::new(self)
+            }
+            #[doc = "Bit 28"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf0_enable(&mut self) -> MAC_INF0_ENABLE_W<28> {
+                MAC_INF0_ENABLE_W::new(self)
+            }
+            #[doc = "Bit 29"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf1_enable(&mut self) -> MAC_INF1_ENABLE_W<29> {
+                MAC_INF1_ENABLE_W::new(self)
+            }
+            #[doc = "Bit 30"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf2_enable(&mut self) -> MAC_INF2_ENABLE_W<30> {
+                MAC_INF2_ENABLE_W::new(self)
+            }
+            #[doc = "Bit 31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_inf3_enable(&mut self) -> MAC_INF3_ENABLE_W<31> {
+                MAC_INF3_ENABLE_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -8585,7 +10137,7 @@ pub struct COEX {
 unsafe impl Send for COEX {}
 impl COEX {
     #[doc = r"Pointer to the register block"]
-    pub const PTR: *const coex::RegisterBlock = 0x6004_9000 as *const _;
+    pub const PTR: *const coex::RegisterBlock = 0x600a_f400 as *const _;
     #[doc = r"Return the pointer to the register block"]
     #[inline(always)]
     pub const fn ptr() -> *const coex::RegisterBlock {
@@ -8702,12 +10254,28 @@ pub mod coex {
         #[doc = "0xb4 - "]
         pub coex_src2_disbale: COEX_SRC2_DISBALE,
         #[doc = "0xb8 - "]
-        pub ocex_src0_select: OCEX_SRC0_SELECT,
+        pub coex_src3_disbale: COEX_SRC3_DISBALE,
         #[doc = "0xbc - "]
-        pub ocex_src1_select: OCEX_SRC1_SELECT,
+        pub ocex_src0_select: OCEX_SRC0_SELECT,
         #[doc = "0xc0 - "]
-        pub ocex_src2_select: OCEX_SRC2_SELECT,
+        pub ocex_src1_select: OCEX_SRC1_SELECT,
         #[doc = "0xc4 - "]
+        pub ocex_src2_select: OCEX_SRC2_SELECT,
+        #[doc = "0xc8 - "]
+        pub coex_src3_sel: COEX_SRC3_SEL,
+        #[doc = "0xcc - "]
+        pub coex_src0_rx_pti_offset: COEX_SRC0_RX_PTI_OFFSET,
+        #[doc = "0xd0 - "]
+        pub coex_src1_rx_pti_offset: COEX_SRC1_RX_PTI_OFFSET,
+        #[doc = "0xd4 - "]
+        pub coex_src2_rx_pti_offset: COEX_SRC2_RX_PTI_OFFSET,
+        #[doc = "0xd8 - "]
+        pub coex_src3_rx_pti_offset: COEX_SRC3_RX_PTI_OFFSET,
+        #[doc = "0xdc - "]
+        pub coex_stop_rf_conf: COEX_STOP_RF_CONF,
+        #[doc = "0xe0 - "]
+        pub coex_dbg: COEX_DBG,
+        #[doc = "0xe4 - "]
         pub coex_date: COEX_DATE,
     }
     #[doc = "coex_date (rw) register accessor: an alias for `Reg<COEX_DATE_SPEC>`"]
@@ -8787,6 +10355,842 @@ pub mod coex {
         }
         #[doc = "`write(|w| ..)` method takes [coex_date::W](W) writer structure"]
         impl crate::ral::Writable for COEX_DATE_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_dbg (rw) register accessor: an alias for `Reg<COEX_DBG_SPEC>`"]
+    pub type COEX_DBG = crate::ral::Reg<coex_dbg::COEX_DBG_SPEC>;
+    #[doc = ""]
+    pub mod coex_dbg {
+        #[doc = "Register `coex_dbg` reader"]
+        pub struct R(crate::ral::R<COEX_DBG_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_DBG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_DBG_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_DBG_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_dbg` writer"]
+        pub struct W(crate::ral::W<COEX_DBG_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_DBG_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_DBG_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_DBG_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_internal_pti_raw` reader - "]
+        pub type COEX_INTERNAL_PTI_RAW_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_internal_pti_raw` writer - "]
+        pub type COEX_INTERNAL_PTI_RAW_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DBG_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_internal_grant` reader - "]
+        pub type COEX_INTERNAL_GRANT_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_internal_grant` writer - "]
+        pub type COEX_INTERNAL_GRANT_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DBG_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_external_grant` reader - "]
+        pub type COEX_EXTERNAL_GRANT_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_external_grant` writer - "]
+        pub type COEX_EXTERNAL_GRANT_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_DBG_SPEC, bool, O>;
+        #[doc = "Field `coex_internal_pti_after_offset` reader - "]
+        pub type COEX_INTERNAL_PTI_AFTER_OFFSET_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_internal_pti_after_offset` writer - "]
+        pub type COEX_INTERNAL_PTI_AFTER_OFFSET_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DBG_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_rx_grant` reader - "]
+        pub type COEX_RX_GRANT_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_rx_grant` writer - "]
+        pub type COEX_RX_GRANT_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DBG_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_tx_grant` reader - "]
+        pub type COEX_TX_GRANT_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_tx_grant` writer - "]
+        pub type COEX_TX_GRANT_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_DBG_SPEC, u8, u8, 4, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn coex_internal_pti_raw(&self) -> COEX_INTERNAL_PTI_RAW_R {
+                COEX_INTERNAL_PTI_RAW_R::new((self.bits & 0x0f) as u8)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            pub fn coex_internal_grant(&self) -> COEX_INTERNAL_GRANT_R {
+                COEX_INTERNAL_GRANT_R::new(((self.bits >> 4) & 0x0f) as u8)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn coex_external_grant(&self) -> COEX_EXTERNAL_GRANT_R {
+                COEX_EXTERNAL_GRANT_R::new(((self.bits >> 8) & 1) != 0)
+            }
+            #[doc = "Bits 12:15"]
+            #[inline(always)]
+            pub fn coex_internal_pti_after_offset(&self) -> COEX_INTERNAL_PTI_AFTER_OFFSET_R {
+                COEX_INTERNAL_PTI_AFTER_OFFSET_R::new(((self.bits >> 12) & 0x0f) as u8)
+            }
+            #[doc = "Bits 16:19"]
+            #[inline(always)]
+            pub fn coex_rx_grant(&self) -> COEX_RX_GRANT_R {
+                COEX_RX_GRANT_R::new(((self.bits >> 16) & 0x0f) as u8)
+            }
+            #[doc = "Bits 20:23"]
+            #[inline(always)]
+            pub fn coex_tx_grant(&self) -> COEX_TX_GRANT_R {
+                COEX_TX_GRANT_R::new(((self.bits >> 20) & 0x0f) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_internal_pti_raw(&mut self) -> COEX_INTERNAL_PTI_RAW_W<0> {
+                COEX_INTERNAL_PTI_RAW_W::new(self)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_internal_grant(&mut self) -> COEX_INTERNAL_GRANT_W<4> {
+                COEX_INTERNAL_GRANT_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_external_grant(&mut self) -> COEX_EXTERNAL_GRANT_W<8> {
+                COEX_EXTERNAL_GRANT_W::new(self)
+            }
+            #[doc = "Bits 12:15"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_internal_pti_after_offset(
+                &mut self,
+            ) -> COEX_INTERNAL_PTI_AFTER_OFFSET_W<12> {
+                COEX_INTERNAL_PTI_AFTER_OFFSET_W::new(self)
+            }
+            #[doc = "Bits 16:19"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_rx_grant(&mut self) -> COEX_RX_GRANT_W<16> {
+                COEX_RX_GRANT_W::new(self)
+            }
+            #[doc = "Bits 20:23"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_tx_grant(&mut self) -> COEX_TX_GRANT_W<20> {
+                COEX_TX_GRANT_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_dbg](index.html) module"]
+        pub struct COEX_DBG_SPEC;
+        impl crate::ral::RegisterSpec for COEX_DBG_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_dbg::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_DBG_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_dbg::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_DBG_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_stop_rf_conf (rw) register accessor: an alias for `Reg<COEX_STOP_RF_CONF_SPEC>`"]
+    pub type COEX_STOP_RF_CONF = crate::ral::Reg<coex_stop_rf_conf::COEX_STOP_RF_CONF_SPEC>;
+    #[doc = ""]
+    pub mod coex_stop_rf_conf {
+        #[doc = "Register `coex_stop_rf_conf` reader"]
+        pub struct R(crate::ral::R<COEX_STOP_RF_CONF_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_STOP_RF_CONF_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_STOP_RF_CONF_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_STOP_RF_CONF_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_stop_rf_conf` writer"]
+        pub struct W(crate::ral::W<COEX_STOP_RF_CONF_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_STOP_RF_CONF_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_STOP_RF_CONF_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_STOP_RF_CONF_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_in1_allow_stop_rf` reader - "]
+        pub type COEX_IN1_ALLOW_STOP_RF_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_in1_allow_stop_rf` writer - "]
+        pub type COEX_IN1_ALLOW_STOP_RF_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_STOP_RF_CONF_SPEC, bool, O>;
+        #[doc = "Field `coex_in2_allow_stop_rf` reader - "]
+        pub type COEX_IN2_ALLOW_STOP_RF_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_in2_allow_stop_rf` writer - "]
+        pub type COEX_IN2_ALLOW_STOP_RF_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_STOP_RF_CONF_SPEC, bool, O>;
+        #[doc = "Field `coex_in3_allow_stop_rf` reader - "]
+        pub type COEX_IN3_ALLOW_STOP_RF_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_in3_allow_stop_rf` writer - "]
+        pub type COEX_IN3_ALLOW_STOP_RF_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_STOP_RF_CONF_SPEC, bool, O>;
+        #[doc = "Field `coex_modem_idle_allow_stop_rf` reader - "]
+        pub type COEX_MODEM_IDLE_ALLOW_STOP_RF_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_modem_idle_allow_stop_rf` writer - "]
+        pub type COEX_MODEM_IDLE_ALLOW_STOP_RF_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_STOP_RF_CONF_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            pub fn coex_in1_allow_stop_rf(&self) -> COEX_IN1_ALLOW_STOP_RF_R {
+                COEX_IN1_ALLOW_STOP_RF_R::new((self.bits & 1) != 0)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            pub fn coex_in2_allow_stop_rf(&self) -> COEX_IN2_ALLOW_STOP_RF_R {
+                COEX_IN2_ALLOW_STOP_RF_R::new(((self.bits >> 1) & 1) != 0)
+            }
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            pub fn coex_in3_allow_stop_rf(&self) -> COEX_IN3_ALLOW_STOP_RF_R {
+                COEX_IN3_ALLOW_STOP_RF_R::new(((self.bits >> 2) & 1) != 0)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            pub fn coex_modem_idle_allow_stop_rf(&self) -> COEX_MODEM_IDLE_ALLOW_STOP_RF_R {
+                COEX_MODEM_IDLE_ALLOW_STOP_RF_R::new(((self.bits >> 3) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_in1_allow_stop_rf(&mut self) -> COEX_IN1_ALLOW_STOP_RF_W<0> {
+                COEX_IN1_ALLOW_STOP_RF_W::new(self)
+            }
+            #[doc = "Bit 1"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_in2_allow_stop_rf(&mut self) -> COEX_IN2_ALLOW_STOP_RF_W<1> {
+                COEX_IN2_ALLOW_STOP_RF_W::new(self)
+            }
+            #[doc = "Bit 2"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_in3_allow_stop_rf(&mut self) -> COEX_IN3_ALLOW_STOP_RF_W<2> {
+                COEX_IN3_ALLOW_STOP_RF_W::new(self)
+            }
+            #[doc = "Bit 3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_modem_idle_allow_stop_rf(&mut self) -> COEX_MODEM_IDLE_ALLOW_STOP_RF_W<3> {
+                COEX_MODEM_IDLE_ALLOW_STOP_RF_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_stop_rf_conf](index.html) module"]
+        pub struct COEX_STOP_RF_CONF_SPEC;
+        impl crate::ral::RegisterSpec for COEX_STOP_RF_CONF_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_stop_rf_conf::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_STOP_RF_CONF_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_stop_rf_conf::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_STOP_RF_CONF_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src3_rx_pti_offset (rw) register accessor: an alias for `Reg<COEX_SRC3_RX_PTI_OFFSET_SPEC>`"]
+    pub type COEX_SRC3_RX_PTI_OFFSET =
+        crate::ral::Reg<coex_src3_rx_pti_offset::COEX_SRC3_RX_PTI_OFFSET_SPEC>;
+    #[doc = ""]
+    pub mod coex_src3_rx_pti_offset {
+        #[doc = "Register `coex_src3_rx_pti_offset` reader"]
+        pub struct R(crate::ral::R<COEX_SRC3_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC3_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC3_RX_PTI_OFFSET_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC3_RX_PTI_OFFSET_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src3_rx_pti_offset` writer"]
+        pub struct W(crate::ral::W<COEX_SRC3_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC3_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC3_RX_PTI_OFFSET_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC3_RX_PTI_OFFSET_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src3_rx_pti_offset` reader - "]
+        pub type COEX_SRC3_RX_PTI_OFFSET_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src3_rx_pti_offset` writer - "]
+        pub type COEX_SRC3_RX_PTI_OFFSET_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC3_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src3_pti` reader - "]
+        pub type COEX_SRC3_PTI_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src3_pti` writer - "]
+        pub type COEX_SRC3_PTI_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC3_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src3_tx_flag` reader - "]
+        pub type COEX_SRC3_TX_FLAG_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_src3_tx_flag` writer - "]
+        pub type COEX_SRC3_TX_FLAG_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SRC3_RX_PTI_OFFSET_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn coex_src3_rx_pti_offset(&self) -> COEX_SRC3_RX_PTI_OFFSET_R {
+                COEX_SRC3_RX_PTI_OFFSET_R::new((self.bits & 0x0f) as u8)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            pub fn coex_src3_pti(&self) -> COEX_SRC3_PTI_R {
+                COEX_SRC3_PTI_R::new(((self.bits >> 4) & 0x0f) as u8)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn coex_src3_tx_flag(&self) -> COEX_SRC3_TX_FLAG_R {
+                COEX_SRC3_TX_FLAG_R::new(((self.bits >> 8) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src3_rx_pti_offset(&mut self) -> COEX_SRC3_RX_PTI_OFFSET_W<0> {
+                COEX_SRC3_RX_PTI_OFFSET_W::new(self)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src3_pti(&mut self) -> COEX_SRC3_PTI_W<4> {
+                COEX_SRC3_PTI_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src3_tx_flag(&mut self) -> COEX_SRC3_TX_FLAG_W<8> {
+                COEX_SRC3_TX_FLAG_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src3_rx_pti_offset](index.html) module"]
+        pub struct COEX_SRC3_RX_PTI_OFFSET_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC3_RX_PTI_OFFSET_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src3_rx_pti_offset::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC3_RX_PTI_OFFSET_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src3_rx_pti_offset::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC3_RX_PTI_OFFSET_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src2_rx_pti_offset (rw) register accessor: an alias for `Reg<COEX_SRC2_RX_PTI_OFFSET_SPEC>`"]
+    pub type COEX_SRC2_RX_PTI_OFFSET =
+        crate::ral::Reg<coex_src2_rx_pti_offset::COEX_SRC2_RX_PTI_OFFSET_SPEC>;
+    #[doc = ""]
+    pub mod coex_src2_rx_pti_offset {
+        #[doc = "Register `coex_src2_rx_pti_offset` reader"]
+        pub struct R(crate::ral::R<COEX_SRC2_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC2_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC2_RX_PTI_OFFSET_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC2_RX_PTI_OFFSET_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src2_rx_pti_offset` writer"]
+        pub struct W(crate::ral::W<COEX_SRC2_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC2_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC2_RX_PTI_OFFSET_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC2_RX_PTI_OFFSET_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src2_rx_pti_offset` reader - "]
+        pub type COEX_SRC2_RX_PTI_OFFSET_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src2_rx_pti_offset` writer - "]
+        pub type COEX_SRC2_RX_PTI_OFFSET_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC2_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src2_pti` reader - "]
+        pub type COEX_SRC2_PTI_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src2_pti` writer - "]
+        pub type COEX_SRC2_PTI_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC2_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src2_tx_flag` reader - "]
+        pub type COEX_SRC2_TX_FLAG_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_src2_tx_flag` writer - "]
+        pub type COEX_SRC2_TX_FLAG_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SRC2_RX_PTI_OFFSET_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn coex_src2_rx_pti_offset(&self) -> COEX_SRC2_RX_PTI_OFFSET_R {
+                COEX_SRC2_RX_PTI_OFFSET_R::new((self.bits & 0x0f) as u8)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            pub fn coex_src2_pti(&self) -> COEX_SRC2_PTI_R {
+                COEX_SRC2_PTI_R::new(((self.bits >> 4) & 0x0f) as u8)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn coex_src2_tx_flag(&self) -> COEX_SRC2_TX_FLAG_R {
+                COEX_SRC2_TX_FLAG_R::new(((self.bits >> 8) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src2_rx_pti_offset(&mut self) -> COEX_SRC2_RX_PTI_OFFSET_W<0> {
+                COEX_SRC2_RX_PTI_OFFSET_W::new(self)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src2_pti(&mut self) -> COEX_SRC2_PTI_W<4> {
+                COEX_SRC2_PTI_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src2_tx_flag(&mut self) -> COEX_SRC2_TX_FLAG_W<8> {
+                COEX_SRC2_TX_FLAG_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src2_rx_pti_offset](index.html) module"]
+        pub struct COEX_SRC2_RX_PTI_OFFSET_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC2_RX_PTI_OFFSET_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src2_rx_pti_offset::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC2_RX_PTI_OFFSET_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src2_rx_pti_offset::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC2_RX_PTI_OFFSET_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src1_rx_pti_offset (rw) register accessor: an alias for `Reg<COEX_SRC1_RX_PTI_OFFSET_SPEC>`"]
+    pub type COEX_SRC1_RX_PTI_OFFSET =
+        crate::ral::Reg<coex_src1_rx_pti_offset::COEX_SRC1_RX_PTI_OFFSET_SPEC>;
+    #[doc = ""]
+    pub mod coex_src1_rx_pti_offset {
+        #[doc = "Register `coex_src1_rx_pti_offset` reader"]
+        pub struct R(crate::ral::R<COEX_SRC1_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC1_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC1_RX_PTI_OFFSET_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC1_RX_PTI_OFFSET_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src1_rx_pti_offset` writer"]
+        pub struct W(crate::ral::W<COEX_SRC1_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC1_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC1_RX_PTI_OFFSET_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC1_RX_PTI_OFFSET_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src1_rx_pti_offset` reader - "]
+        pub type COEX_SRC1_RX_PTI_OFFSET_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src1_rx_pti_offset` writer - "]
+        pub type COEX_SRC1_RX_PTI_OFFSET_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC1_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src1_pti` reader - "]
+        pub type COEX_SRC1_PTI_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src1_pti` writer - "]
+        pub type COEX_SRC1_PTI_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC1_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src1_tx_flag` reader - "]
+        pub type COEX_SRC1_TX_FLAG_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_src1_tx_flag` writer - "]
+        pub type COEX_SRC1_TX_FLAG_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SRC1_RX_PTI_OFFSET_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn coex_src1_rx_pti_offset(&self) -> COEX_SRC1_RX_PTI_OFFSET_R {
+                COEX_SRC1_RX_PTI_OFFSET_R::new((self.bits & 0x0f) as u8)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            pub fn coex_src1_pti(&self) -> COEX_SRC1_PTI_R {
+                COEX_SRC1_PTI_R::new(((self.bits >> 4) & 0x0f) as u8)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn coex_src1_tx_flag(&self) -> COEX_SRC1_TX_FLAG_R {
+                COEX_SRC1_TX_FLAG_R::new(((self.bits >> 8) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src1_rx_pti_offset(&mut self) -> COEX_SRC1_RX_PTI_OFFSET_W<0> {
+                COEX_SRC1_RX_PTI_OFFSET_W::new(self)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src1_pti(&mut self) -> COEX_SRC1_PTI_W<4> {
+                COEX_SRC1_PTI_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src1_tx_flag(&mut self) -> COEX_SRC1_TX_FLAG_W<8> {
+                COEX_SRC1_TX_FLAG_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src1_rx_pti_offset](index.html) module"]
+        pub struct COEX_SRC1_RX_PTI_OFFSET_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC1_RX_PTI_OFFSET_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src1_rx_pti_offset::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC1_RX_PTI_OFFSET_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src1_rx_pti_offset::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC1_RX_PTI_OFFSET_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src0_rx_pti_offset (rw) register accessor: an alias for `Reg<COEX_SRC0_RX_PTI_OFFSET_SPEC>`"]
+    pub type COEX_SRC0_RX_PTI_OFFSET =
+        crate::ral::Reg<coex_src0_rx_pti_offset::COEX_SRC0_RX_PTI_OFFSET_SPEC>;
+    #[doc = ""]
+    pub mod coex_src0_rx_pti_offset {
+        #[doc = "Register `coex_src0_rx_pti_offset` reader"]
+        pub struct R(crate::ral::R<COEX_SRC0_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC0_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC0_RX_PTI_OFFSET_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC0_RX_PTI_OFFSET_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src0_rx_pti_offset` writer"]
+        pub struct W(crate::ral::W<COEX_SRC0_RX_PTI_OFFSET_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC0_RX_PTI_OFFSET_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC0_RX_PTI_OFFSET_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC0_RX_PTI_OFFSET_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src0_rx_pti_offset` reader - "]
+        pub type COEX_SRC0_RX_PTI_OFFSET_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src0_rx_pti_offset` writer - "]
+        pub type COEX_SRC0_RX_PTI_OFFSET_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC0_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src0_pti` reader - "]
+        pub type COEX_SRC0_PTI_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src0_pti` writer - "]
+        pub type COEX_SRC0_PTI_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC0_RX_PTI_OFFSET_SPEC, u8, u8, 4, O>;
+        #[doc = "Field `coex_src0_tx_flag` reader - "]
+        pub type COEX_SRC0_TX_FLAG_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_src0_tx_flag` writer - "]
+        pub type COEX_SRC0_TX_FLAG_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SRC0_RX_PTI_OFFSET_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            pub fn coex_src0_rx_pti_offset(&self) -> COEX_SRC0_RX_PTI_OFFSET_R {
+                COEX_SRC0_RX_PTI_OFFSET_R::new((self.bits & 0x0f) as u8)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            pub fn coex_src0_pti(&self) -> COEX_SRC0_PTI_R {
+                COEX_SRC0_PTI_R::new(((self.bits >> 4) & 0x0f) as u8)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            pub fn coex_src0_tx_flag(&self) -> COEX_SRC0_TX_FLAG_R {
+                COEX_SRC0_TX_FLAG_R::new(((self.bits >> 8) & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:3"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src0_rx_pti_offset(&mut self) -> COEX_SRC0_RX_PTI_OFFSET_W<0> {
+                COEX_SRC0_RX_PTI_OFFSET_W::new(self)
+            }
+            #[doc = "Bits 4:7"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src0_pti(&mut self) -> COEX_SRC0_PTI_W<4> {
+                COEX_SRC0_PTI_W::new(self)
+            }
+            #[doc = "Bit 8"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src0_tx_flag(&mut self) -> COEX_SRC0_TX_FLAG_W<8> {
+                COEX_SRC0_TX_FLAG_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src0_rx_pti_offset](index.html) module"]
+        pub struct COEX_SRC0_RX_PTI_OFFSET_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC0_RX_PTI_OFFSET_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src0_rx_pti_offset::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC0_RX_PTI_OFFSET_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src0_rx_pti_offset::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC0_RX_PTI_OFFSET_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src3_sel (rw) register accessor: an alias for `Reg<COEX_SRC3_SEL_SPEC>`"]
+    pub type COEX_SRC3_SEL = crate::ral::Reg<coex_src3_sel::COEX_SRC3_SEL_SPEC>;
+    #[doc = ""]
+    pub mod coex_src3_sel {
+        #[doc = "Register `coex_src3_sel` reader"]
+        pub struct R(crate::ral::R<COEX_SRC3_SEL_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC3_SEL_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC3_SEL_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC3_SEL_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src3_sel` writer"]
+        pub struct W(crate::ral::W<COEX_SRC3_SEL_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC3_SEL_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC3_SEL_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC3_SEL_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src3_select` reader - "]
+        pub type COEX_SRC3_SELECT_R = crate::ral::FieldReader<u8, u8>;
+        #[doc = "Field `coex_src3_select` writer - "]
+        pub type COEX_SRC3_SELECT_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, COEX_SRC3_SEL_SPEC, u8, u8, 2, O>;
+        impl R {
+            #[doc = "Bits 0:1"]
+            #[inline(always)]
+            pub fn coex_src3_select(&self) -> COEX_SRC3_SELECT_R {
+                COEX_SRC3_SELECT_R::new((self.bits & 3) as u8)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:1"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src3_select(&mut self) -> COEX_SRC3_SELECT_W<0> {
+                COEX_SRC3_SELECT_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src3_sel](index.html) module"]
+        pub struct COEX_SRC3_SEL_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC3_SEL_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src3_sel::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC3_SEL_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src3_sel::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC3_SEL_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
@@ -9033,6 +11437,88 @@ pub mod coex {
         }
         #[doc = "`write(|w| ..)` method takes [ocex_src0_select::W](W) writer structure"]
         impl crate::ral::Writable for OCEX_SRC0_SELECT_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "coex_src3_disbale (rw) register accessor: an alias for `Reg<COEX_SRC3_DISBALE_SPEC>`"]
+    pub type COEX_SRC3_DISBALE = crate::ral::Reg<coex_src3_disbale::COEX_SRC3_DISBALE_SPEC>;
+    #[doc = ""]
+    pub mod coex_src3_disbale {
+        #[doc = "Register `coex_src3_disbale` reader"]
+        pub struct R(crate::ral::R<COEX_SRC3_DISBALE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<COEX_SRC3_DISBALE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<COEX_SRC3_DISBALE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<COEX_SRC3_DISBALE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `coex_src3_disbale` writer"]
+        pub struct W(crate::ral::W<COEX_SRC3_DISBALE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<COEX_SRC3_DISBALE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<COEX_SRC3_DISBALE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<COEX_SRC3_DISBALE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `coex_src3_dis` reader - "]
+        pub type COEX_SRC3_DIS_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_src3_dis` writer - "]
+        pub type COEX_SRC3_DIS_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SRC3_DISBALE_SPEC, bool, O>;
+        impl R {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            pub fn coex_src3_dis(&self) -> COEX_SRC3_DIS_R {
+                COEX_SRC3_DIS_R::new((self.bits & 1) != 0)
+            }
+        }
+        impl W {
+            #[doc = "Bit 0"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_src3_dis(&mut self) -> COEX_SRC3_DIS_W<0> {
+                COEX_SRC3_DIS_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [coex_src3_disbale](index.html) module"]
+        pub struct COEX_SRC3_DISBALE_SPEC;
+        impl crate::ral::RegisterSpec for COEX_SRC3_DISBALE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [coex_src3_disbale::R](R) reader structure"]
+        impl crate::ral::Readable for COEX_SRC3_DISBALE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [coex_src3_disbale::W](W) writer structure"]
+        impl crate::ral::Writable for COEX_SRC3_DISBALE_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
@@ -9416,6 +11902,16 @@ pub mod coex {
         #[doc = "Field `coex_switch_filter_ena` writer - "]
         pub type COEX_SWITCH_FILTER_ENA_W<'a, const O: u8> =
             crate::ral::BitWriter<'a, u32, COEX_SWITCH_FILTER_SPEC, bool, O>;
+        #[doc = "Field `coex_switch_filter_mode` reader - "]
+        pub type COEX_SWITCH_FILTER_MODE_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_switch_filter_mode` writer - "]
+        pub type COEX_SWITCH_FILTER_MODE_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SWITCH_FILTER_SPEC, bool, O>;
+        #[doc = "Field `coex_enable_force_rx` reader - "]
+        pub type COEX_ENABLE_FORCE_RX_R = crate::ral::BitReader<bool>;
+        #[doc = "Field `coex_enable_force_rx` writer - "]
+        pub type COEX_ENABLE_FORCE_RX_W<'a, const O: u8> =
+            crate::ral::BitWriter<'a, u32, COEX_SWITCH_FILTER_SPEC, bool, O>;
         impl R {
             #[doc = "Bits 0:11"]
             #[inline(always)]
@@ -9426,6 +11922,16 @@ pub mod coex {
             #[inline(always)]
             pub fn coex_switch_filter_ena(&self) -> COEX_SWITCH_FILTER_ENA_R {
                 COEX_SWITCH_FILTER_ENA_R::new(((self.bits >> 12) & 1) != 0)
+            }
+            #[doc = "Bit 13"]
+            #[inline(always)]
+            pub fn coex_switch_filter_mode(&self) -> COEX_SWITCH_FILTER_MODE_R {
+                COEX_SWITCH_FILTER_MODE_R::new(((self.bits >> 13) & 1) != 0)
+            }
+            #[doc = "Bit 14"]
+            #[inline(always)]
+            pub fn coex_enable_force_rx(&self) -> COEX_ENABLE_FORCE_RX_R {
+                COEX_ENABLE_FORCE_RX_R::new(((self.bits >> 14) & 1) != 0)
             }
         }
         impl W {
@@ -9440,6 +11946,18 @@ pub mod coex {
             #[must_use]
             pub fn coex_switch_filter_ena(&mut self) -> COEX_SWITCH_FILTER_ENA_W<12> {
                 COEX_SWITCH_FILTER_ENA_W::new(self)
+            }
+            #[doc = "Bit 13"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_switch_filter_mode(&mut self) -> COEX_SWITCH_FILTER_MODE_W<13> {
+                COEX_SWITCH_FILTER_MODE_W::new(self)
+            }
+            #[doc = "Bit 14"]
+            #[inline(always)]
+            #[must_use]
+            pub fn coex_enable_force_rx(&mut self) -> COEX_ENABLE_FORCE_RX_W<14> {
+                COEX_ENABLE_FORCE_RX_W::new(self)
             }
             #[doc = "Writes raw bits to the register."]
             #[inline(always)]
@@ -13611,571 +16129,6 @@ pub mod coex {
         }
     }
 }
-#[doc = "etm"]
-pub struct ETM {
-    _marker: PhantomData<*const ()>,
-}
-unsafe impl Send for ETM {}
-impl ETM {
-    #[doc = r"Pointer to the register block"]
-    pub const PTR: *const etm::RegisterBlock = 0x6004_4000 as *const _;
-    #[doc = r"Return the pointer to the register block"]
-    #[inline(always)]
-    pub const fn ptr() -> *const etm::RegisterBlock {
-        Self::PTR
-    }
-}
-impl Deref for ETM {
-    type Target = etm::RegisterBlock;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*Self::PTR }
-    }
-}
-impl core::fmt::Debug for ETM {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        f.debug_struct("ETM").finish()
-    }
-}
-#[doc = "etm"]
-pub mod etm {
-    #[doc = r"Register block"]
-    #[repr(C)]
-    pub struct RegisterBlock {
-        #[doc = "0x00 - "]
-        pub etm_chen_ad0: ETM_CHEN_AD0,
-        #[doc = "0x04 - "]
-        pub etm_chenset_ad0: ETM_CHENSET_AD0,
-        #[doc = "0x08 - "]
-        pub etm_chenclr_ad0: ETM_CHENCLR_AD0,
-        _reserved3: [u8; 0x0c],
-        #[doc = "0x18 - "]
-        pub etm_ch0_evt_id: ETM_CH0_EVT_ID,
-        #[doc = "0x1c - "]
-        pub etm_ch0_task_id: ETM_CH0_TASK_ID,
-        _reserved5: [u8; 0xbc],
-        #[doc = "0xdc - "]
-        pub etm_clk_en: ETM_CLK_EN,
-    }
-    #[doc = "etm_ch0_task_id (rw) register accessor: an alias for `Reg<ETM_CH0_TASK_ID_SPEC>`"]
-    pub type ETM_CH0_TASK_ID = crate::ral::Reg<etm_ch0_task_id::ETM_CH0_TASK_ID_SPEC>;
-    #[doc = ""]
-    pub mod etm_ch0_task_id {
-        #[doc = "Register `etm_ch0_task_id` reader"]
-        pub struct R(crate::ral::R<ETM_CH0_TASK_ID_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CH0_TASK_ID_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CH0_TASK_ID_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CH0_TASK_ID_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_ch0_task_id` writer"]
-        pub struct W(crate::ral::W<ETM_CH0_TASK_ID_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CH0_TASK_ID_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CH0_TASK_ID_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CH0_TASK_ID_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_ch0_task_id](index.html) module"]
-        pub struct ETM_CH0_TASK_ID_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CH0_TASK_ID_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_ch0_task_id::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CH0_TASK_ID_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_ch0_task_id::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CH0_TASK_ID_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "etm_ch0_evt_id (rw) register accessor: an alias for `Reg<ETM_CH0_EVT_ID_SPEC>`"]
-    pub type ETM_CH0_EVT_ID = crate::ral::Reg<etm_ch0_evt_id::ETM_CH0_EVT_ID_SPEC>;
-    #[doc = ""]
-    pub mod etm_ch0_evt_id {
-        #[doc = "Register `etm_ch0_evt_id` reader"]
-        pub struct R(crate::ral::R<ETM_CH0_EVT_ID_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CH0_EVT_ID_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CH0_EVT_ID_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CH0_EVT_ID_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_ch0_evt_id` writer"]
-        pub struct W(crate::ral::W<ETM_CH0_EVT_ID_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CH0_EVT_ID_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CH0_EVT_ID_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CH0_EVT_ID_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_ch0_evt_id](index.html) module"]
-        pub struct ETM_CH0_EVT_ID_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CH0_EVT_ID_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_ch0_evt_id::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CH0_EVT_ID_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_ch0_evt_id::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CH0_EVT_ID_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "etm_chenclr_ad0 (rw) register accessor: an alias for `Reg<ETM_CHENCLR_AD0_SPEC>`"]
-    pub type ETM_CHENCLR_AD0 = crate::ral::Reg<etm_chenclr_ad0::ETM_CHENCLR_AD0_SPEC>;
-    #[doc = ""]
-    pub mod etm_chenclr_ad0 {
-        #[doc = "Register `etm_chenclr_ad0` reader"]
-        pub struct R(crate::ral::R<ETM_CHENCLR_AD0_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CHENCLR_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CHENCLR_AD0_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CHENCLR_AD0_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_chenclr_ad0` writer"]
-        pub struct W(crate::ral::W<ETM_CHENCLR_AD0_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CHENCLR_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CHENCLR_AD0_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CHENCLR_AD0_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chenclr_ad0](index.html) module"]
-        pub struct ETM_CHENCLR_AD0_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CHENCLR_AD0_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_chenclr_ad0::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CHENCLR_AD0_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_chenclr_ad0::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CHENCLR_AD0_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "etm_chenset_ad0 (rw) register accessor: an alias for `Reg<ETM_CHENSET_AD0_SPEC>`"]
-    pub type ETM_CHENSET_AD0 = crate::ral::Reg<etm_chenset_ad0::ETM_CHENSET_AD0_SPEC>;
-    #[doc = ""]
-    pub mod etm_chenset_ad0 {
-        #[doc = "Register `etm_chenset_ad0` reader"]
-        pub struct R(crate::ral::R<ETM_CHENSET_AD0_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CHENSET_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CHENSET_AD0_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CHENSET_AD0_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_chenset_ad0` writer"]
-        pub struct W(crate::ral::W<ETM_CHENSET_AD0_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CHENSET_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CHENSET_AD0_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CHENSET_AD0_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chenset_ad0](index.html) module"]
-        pub struct ETM_CHENSET_AD0_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CHENSET_AD0_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_chenset_ad0::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CHENSET_AD0_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_chenset_ad0::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CHENSET_AD0_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "etm_chen_ad0 (rw) register accessor: an alias for `Reg<ETM_CHEN_AD0_SPEC>`"]
-    pub type ETM_CHEN_AD0 = crate::ral::Reg<etm_chen_ad0::ETM_CHEN_AD0_SPEC>;
-    #[doc = ""]
-    pub mod etm_chen_ad0 {
-        #[doc = "Register `etm_chen_ad0` reader"]
-        pub struct R(crate::ral::R<ETM_CHEN_AD0_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CHEN_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CHEN_AD0_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CHEN_AD0_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_chen_ad0` writer"]
-        pub struct W(crate::ral::W<ETM_CHEN_AD0_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CHEN_AD0_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CHEN_AD0_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CHEN_AD0_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_chen_ad0](index.html) module"]
-        pub struct ETM_CHEN_AD0_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CHEN_AD0_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_chen_ad0::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CHEN_AD0_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_chen_ad0::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CHEN_AD0_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "etm_clk_en (rw) register accessor: an alias for `Reg<ETM_CLK_EN_SPEC>`"]
-    pub type ETM_CLK_EN = crate::ral::Reg<etm_clk_en::ETM_CLK_EN_SPEC>;
-    #[doc = ""]
-    pub mod etm_clk_en {
-        #[doc = "Register `etm_clk_en` reader"]
-        pub struct R(crate::ral::R<ETM_CLK_EN_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<ETM_CLK_EN_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<ETM_CLK_EN_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<ETM_CLK_EN_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `etm_clk_en` writer"]
-        pub struct W(crate::ral::W<ETM_CLK_EN_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<ETM_CLK_EN_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<ETM_CLK_EN_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<ETM_CLK_EN_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        impl W {
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [etm_clk_en](index.html) module"]
-        pub struct ETM_CLK_EN_SPEC;
-        impl crate::ral::RegisterSpec for ETM_CLK_EN_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [etm_clk_en::R](R) reader structure"]
-        impl crate::ral::Readable for ETM_CLK_EN_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [etm_clk_en::W](W) writer structure"]
-        impl crate::ral::Writable for ETM_CLK_EN_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-}
-#[doc = "clkrst"]
-pub struct CLKRST {
-    _marker: PhantomData<*const ()>,
-}
-unsafe impl Send for CLKRST {}
-impl CLKRST {
-    #[doc = r"Pointer to the register block"]
-    pub const PTR: *const clkrst::RegisterBlock = 0x6004_b000 as *const _;
-    #[doc = r"Return the pointer to the register block"]
-    #[inline(always)]
-    pub const fn ptr() -> *const clkrst::RegisterBlock {
-        Self::PTR
-    }
-}
-impl Deref for CLKRST {
-    type Target = clkrst::RegisterBlock;
-    #[inline(always)]
-    fn deref(&self) -> &Self::Target {
-        unsafe { &*Self::PTR }
-    }
-}
-impl core::fmt::Debug for CLKRST {
-    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        f.debug_struct("CLKRST").finish()
-    }
-}
-#[doc = "clkrst"]
-pub mod clkrst {
-    #[doc = r"Register block"]
-    #[repr(C)]
-    pub struct RegisterBlock {
-        _reserved0: [u8; 0x0c],
-        #[doc = "0x0c - "]
-        pub clkrst_modclk_conf: CLKRST_MODCLK_CONF,
-    }
-    #[doc = "clkrst_modclk_conf (rw) register accessor: an alias for `Reg<CLKRST_MODCLK_CONF_SPEC>`"]
-    pub type CLKRST_MODCLK_CONF = crate::ral::Reg<clkrst_modclk_conf::CLKRST_MODCLK_CONF_SPEC>;
-    #[doc = ""]
-    pub mod clkrst_modclk_conf {
-        #[doc = "Register `clkrst_modclk_conf` reader"]
-        pub struct R(crate::ral::R<CLKRST_MODCLK_CONF_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<CLKRST_MODCLK_CONF_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<CLKRST_MODCLK_CONF_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<CLKRST_MODCLK_CONF_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `clkrst_modclk_conf` writer"]
-        pub struct W(crate::ral::W<CLKRST_MODCLK_CONF_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<CLKRST_MODCLK_CONF_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<CLKRST_MODCLK_CONF_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<CLKRST_MODCLK_CONF_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `clkrst_etm_clk_sel` reader - "]
-        pub type CLKRST_ETM_CLK_SEL_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `clkrst_etm_clk_sel` writer - "]
-        pub type CLKRST_ETM_CLK_SEL_W<'a, const O: u8> =
-            crate::ral::BitWriter<'a, u32, CLKRST_MODCLK_CONF_SPEC, bool, O>;
-        #[doc = "Field `clkrst_etm_clk_active` reader - "]
-        pub type CLKRST_ETM_CLK_ACTIVE_R = crate::ral::BitReader<bool>;
-        #[doc = "Field `clkrst_etm_clk_active` writer - "]
-        pub type CLKRST_ETM_CLK_ACTIVE_W<'a, const O: u8> =
-            crate::ral::BitWriter<'a, u32, CLKRST_MODCLK_CONF_SPEC, bool, O>;
-        impl R {
-            #[doc = "Bit 2"]
-            #[inline(always)]
-            pub fn clkrst_etm_clk_sel(&self) -> CLKRST_ETM_CLK_SEL_R {
-                CLKRST_ETM_CLK_SEL_R::new(((self.bits >> 2) & 1) != 0)
-            }
-            #[doc = "Bit 3"]
-            #[inline(always)]
-            pub fn clkrst_etm_clk_active(&self) -> CLKRST_ETM_CLK_ACTIVE_R {
-                CLKRST_ETM_CLK_ACTIVE_R::new(((self.bits >> 3) & 1) != 0)
-            }
-        }
-        impl W {
-            #[doc = "Bit 2"]
-            #[inline(always)]
-            #[must_use]
-            pub fn clkrst_etm_clk_sel(&mut self) -> CLKRST_ETM_CLK_SEL_W<2> {
-                CLKRST_ETM_CLK_SEL_W::new(self)
-            }
-            #[doc = "Bit 3"]
-            #[inline(always)]
-            #[must_use]
-            pub fn clkrst_etm_clk_active(&mut self) -> CLKRST_ETM_CLK_ACTIVE_W<3> {
-                CLKRST_ETM_CLK_ACTIVE_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [clkrst_modclk_conf](index.html) module"]
-        pub struct CLKRST_MODCLK_CONF_SPEC;
-        impl crate::ral::RegisterSpec for CLKRST_MODCLK_CONF_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [clkrst_modclk_conf::R](R) reader structure"]
-        impl crate::ral::Readable for CLKRST_MODCLK_CONF_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [clkrst_modclk_conf::W](W) writer structure"]
-        impl crate::ral::Writable for CLKRST_MODCLK_CONF_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-}
 #[no_mangle]
 static mut IEEE802154_PERIPHERALS: bool = false;
 #[doc = r" All the peripherals."]
@@ -14185,10 +16138,6 @@ pub struct Peripherals {
     pub IEEE802154: IEEE802154,
     #[doc = "COEX"]
     pub COEX: COEX,
-    #[doc = "ETM"]
-    pub ETM: ETM,
-    #[doc = "CLKRST"]
-    pub CLKRST: CLKRST,
 }
 impl Peripherals {
     #[doc = r" Returns all the peripherals *once*."]
@@ -14215,12 +16164,6 @@ impl Peripherals {
                 _marker: PhantomData,
             },
             COEX: COEX {
-                _marker: PhantomData,
-            },
-            ETM: ETM {
-                _marker: PhantomData,
-            },
-            CLKRST: CLKRST {
                 _marker: PhantomData,
             },
         }

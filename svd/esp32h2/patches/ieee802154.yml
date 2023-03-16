@@ -1,0 +1,35 @@
+_svd: ../ieee802154.base.svd
+
+ieee802154:
+  error_cnt_clear:
+    _modify:
+      iee802154_cca_busy_cnt_clear:
+        name: ieee802154_cca_busy_cnt_clear
+      iee802154_tx_security_error_cnt_clear:
+        name: ieee802154_tx_security_error_cnt_clear
+      iee802154_tx_break_coex_cnt_clear:
+        name: ieee802154_tx_break_coex_cnt_clear
+      iee802154_rx_ack_timeout_cnt_clear:
+        name: ieee802154_rx_ack_timeout_cnt_clear
+      iee802154_rx_ack_abort_coex_cnt_clear:
+        name: ieee802154_rx_ack_abort_coex_cnt_clear
+      iee802154_ed_scan_coex_cnt_clear:
+        name: ieee802154_ed_scan_coex_cnt_clear
+      iee802154_tx_ack_abort_coex_cnt_clear:
+        name: ieee802154_tx_ack_abort_coex_cnt_clear
+      iee802154_rx_restart_cnt_clear:
+        name: ieee802154_rx_restart_cnt_clear
+      iee802154_rx_abort_coex_cnt_clear:
+        name: ieee802154_rx_abort_coex_cnt_clear
+      iee802154_no_rss_detect_cnt_clear:
+        name: ieee802154_no_rss_detect_cnt_clear
+      iee802154_rx_filter_fail_cnt_clear:
+        name: ieee802154_rx_filter_fail_cnt_clear
+      iee802154_cca_fail_cnt_clear:
+        name: ieee802154_cca_fail_cnt_clear
+      iee802154_ed_abort_cnt_clear:
+        name: ieee802154_ed_abort_cnt_clear
+      iee802154_crc_error_cnt_clear:
+        name: ieee802154_crc_error_cnt_clear
+      iee802154_sfd_timeout_cnt_clear:
+        name: ieee802154_sfd_timeout_cnt_clear

@@ -18,8 +18,10 @@ use xshell::{cmd, Shell};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display, ValueEnum)]
 #[strum(serialize_all = "lowercase")]
 enum Chip {
-    /// ESP32-H4
-    Esp32h4,
+    /// ESP32-H2
+    Esp32h2,
+    /// ESP32-C6
+    Esp32c6,
 }
 
 #[derive(Debug, Parser)]
@@ -31,7 +33,10 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum Commands {
     /// Generate the Register Access Layer (RAL)
-    Ral,
+    Ral {
+        #[clap(value_enum)]
+        chip: Chip,
+    },
     /// Generate the binary includes using `bindgen`
     Includes {
         #[clap(value_enum)]
@@ -52,13 +57,13 @@ fn main() -> Result<()> {
     let workspace = workspace.parent().unwrap().canonicalize()?;
 
     match args {
-        Commands::Ral => generate_register_access_layer(&workspace),
+        Commands::Ral { chip } => generate_register_access_layer(&workspace, chip),
         Commands::Includes { chip } => generate_binary_includes(&workspace, chip),
     }
 }
 
-fn generate_register_access_layer(workspace: &Path) -> Result<()> {
-    let svd_path = workspace.join("svd");
+fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
+    let svd_path = workspace.join("svd").join(chip.to_string());
     let svd_file = svd_path.join("ieee802154.svd");
     let out_dir = workspace.join("esp-ieee802154").join("src").join("ral");
 
@@ -98,7 +103,7 @@ fn generate_register_access_layer(workspace: &Path) -> Result<()> {
         )
         .replace("DEVICE_PERIPHERALS", "IEEE802154_PERIPHERALS");
 
-    let mut file = File::create(out_dir.join("mod.rs"))?;
+    let mut file = File::create(out_dir.join(&format!("{}.rs", chip.to_string())))?;
     file.write_all(data.as_ref())?;
 
     let out_dir = out_dir
@@ -108,8 +113,9 @@ fn generate_register_access_layer(workspace: &Path) -> Result<()> {
         .to_string()
         .replace("\\\\?\\", "");
 
+    let chip_name = chip.to_string();
     let sh = Shell::new()?;
-    cmd!(sh, "rustfmt {out_dir}/mod.rs").quiet().run()?;
+    cmd!(sh, "rustfmt {out_dir}/{chip_name}.rs").quiet().run()?;
 
     info!("All done.");
 
@@ -143,6 +149,7 @@ fn generate_binary_includes(workspace: &Path, chip: Chip) -> Result<()> {
                     .display()
             ),
             format!("-DCONFIG_IDF_TARGET_{}", chip.to_string().to_uppercase()),
+            format!("-DCONFIG_SOC_IEEE802154_SUPPORTED=y"),
         ])
         .ctypes_prefix("crate::binary::c_types")
         .derive_debug(false)
