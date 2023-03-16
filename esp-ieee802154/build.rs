@@ -3,15 +3,15 @@ use std::{env, fs::File, io::Write, path::PathBuf};
 fn main() {
     let out = &PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
-    #[cfg(feature = "esp32h4")]
+    #[cfg(feature = "esp32h2")]
     {
         copy(
             out,
-            include_bytes!("ld/esp32h4/rom_functions.x"),
+            include_bytes!("ld/esp32h2/rom_functions.x"),
             "rom_functions.x",
         );
-        copy(out, include_bytes!("libs/esp32h4/libbtbb.a"), "libbtbb.a");
-        copy(out, include_bytes!("libs/esp32h4/libphy.a"), "libphy.a");
+        copy(out, include_bytes!("libs/esp32h2/libbtbb.a"), "libbtbb.a");
+        copy(out, include_bytes!("libs/esp32h2/libphy.a"), "libphy.a");
     }
 
     #[cfg(feature = "esp32c6")]

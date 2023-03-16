@@ -18,8 +18,8 @@ use xshell::{cmd, Shell};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display, ValueEnum)]
 #[strum(serialize_all = "lowercase")]
 enum Chip {
-    /// ESP32-H4
-    Esp32h4,
+    /// ESP32-H2
+    Esp32h2,
     /// ESP32-C6
     Esp32c6,
 }
