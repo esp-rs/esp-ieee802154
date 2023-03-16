@@ -60,7 +60,7 @@ fn main() -> ! {
     loop {
         // data need to be in SRAM
         let mut frame: [u8; 55] = [
-            54, 0x41, 0x88, seq_number, 0xff, 0x01, 0xff, 0xff, 0x00, 0x00, //
+            54, 0x41, 0x88, seq_number, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, //
             b'H', b'e', b'l', b'l', b'o', b' ', b'W', b'o', b'r', b'l', b'd', b'!', b'H', b'e',
             b'l', b'l', b'o', b' ', b'E', b'S', b'P', b'3', b'2', b'-', b'C', b'6', b'!', b' ',
             b'8', b'0', b'2', b'.', b'1', b'5', b'.', b'4', b' ', b't', b'e', b's', b't', b'!',
