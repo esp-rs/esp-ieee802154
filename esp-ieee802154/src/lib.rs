@@ -1,6 +1,9 @@
 #![no_std]
 #![feature(c_variadic)]
 
+use core::cell::RefCell;
+
+use critical_section::Mutex;
 use hal::disable_events;
 use pib::*;
 use util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
@@ -30,6 +33,17 @@ extern "C" {
 
     pub fn phy_version_print(); // from libphy.a
 }
+
+static mut RX_BUFFER: [u8; 129] = [0u8; 129]; // just for testing
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Ieee802154State {
+    Idle,
+    Receive,
+    Transmit,
+}
+
+static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
 
 /// Enable the IEEE802.15.4 radio
 pub fn esp_ieee802154_enable() {
@@ -158,14 +172,16 @@ pub fn tx_init(frame: *const u8) {
 
     ieee802154_hal_set_tx_addr(tx_frame);
 
-    // if (ieee802154_frame_is_ack_required(frame)) {
-    //     // set rx pointer for ack frame
-    //     set_next_rx_buffer();
-    // }
+    if true
+    /* ieee802154_frame_is_ack_required(frame) */
+    {
+        // set rx pointer for ack frame
+        set_next_rx_buffer();
+    }
 }
 
 pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
-    critical_section::with(|_cs| {
+    critical_section::with(|cs| {
         tx_init(frame);
 
         ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneTx);
@@ -181,7 +197,7 @@ pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
             // {
             //     ieee802154_state = IEEE802154_STATE_TX_ENH_ACK;
             // } else {
-            // ieee802154_state = IEEE802154_STATE_TX;
+            *STATE.borrow_ref_mut(cs) = Ieee802154State::Transmit;
             // }
         }
     });
@@ -198,10 +214,16 @@ pub fn ieee802154_receive() -> i32 {
     //     return ESP_OK;
     // }
 
-    critical_section::with(|_| {
+    critical_section::with(|cs| {
+        if *STATE.borrow_ref(cs) == Ieee802154State::Receive {
+            return;
+        }
+
         rx_init();
 
         enable_rx();
+
+        *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
     });
 
     return 0; // ESP-OK
@@ -220,8 +242,6 @@ fn enable_rx() {
 
     // ieee802154_state = IEEE802154_STATE_RX;
 }
-
-static mut RX_BUFFER: [u8; 129] = [0u8; 129]; // just for testing
 
 fn set_next_rx_buffer() {
     unsafe {
@@ -334,6 +354,17 @@ fn etm_clk_enable() {
     }
 }
 
+fn next_operation() {
+    critical_section::with(|cs| {
+        if ieee802154_pib_get_rx_when_idle() {
+            enable_rx();
+            *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
+        } else {
+            *STATE.borrow_ref_mut(cs) = Ieee802154State::Idle;
+        }
+    });
+}
+
 use esp32c6_hal::prelude::interrupt;
 #[interrupt]
 fn ZB_MAC() {
@@ -357,6 +388,7 @@ fn ZB_MAC() {
 
     if events & (Ieee802154Event::Ieee802154EventTxDone as u16) != 0 {
         log::info!("tx done");
+        next_operation();
     }
 
     if events & (Ieee802154Event::Ieee802154EventRxDone as u16) != 0 {
@@ -364,5 +396,6 @@ fn ZB_MAC() {
         unsafe {
             log::info!("{:x?}", RX_BUFFER);
         }
+        next_operation();
     }
 }

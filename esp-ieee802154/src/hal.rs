@@ -341,3 +341,10 @@ pub fn ieee802154_hal_set_rx_addr(addr: *mut u8) {
         .rxdma_addr
         .modify(|_, w| w.rxdma_addr().variant(addr as u32));
 }
+
+#[inline(always)]
+pub fn ieee802154_hal_set_pending_bit(enable: bool) {
+    ieee802154()
+        .ack_frame_pending_en
+        .modify(|_, w| w.ack_frame_pending_en().variant(enable));
+}

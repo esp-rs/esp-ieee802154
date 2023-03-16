@@ -123,6 +123,10 @@ pub fn ieee802154_pib_set_rx_when_idle(enable: bool) {
     });
 }
 
+pub fn ieee802154_pib_get_rx_when_idle() -> bool {
+    critical_section::with(|cs| PIB.borrow_ref_mut(cs).as_mut().unwrap().rx_when_idle)
+}
+
 pub fn ieee802154_pib_set_tx_power(power: i8) {
     critical_section::with(|cs| {
         PIB.borrow_ref_mut(cs).as_mut().unwrap().txpower = power;
