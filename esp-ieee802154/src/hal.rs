@@ -3,25 +3,6 @@ use crate::{pib::Ieee802154CcaMode, utils::ieee802154};
 const IEEE802154_EVENT_EN: u16 = 0x00001FFF;
 
 /* IEEE802154 events */
-#[repr(u16)]
-#[derive(Debug, Clone, Copy)]
-pub enum Ieee802154EventT {
-    Ieee802154EventTxDone = 1 << 0,
-    Ieee802154EventRxDone = 1 << 1,
-    Ieee802154EventAckTxDone = 1 << 2,
-    Ieee802154EventAckRxDone = 1 << 3,
-    Ieee802154EventRxAbort = 1 << 4,
-    Ieee802154EventTxAbort = 1 << 5,
-    Ieee802154EventEdDone = 1 << 6,
-    Ieee802154EventTimer0Overflow = 1 << 8,
-    Ieee802154EventTimer1Overflow = 1 << 9,
-    Ieee802154EventClockCountMatch = 1 << 10,
-    Ieee802154EventTxSfdDone = 1 << 11,
-    Ieee802154EventRxSfdDone = 1 << 12,
-    Ieee802154EventMask = IEEE802154_EVENT_EN,
-}
-
-/* IEEE802154 events */
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154Event {
     Ieee802154EventTxDone = 1 << 0,

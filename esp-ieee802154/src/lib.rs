@@ -9,6 +9,9 @@ use pib::*;
 use util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
 use utils::ieee802154;
 
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
+
 use self::{
     binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
     hal::*,
@@ -46,8 +49,12 @@ pub enum Ieee802154State {
 static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
 
 /// Enable the IEEE802.15.4 radio
-pub fn esp_ieee802154_enable() {
-    ieee802154_enable();
+pub fn esp_ieee802154_enable(radio_clock_control: &mut esp_hal::system::RadioClockControl) {
+    use esp_hal::system::RadioClockController;
+    radio_clock_control.init_clocks();
+    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Phy);
+    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Ieee802154);
+
     esp_phy_enable();
     ieee802154_mac_init();
 
@@ -69,29 +76,6 @@ fn esp_phy_enable() {
         );
         bt_bb_v2_init_cmplx(PHY_ENABLE_VERSION_PRINT); // bt_bb_v2_init_cmplx // bt_bb_v2_init_cmplx(int print_version);
         phy_version_print(); // libphy.a // extern void phy_version_print(void);
-    }
-}
-
-/// Enable the IEEE802.15.4 clock and modem
-fn ieee802154_enable() {
-    #[cfg(not(feature = "esp32c6"))]
-    compile_error!("Unsupported target");
-
-    const MODEM_SYSCON: u32 = 0x600A9800;
-    const MODEM_LPCON: u32 = 0x600AF000;
-    let syscon_clk_conf = (MODEM_SYSCON + 4) as *mut u32;
-    let syscon_clk_conf1 = (MODEM_SYSCON + 20) as *mut u32;
-    let lpcon_clk_conf = (MODEM_LPCON + 24) as *mut u32;
-    unsafe {
-        syscon_clk_conf.write_volatile(syscon_clk_conf.read_volatile() | 1 << 24); // hw->clk_conf.clk_zb_mac_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 16); // hw->clk_conf1.clk_fe_apb_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 15); // hw->clk_conf1.clk_fe_cal_160m_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 14); // hw->clk_conf1.clk_fe_160m_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 13); // hw->clk_conf1.clk_fe_80m_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 17); // hw->clk_conf1.clk_bt_apb_en = en;
-        syscon_clk_conf1.write_volatile(syscon_clk_conf1.read_volatile() | 1 << 18); // hw->clk_conf1.clk_bt_en = en;
-        syscon_clk_conf.write_volatile(syscon_clk_conf.read_volatile() | 1 << 22); // hw->clk_conf.clk_etm_en = en;
-        lpcon_clk_conf.write_volatile(lpcon_clk_conf.read_volatile() | 1 << 1); // hw->clk_conf.clk_coex_en = en
     }
 }
 
@@ -136,13 +120,13 @@ fn ieee802154_mac_init() {
         .modify(|_, w| w.rxon_delay().variant(50));
 
     // esp_intr_alloc(ETS_ZB_MAC_SOURCE, 0, ieee802154_isr, NULL, NULL);
-    esp32c6_hal::interrupt::enable(
-        esp32c6_hal::peripherals::Interrupt::ZB_MAC,
-        esp32c6_hal::interrupt::Priority::Priority1,
+    esp_hal::interrupt::enable(
+        esp_hal::peripherals::Interrupt::ZB_MAC,
+        esp_hal::interrupt::Priority::Priority1,
     )
     .unwrap();
     unsafe {
-        esp32c6_hal::riscv::interrupt::enable();
+        esp_hal::riscv::interrupt::enable();
     }
 
     // esp_receive_ack_timeout_timer_init(); // TODO timer stuff
@@ -365,7 +349,7 @@ fn next_operation() {
     });
 }
 
-use esp32c6_hal::prelude::interrupt;
+use esp_hal::prelude::interrupt;
 #[interrupt]
 fn ZB_MAC() {
     log::info!("ZB_MAC interrupt");
