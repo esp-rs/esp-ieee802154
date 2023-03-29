@@ -73,10 +73,7 @@ pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
     unsafe { &*crate::ral::IEEE802154::PTR }
 }
 
-pub fn freq_to_channel(freq: u8) -> u8 {
-    return (freq - 3) / 5 + 11;
-}
-
-pub fn channel_to_freq(channel: u8) -> u8 {
-    return (channel - 11) * 5 + 3;
+#[no_mangle]
+extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
+    0
 }

@@ -1,385 +1,199 @@
 #![no_std]
 #![feature(c_variadic)]
 
-use core::cell::RefCell;
-
-use critical_section::Mutex;
-use hal::disable_events;
-use pib::*;
-use util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
-use utils::ieee802154;
-
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-
-use self::{
-    binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
-    hal::*,
-};
-
 mod binary;
 mod compat;
+mod frame;
 mod hal;
 mod pib;
 #[cfg_attr(feature = "esp32h4", path = "ral/esp32h4.rs")]
 #[cfg_attr(feature = "esp32c6", path = "ral/esp32c6.rs")]
 mod ral;
+mod raw;
 mod util;
 mod utils;
 
-const PHY_ENABLE_VERSION_PRINT: u32 = 1;
+use byte::{BytesExt, TryRead};
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
 
-extern "C" {
-    pub fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
+use ieee802154::mac::{FooterMode, FrameContent, FrameSerDesContext, Header};
+use pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE};
+use raw::*;
+use util::rssi_to_lqi;
 
-    pub fn bt_bb_set_zb_tx_on_delay(time: u16); // from libbtbb.a
-
-    pub fn phy_version_print(); // from libphy.a
+#[derive(Debug, Clone, Copy)]
+pub enum Error {
+    Incomplete,
+    BadInput,
 }
 
-static mut RX_BUFFER: [u8; 129] = [0u8; 129]; // just for testing
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum Ieee802154State {
-    Idle,
-    Receive,
-    Transmit,
+#[derive(Debug, Clone)]
+pub struct Frame {
+    pub header: Header,
+    pub content: FrameContent,
+    pub payload: heapless::Vec<u8, FRAME_SIZE>,
+    pub footer: [u8; 2],
 }
 
-static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
-
-/// Enable the IEEE802.15.4 radio
-pub fn esp_ieee802154_enable(radio_clock_control: &mut esp_hal::system::RadioClockControl) {
-    use esp_hal::system::RadioClockController;
-    radio_clock_control.init_clocks();
-    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Phy);
-    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Ieee802154);
-
-    esp_phy_enable();
-    ieee802154_mac_init();
-
-    log::info!("date={:x}", ieee802154().mac_date.read().bits());
+#[derive(Debug, Clone)]
+pub struct ReceivedFrame {
+    pub frame: Frame,
+    pub channel: u8,
+    pub rssi: i8,
+    pub lqi: u8,
 }
 
-/// Enable the PHY
-fn esp_phy_enable() {
-    unsafe {
-        let mut calibration_data = binary::include::esp_phy_calibration_data_t {
-            version: [0u8; 4],
-            mac: [0u8; 6],
-            opaque: [0u8; 1894],
+#[derive(Debug, Clone, Copy)]
+pub struct Config {
+    pub auto_ack_tx: bool,
+    pub auto_ack_rx: bool,
+    pub enhance_ack_tx: bool,
+    pub promiscuous: bool,
+    pub coordinator: bool,
+    pub rx_when_idle: bool,
+    pub txpower: i8,
+    pub channel: u8,
+    pub cca_threshold: i8,
+    pub cca_mode: Ieee802154CcaMode,
+    pub pan_id: Option<u16>,
+    pub short_addr: Option<u16>,
+    pub ext_addr: Option<u64>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Self {
+            auto_ack_tx: Default::default(),
+            auto_ack_rx: Default::default(),
+            enhance_ack_tx: Default::default(),
+            promiscuous: Default::default(),
+            coordinator: Default::default(),
+            rx_when_idle: Default::default(),
+            txpower: 10,
+            channel: 11,
+            cca_threshold: CONFIG_IEEE802154_CCA_THRESHOLD,
+            cca_mode: Ieee802154CcaMode::Ieee802154CcaModeEd,
+            pan_id: None,
+            short_addr: None,
+            ext_addr: None,
+        }
+    }
+}
+
+pub trait Ieee802154Controller {
+    fn set_config(&mut self, cfg: Config);
+
+    fn start_receive(&mut self);
+
+    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>>;
+
+    fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Ieee802154 {
+    _private: (),
+    _align: u32,
+    transmit_buffer: [u8; FRAME_SIZE],
+}
+
+impl Ieee802154 {
+    pub fn new(radio_clocks: &mut esp_hal::system::RadioClockControl) -> Self {
+        esp_ieee802154_enable(radio_clocks);
+        Self {
+            _private: (),
+            _align: 0,
+            transmit_buffer: [0u8; FRAME_SIZE],
+        }
+    }
+}
+
+impl Ieee802154Controller for Ieee802154 {
+    fn set_config(&mut self, cfg: Config) {
+        set_auto_ack_tx(cfg.auto_ack_tx);
+        set_auto_ack_rx(cfg.auto_ack_rx);
+        set_enhance_ack_tx(cfg.enhance_ack_tx);
+        set_promiscuous(cfg.promiscuous);
+        set_coordinator(cfg.coordinator);
+        set_rx_when_idle(cfg.rx_when_idle);
+        set_tx_power(cfg.txpower);
+        set_channel(cfg.channel);
+        set_cca_theshold(cfg.cca_threshold);
+        set_cca_mode(cfg.cca_mode);
+
+        if let Some(pan_id) = cfg.pan_id {
+            set_panid(0, pan_id);
+        }
+
+        if let Some(short_addr) = cfg.short_addr {
+            set_short_address(0, short_addr);
+        }
+
+        if let Some(ext_addr) = cfg.ext_addr {
+            let mut address = [0u8; IEEE802154_FRAME_EXT_ADDR_SIZE];
+            address.copy_from_slice(&ext_addr.to_be_bytes()); // LE or BE?
+            set_extended_address(0, address);
+        }
+    }
+
+    fn start_receive(&mut self) {
+        ieee802154_receive();
+    }
+
+    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
+        let poll_res = ieee802154_poll();
+        if let Some(raw) = poll_res {
+            let decode_res = ieee802154::mac::Frame::try_read(
+                &raw.data[1..][..raw.data[0] as usize],
+                FooterMode::Explicit,
+            );
+
+            if let Ok((decoded, _)) = decode_res {
+                let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
+
+                Some(Ok(ReceivedFrame {
+                    frame: Frame {
+                        header: decoded.header,
+                        content: decoded.content,
+                        payload: heapless::Vec::from_slice(&decoded.payload).unwrap(),
+                        footer: decoded.footer,
+                    },
+                    channel: raw.channel,
+                    rssi: rssi,
+                    lqi: rssi_to_lqi(rssi),
+                }))
+            } else {
+                Some(Err(match decode_res.err().unwrap() {
+                    byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
+                    byte::Error::BadInput { err: _err } => Error::BadInput, // maybe worth to keep the description?
+                }))
+            }
+        } else {
+            None
+        }
+    }
+
+    fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
+        let frm = ieee802154::mac::Frame {
+            header: frame.header.clone(),
+            content: frame.content,
+            payload: &frame.payload,
+            footer: frame.footer.clone(),
         };
-        register_chipv7_phy(
-            core::ptr::null(),
-            &mut calibration_data as *mut binary::include::esp_phy_calibration_data_t,
-            esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
-        );
-        bt_bb_v2_init_cmplx(PHY_ENABLE_VERSION_PRINT); // bt_bb_v2_init_cmplx // bt_bb_v2_init_cmplx(int print_version);
-        phy_version_print(); // libphy.a // extern void phy_version_print(void);
-    }
-}
 
-/// Initialize the IEEE802.15.4 MAC
-fn ieee802154_mac_init() {
-    //TODO: need to be removed
-    etm_clk_enable();
+        let mut offset = 1usize;
+        self.transmit_buffer
+            .write_with(
+                &mut offset,
+                frm,
+                &mut FrameSerDesContext::no_security(FooterMode::Explicit),
+            )
+            .unwrap();
+        self.transmit_buffer[0] = (offset - 1) as u8;
 
-    ieee802154_pib_init();
+        ieee802154_transmit(self.transmit_buffer.as_ptr() as *const u8, false); // what about CCA?
 
-    enable_events(Ieee802154Event::Ieee802154EventMask as u16); // ieee802154_hal_enable_events(IEEE802154_EVENT_MASK);
-
-    if !get_test_mode() {
-        disable_events(
-            (Ieee802154Event::Ieee802154EventTimer0Overflow as u16)
-                | (Ieee802154Event::Ieee802154EventTimer1Overflow as u16),
-        );
-    }
-
-    enable_tx_abort_events(
-        Ieee802154TxAbortReason::Ieee802154TxAbortByRxAckTimeout.bit()
-            | Ieee802154TxAbortReason::Ieee802154TxAbortByTxCoexBreak.bit()
-            | Ieee802154TxAbortReason::Ieee802154TxAbortByTxSecurityError.bit()
-            | Ieee802154TxAbortReason::Ieee802154TxAbortByCcaFailed.bit()
-            | Ieee802154TxAbortReason::Ieee802154TxAbortByCcaBusy.bit(),
-    );
-    enable_rx_abort_events(
-        Ieee802154RxAbortReason::Ieee802154RxAbortByTxAckTimeout.bit()
-            | Ieee802154RxAbortReason::Ieee802154RxAbortByTxAckCoexBreak.bit(),
-    );
-
-    set_ed_sample_mode(Ieee802154EdSampleMode::Ieee802154EdSampleAvg);
-
-    set_ack_pti();
-    ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneIdle);
-
-    unsafe {
-        bt_bb_set_zb_tx_on_delay(50); // set tx on delay for libbtbb.a
-    }
-    ieee802154()
-        .rxon_delay
-        .modify(|_, w| w.rxon_delay().variant(50));
-
-    // esp_intr_alloc(ETS_ZB_MAC_SOURCE, 0, ieee802154_isr, NULL, NULL);
-    esp_hal::interrupt::enable(
-        esp_hal::peripherals::Interrupt::ZB_MAC,
-        esp_hal::interrupt::Priority::Priority1,
-    )
-    .unwrap();
-    unsafe {
-        esp_hal::riscv::interrupt::enable();
-    }
-
-    // esp_receive_ack_timeout_timer_init(); // TODO timer stuff
-
-    /*
-        memset(rx_frame, 0, sizeof(rx_frame));
-        ieee802154_state = IEEE802154_STATE_IDLE;
-    */
-}
-
-/*
-static bool start_ed(uint32_t duration)
-{
-    ieee802154_hal_enable_events(IEEE802154_EVENT_ED_DONE);
-    ieee802154_hal_set_ed_duration(duration);
-    ieee802154_hal_set_cmd(IEEE802154_CMD_ED_START);
-
-    return true;
-}
-*/
-
-pub fn tx_init(frame: *const u8) {
-    let tx_frame = frame;
-    // stop_current_operation();
-    ieee802154_pib_update();
-    ieee802154_sec_update();
-
-    ieee802154_hal_set_tx_addr(tx_frame);
-
-    if true
-    /* ieee802154_frame_is_ack_required(frame) */
-    {
-        // set rx pointer for ack frame
-        set_next_rx_buffer();
-    }
-}
-
-pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
-    critical_section::with(|cs| {
-        tx_init(frame);
-
-        ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneTx);
-
-        if cca {
-            // ieee802154_hal_disable_events(IEEE802154_EVENT_ED_DONE);
-            // ieee802154_hal_set_cmd(IEEE802154_CMD_CCA_TX_START);
-            // ieee802154_state = IEEE802154_STATE_TX_CCA;
-        } else {
-            ieee802154_hal_set_cmd(Ieee802154Cmd::Ieee802154CmdTxStart);
-            // if (ieee802154_frame_get_type(frame) == IEEE802154_FRAME_TYPE_ACK
-            //     && ieee802154_frame_get_version(frame) == IEEE802154_FRAME_VERSION_2)
-            // {
-            //     ieee802154_state = IEEE802154_STATE_TX_ENH_ACK;
-            // } else {
-            *STATE.borrow_ref_mut(cs) = Ieee802154State::Transmit;
-            // }
-        }
-    });
-
-    return 0; // ESP_OK;
-}
-
-pub fn ieee802154_receive() -> i32 {
-    // if (((ieee802154_state == IEEE802154_STATE_RX)
-    //     || (ieee802154_state == IEEE802154_STATE_TX_ACK))
-    //     && (!ieee802154_pib_is_pending()))
-    // {
-    //     // already in rx state, don't abort current rx operation
-    //     return ESP_OK;
-    // }
-
-    critical_section::with(|cs| {
-        if *STATE.borrow_ref(cs) == Ieee802154State::Receive {
-            return;
-        }
-
-        rx_init();
-
-        enable_rx();
-
-        *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
-    });
-
-    return 0; // ESP-OK
-}
-
-fn rx_init() {
-    // stop_current_operation();
-    ieee802154_pib_update();
-}
-
-fn enable_rx() {
-    set_next_rx_buffer();
-    ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneRx);
-
-    ieee802154_hal_set_cmd(Ieee802154Cmd::Ieee802154CmdRxStart);
-
-    // ieee802154_state = IEEE802154_STATE_RX;
-}
-
-fn set_next_rx_buffer() {
-    unsafe {
-        ieee802154_hal_set_rx_addr(RX_BUFFER.as_mut_ptr() as *mut u8);
-    }
-}
-
-pub fn set_promiscuous(enable: bool) {
-    ieee802154_pib_set_promiscuous(enable);
-}
-
-pub fn set_auto_ack_tx(enable: bool) {
-    ieee802154_pib_set_auto_ack_tx(enable);
-}
-
-pub fn set_auto_ack_rx(enable: bool) {
-    ieee802154_pib_set_auto_ack_rx(enable);
-}
-
-pub fn set_enhance_ack_tx(enable: bool) {
-    ieee802154_pib_set_enhance_ack_tx(enable);
-}
-
-pub fn set_coordinator(enable: bool) {
-    ieee802154_pib_set_coordinator(enable);
-}
-
-pub fn set_rx_when_idle(enable: bool) {
-    ieee802154_pib_set_rx_when_idle(enable);
-}
-
-pub fn set_tx_power(power: i8) {
-    ieee802154_pib_set_tx_power(power);
-}
-
-pub fn set_channel(channel: u8) {
-    ieee802154_pib_set_channel(channel);
-}
-
-pub fn set_pending_mode(mode: Ieee802154PendingMode) {
-    ieee802154_pib_set_pending_mode(mode);
-}
-
-pub fn set_multipan_enable(mask: u8) {
-    ieee802154_pib_set_multipan_enable(mask);
-}
-
-pub fn set_short_address(index: u8, address: u16) {
-    ieee802154_pib_set_short_address(index, address);
-}
-
-pub fn set_extended_address(index: u8, address: [u8; IEEE802154_FRAME_EXT_ADDR_SIZE]) {
-    ieee802154_pib_set_extended_address(index, address);
-}
-
-pub fn set_cca_theshold(cca_threshold: i8) {
-    ieee802154_pib_set_cca_theshold(cca_threshold);
-}
-
-pub fn set_cca_mode(mode: Ieee802154CcaMode) {
-    ieee802154_pib_set_cca_mode(mode);
-}
-
-pub fn set_panid(index: u8, id: u16) {
-    ieee802154_pib_set_panid(index, id);
-}
-
-#[inline(always)]
-fn ieee802154_sec_update() {
-    let is_security = false;
-    ieee802154_hal_set_transmit_security(is_security);
-    // ieee802154_sec_clr_transmit_security();
-}
-
-// pub fn ieee802154_set_promiscuous(enable: bool) {
-//     ieee802154_pib_set_promiscuous(enable);
-//     ieee802154_pib_set_auto_ack_rx(!enable);
-//     ieee802154_pib_set_auto_ack_tx(!enable);
-// }
-
-/// Enable the ETM clock
-fn etm_clk_enable() {
-    #[cfg(not(feature = "esp32c6"))]
-    compile_error!("Unsupported target");
-
-    const REG_MODEM_SYSCON_BASE: u32 = 0x600A9800;
-    const MODEM_SYSCON_CLK_CONF_REG: u32 = REG_MODEM_SYSCON_BASE + 0x4;
-    const MODEM_SYSCON_CLK_ETM_EN: u32 = 1 << 22;
-    const ETM_REG_BASE: u32 = 0x600A8800;
-    const ETM_CLK_EN_REG: u32 = ETM_REG_BASE + 0x008C;
-    const ETM_CLK_EN: u32 = 1 << 0;
-    const DR_REG_PCR_BASE: u32 = 0x60096000;
-    const CLKRST_MODCLK_CONF_REG: u32 = DR_REG_PCR_BASE + 0x98;
-    const PCR_ETM_CLK_EN_M: u32 = 1 << 0;
-    const PCR_ETM_RST_EN: u32 = 1 << 1;
-
-    unsafe {
-        (MODEM_SYSCON_CLK_CONF_REG as *mut u32).write_volatile(
-            (MODEM_SYSCON_CLK_CONF_REG as *mut u32).read_volatile() | MODEM_SYSCON_CLK_ETM_EN,
-        );
-
-        (ETM_CLK_EN_REG as *mut u32)
-            .write_volatile((ETM_CLK_EN_REG as *mut u32).read_volatile() | ETM_CLK_EN);
-
-        (CLKRST_MODCLK_CONF_REG as *mut u32).write_volatile(
-            (CLKRST_MODCLK_CONF_REG as *mut u32).read_volatile()
-                | PCR_ETM_CLK_EN_M
-                | PCR_ETM_RST_EN,
-        ); // Active ETM clock
-    }
-}
-
-fn next_operation() {
-    critical_section::with(|cs| {
-        if ieee802154_pib_get_rx_when_idle() {
-            enable_rx();
-            *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
-        } else {
-            *STATE.borrow_ref_mut(cs) = Ieee802154State::Idle;
-        }
-    });
-}
-
-use esp_hal::prelude::interrupt;
-#[interrupt]
-fn ZB_MAC() {
-    log::info!("ZB_MAC interrupt");
-
-    let events = ieee802154_hal_get_events();
-    ieee802154_hal_clear_events(events);
-
-    log::info!("events = {:032b}", events);
-
-    if events & (Ieee802154Event::Ieee802154EventRxSfdDone as u16) != 0 {
-        // IEEE802154_STATE_TX && IEEE802154_STATE_TX_CCA && IEEE802154_STATE_TX_ENH_ACK for isr processing delay
-        log::info!("rx sfd done");
-    }
-
-    if events & (Ieee802154Event::Ieee802154EventTxSfdDone as u16) != 0 {
-        // IEEE802154_STATE_RX for isr processing delay, only 821
-        // IEEE802154_STATE_TX_ACK for workaround jira ZB-81.
-        log::info!("tx sfd done");
-    }
-
-    if events & (Ieee802154Event::Ieee802154EventTxDone as u16) != 0 {
-        log::info!("tx done");
-        next_operation();
-    }
-
-    if events & (Ieee802154Event::Ieee802154EventRxDone as u16) != 0 {
-        log::info!("rx done");
-        unsafe {
-            log::info!("{:x?}", RX_BUFFER);
-        }
-        next_operation();
+        Ok(())
     }
 }

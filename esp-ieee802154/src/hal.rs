@@ -1,7 +1,5 @@
 use crate::{pib::Ieee802154CcaMode, utils::ieee802154};
 
-const IEEE802154_EVENT_EN: u16 = 0x00001FFF;
-
 /* IEEE802154 events */
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154Event {
@@ -186,6 +184,11 @@ pub fn ieee802154_hal_set_freq(freq: u8) {
 }
 
 #[inline(always)]
+pub fn ieee802154_hal_get_freq() -> u8 {
+    ieee802154().channel.read().hop().bits()
+}
+
+#[inline(always)]
 pub fn ieee802154_hal_set_power(power: u8) {
     ieee802154()
         .tx_power
@@ -265,6 +268,15 @@ pub fn ieee802154_hal_set_tx_auto_ack(enable: bool) {
 }
 
 #[inline(always)]
+pub fn ieee802154_hal_get_tx_auto_ack() -> bool {
+    ieee802154()
+        .ctrl_cfg
+        .read()
+        .hw_auto_ack_tx_en()
+        .bit_is_set()
+}
+
+#[inline(always)]
 pub fn ieee802154_hal_set_rx_auto_ack(enable: bool) {
     ieee802154()
         .ctrl_cfg
@@ -276,6 +288,15 @@ pub fn ieee802154_hal_set_tx_enhance_ack(enable: bool) {
     ieee802154()
         .ctrl_cfg
         .modify(|_, w| w.hw_enhance_ack_tx_en().variant(enable));
+}
+
+#[inline(always)]
+pub fn ieee802154_hal_get_tx_enhance_ack() -> bool {
+    ieee802154()
+        .ctrl_cfg
+        .read()
+        .hw_enhance_ack_tx_en()
+        .bit_is_set()
 }
 
 #[inline(always)]

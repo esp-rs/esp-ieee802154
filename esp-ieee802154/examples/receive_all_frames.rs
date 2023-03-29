@@ -17,7 +17,7 @@ use esp_println::println;
 
 #[entry]
 fn main() -> ! {
-    esp_println::logger::init_logger(log::LevelFilter::Trace);
+    esp_println::logger::init_logger(log::LevelFilter::Info);
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
@@ -36,34 +36,23 @@ fn main() -> ! {
     wdt1.disable();
 
     println!("Start");
+    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
 
-    esp_ieee802154_enable(&mut system.radio_clock_control);
-    println!("Enabled");
+    ieee802154.set_config(Config {
+        channel: 15,
+        promiscuous: true,
+        rx_when_idle: true,
+        auto_ack_rx: false,
+        auto_ack_tx: false,
+        ..Config::default()
+    });
 
-    unsafe {
-        // map WIFI_BB to the masked interrupt 31 to disable it
-        // not doing that will freeze up the code (since it's endless calling the DefaultHandler)
-        // uncommenting WIFI_BB at the bottom makes it work (but the ISR is called)
-        (0x60010000 as *mut u32).offset(3).write_volatile(31);
+    println!("start receiveing");
+    ieee802154.start_receive();
+
+    loop {
+        if let Some(frame) = ieee802154.get_received() {
+            println!("Received {:?}\n", &frame);
+        }
     }
-
-    let mut delay = Delay::new(&clocks);
-    delay.delay_ms(10u32);
-
-    set_channel(11);
-    set_promiscuous(true);
-    set_panid(0, 0x4242);
-    set_short_address(0, 0x2323);
-    set_rx_when_idle(true);
-
-    println!("before receive");
-    ieee802154_receive();
-    println!("after receive");
-
-    loop {}
-}
-
-#[no_mangle]
-extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
-    0
 }

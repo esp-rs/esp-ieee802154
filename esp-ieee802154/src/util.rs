@@ -94,3 +94,22 @@ pub fn ieee802154_set_txrx_pti(txrx_scene: Ieee802154TxrxScene) {
         }
     }
 }
+
+pub fn rssi_to_lqi(rssi: i8) -> u8 {
+    if rssi < -80 {
+        return 0;
+    } else if rssi > -30 {
+        return 0xff;
+    } else {
+        let lqi_convert = ((rssi as u32).wrapping_add(80)) * 255;
+        return (lqi_convert / 50) as u8;
+    }
+}
+
+pub fn freq_to_channel(freq: u8) -> u8 {
+    return (freq - 3) / 5 + 11;
+}
+
+pub fn channel_to_freq(channel: u8) -> u8 {
+    return (channel - 11) * 5 + 3;
+}

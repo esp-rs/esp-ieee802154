@@ -12,7 +12,7 @@ use crate::{
         ieee802154_hal_set_rx_auto_ack, ieee802154_hal_set_tx_auto_ack,
         ieee802154_hal_set_tx_enhance_ack,
     },
-    utils::channel_to_freq,
+    util::channel_to_freq,
 };
 
 pub const IEEE802154_MULTIPAN_MAX: usize = 4;

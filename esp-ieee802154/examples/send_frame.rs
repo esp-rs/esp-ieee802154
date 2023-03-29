@@ -11,10 +11,11 @@ use esp32c6_hal::{
 use esp_backtrace as _;
 use esp_ieee802154::*;
 use esp_println::println;
+use ieee802154::mac::{Header, PanId, ShortAddress};
 
 #[entry]
 fn main() -> ! {
-    esp_println::logger::init_logger(log::LevelFilter::Trace);
+    esp_println::logger::init_logger(log::LevelFilter::Info);
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
@@ -32,54 +33,48 @@ fn main() -> ! {
     wdt0.disable();
     wdt1.disable();
 
-    println!("Start");
-    esp_ieee802154_enable(&mut system.radio_clock_control);
-    println!("Enabled");
-
-    unsafe {
-        // map WIFI_BB to the masked interrupt 31 to disable it
-        // not doing that will freeze up the code (since it's endless calling the DefaultHandler)
-        // uncommenting WIFI_BB at the bottom makes it work (but the ISR is called)
-        (0x60010000 as *mut u32).offset(3).write_volatile(31);
-    }
-
     let mut delay = Delay::new(&clocks);
-    delay.delay_ms(10u32);
 
-    set_channel(11);
-    set_promiscuous(false);
-    set_panid(0, 0x4242);
-    set_short_address(0, 0x2222);
+    println!("Start");
+    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
+
+    ieee802154.set_config(Config {
+        channel: 11,
+        promiscuous: false,
+        pan_id: Some(0x4242),
+        short_addr: Some(0x2222),
+        ..Config::default()
+    });
 
     let mut seq_number = 0u8;
+
     loop {
-        // data need to be in SRAM
-        struct Aligned {
-            frame: [u8; 55],
-            _align: u32,
-        };
+        ieee802154
+            .transmit(&Frame {
+                header: Header {
+                    frame_type: ieee802154::mac::FrameType::Data,
+                    frame_pending: false,
+                    ack_request: true,
+                    pan_id_compress: false,
+                    seq_no_suppress: false,
+                    ie_present: false,
+                    version: ieee802154::mac::FrameVersion::Ieee802154_2003,
+                    seq: seq_number,
+                    destination: Some(ieee802154::mac::Address::Short(
+                        PanId(0x4242),
+                        ShortAddress(0x2323),
+                    )),
+                    source: None,
+                    auxiliary_security_header: None,
+                },
+                content: ieee802154::mac::FrameContent::Data,
+                payload: heapless::Vec::from_slice(b"Hello World").unwrap(),
+                footer: [0u8; 2],
+            })
+            .ok();
 
-        let mut frame: [u8; 55] = [
-            54, 0x61, 0x88, seq_number, 0x42, 0x42, 0x23, 0x23, 0x22, 0x22, //
-            b'H', b'e', b'l', b'l', b'o', b' ', b'W', b'o', b'r', b'l', b'd', b'!', b'H', b'e',
-            b'l', b'l', b'o', b' ', b'E', b'S', b'P', b'3', b'2', b'-', b'C', b'6', b'!', b' ',
-            b'8', b'0', b'2', b'.', b'1', b'5', b'.', b'4', b' ', b't', b'e', b's', b't', b'!',
-            b'!', //
-            0x00, 0x00,
-        ];
-        println!("FRAME: {:02x?}", frame);
-        println!("frame addr = {:x}", frame.as_ptr() as u32);
-        println!("call transmit");
-        ieee802154_transmit(frame.as_ptr() as *const u8, false);
-        println!("called transmit");
-        println!();
-
+        println!("Send frame with sequence number {seq_number}");
         delay.delay_ms(1000u32);
         seq_number = seq_number.wrapping_add(1);
     }
-}
-
-#[no_mangle]
-extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
-    0
 }
