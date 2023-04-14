@@ -28,4 +28,4 @@ esp32h4 = []
 esp32c6 = ["esp32c6-hal", "dep:esp32c6"]
 
 [patch.crates-io]
-esp32c6-hal = { path = "/projects/esp/esp-hal/esp32c6-hal" }
+esp32c6-hal = { git = "https://github.com/esp-rs/esp-hal", rev = "9ff3837537e8c08cbd296abafc2f917aa10c9d9e" }
