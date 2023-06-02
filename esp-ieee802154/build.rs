@@ -17,7 +17,10 @@ fn main() {
 
     #[cfg(feature = "esp32c6")]
     {
+        copy_file!(out, "ld/esp32c6/rom_coexist.x");
         copy_file!(out, "ld/esp32c6/rom_functions.x");
+        copy_file!(out, "ld/esp32c6/rom_phy.x");
+
         copy_file!(out, "libs/esp32c6/libbtbb.a");
         copy_file!(out, "libs/esp32c6/libphy.a");
         copy_file!(out, "libs/esp32c6/libcoexist.a");
@@ -30,8 +33,9 @@ fn main() {
         copy_file!(out, "libs/esp32h2/libphy.a");
     }
 
-    println!("cargo:rustc-link-lib={}", "btbb");
-    println!("cargo:rustc-link-lib={}", "phy");
-    println!("cargo:rustc-link-lib={}", "coexist");
+    println!("cargo:rustc-link-lib=btbb");
+    println!("cargo:rustc-link-lib=coexist");
+    println!("cargo:rustc-link-lib=phy");
+
     println!("cargo:rustc-link-search={}", out.display());
 }
