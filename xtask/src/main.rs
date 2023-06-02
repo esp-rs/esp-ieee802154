@@ -7,7 +7,7 @@ use std::{
 
 use anyhow::Result;
 use bindgen::Builder;
-use clap::{Parser, Subcommand, ValueEnum};
+use clap::{Parser, ValueEnum};
 use directories::BaseDirs;
 use log::{info, LevelFilter};
 use strum::Display;
@@ -18,25 +18,20 @@ use xshell::{cmd, Shell};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display, ValueEnum)]
 #[strum(serialize_all = "lowercase")]
 enum Chip {
-    /// ESP32-H2
-    Esp32h2,
     /// ESP32-C6
     Esp32c6,
+    /// ESP32-H2
+    Esp32h2,
 }
 
 #[derive(Debug, Parser)]
-struct Cli {
-    #[clap(subcommand)]
-    subcommand: Commands,
-}
-
-#[derive(Debug, Subcommand)]
-enum Commands {
+enum Cli {
     /// Generate the Register Access Layer (RAL)
     Ral {
         #[clap(value_enum)]
         chip: Chip,
     },
+
     /// Generate the binary includes using `bindgen`
     Includes {
         #[clap(value_enum)]
@@ -49,7 +44,7 @@ fn main() -> Result<()> {
         .filter_module("xtask", LevelFilter::Info)
         .init();
 
-    let args = Cli::parse().subcommand;
+    let args = Cli::parse();
 
     // The directory containing the cargo manifest for the 'xtask' package is a
     // subdirectory within the cargo workspace.
@@ -57,8 +52,8 @@ fn main() -> Result<()> {
     let workspace = workspace.parent().unwrap().canonicalize()?;
 
     match args {
-        Commands::Ral { chip } => generate_register_access_layer(&workspace, chip),
-        Commands::Includes { chip } => generate_binary_includes(&workspace, chip),
+        Cli::Ral { chip } => generate_register_access_layer(&workspace, chip),
+        Cli::Includes { chip } => generate_binary_includes(&workspace, chip),
     }
 }
 
@@ -142,7 +137,7 @@ fn generate_binary_includes(workspace: &Path, chip: Chip) -> Result<()> {
                     .join(".espressif")
                     .join("tools")
                     .join("riscv32-esp-elf")
-                    .join("esp-2021r2-8.4.0")
+                    .join("esp-12.2.0_20230208")
                     .join("riscv32-esp-elf")
                     .join("riscv32-esp-elf")
                     .join("include")
