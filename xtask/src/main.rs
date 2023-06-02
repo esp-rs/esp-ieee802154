@@ -126,10 +126,6 @@ fn generate_binary_includes(workspace: &Path, chip: Chip) -> Result<()> {
     let bindings = Builder::default()
         .clang_args([
             format!("-I{}", ieee_path.join("headers").display()),
-            format!(
-                "-I{}",
-                ieee_path.join("headers").join(chip.to_string()).display()
-            ),
             format!("-I{}", ieee_path.join("include").display()),
             format!(
                 "-I{}",
