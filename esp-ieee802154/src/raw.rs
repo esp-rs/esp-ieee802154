@@ -31,11 +31,13 @@ extern "C" {
 
 static mut RX_BUFFER: [u8; FRAME_SIZE] = [0u8; FRAME_SIZE];
 
+#[derive(Debug)]
 pub struct RawReceived {
     pub data: [u8; FRAME_SIZE],
     pub channel: u8,
 }
-static RX_QUEUE: Mutex<RefCell<Queue<RawReceived, 10>>> = Mutex::new(RefCell::new(Queue::new()));
+
+static RX_QUEUE: Mutex<RefCell<Queue<RawReceived, 20>>> = Mutex::new(RefCell::new(Queue::new()));
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Ieee802154State {
