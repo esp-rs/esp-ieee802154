@@ -86,6 +86,8 @@ pub trait Ieee802154Controller {
 
     fn start_receive(&mut self);
 
+    fn get_raw_received(&mut self) -> Option<RawReceived>;
+
     fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>>;
 
     fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
@@ -139,6 +141,10 @@ impl Ieee802154Controller for Ieee802154 {
 
     fn start_receive(&mut self) {
         ieee802154_receive();
+    }
+
+    fn get_raw_received(&mut self) -> Option<RawReceived> {
+        ieee802154_poll()
     }
 
     fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
