@@ -6,10 +6,11 @@ use crate::{
     hal::{
         ieee802154_hal_set_cca_mode, ieee802154_hal_set_cca_threshold,
         ieee802154_hal_set_coordinator, ieee802154_hal_set_freq,
-        ieee802154_hal_set_multipan_ext_addr, ieee802154_hal_set_multipan_panid,
-        ieee802154_hal_set_multipan_short_addr, ieee802154_hal_set_pending_mode,
-        ieee802154_hal_set_power, ieee802154_hal_set_promiscuous, ieee802154_hal_set_rx_auto_ack,
-        ieee802154_hal_set_tx_auto_ack, ieee802154_hal_set_tx_enhance_ack,
+        ieee802154_hal_set_multipan_enable_mask, ieee802154_hal_set_multipan_ext_addr,
+        ieee802154_hal_set_multipan_panid, ieee802154_hal_set_multipan_short_addr,
+        ieee802154_hal_set_pending_mode, ieee802154_hal_set_power, ieee802154_hal_set_promiscuous,
+        ieee802154_hal_set_rx_auto_ack, ieee802154_hal_set_tx_auto_ack,
+        ieee802154_hal_set_tx_enhance_ack,
     },
     util::channel_to_freq,
 };
@@ -184,6 +185,9 @@ pub fn ieee802154_pib_update() {
 
         ieee802154_hal_set_freq(channel_to_freq(pib.channel));
         ieee802154_hal_set_power(ieee802154_txpower_convert(pib.txpower));
+
+        ieee802154_hal_set_multipan_enable_mask(pib.multipan_mask);
+        ieee802154_set_multipan_hal(&pib);
 
         ieee802154_hal_set_cca_mode(pib.cca_mode);
         ieee802154_hal_set_cca_threshold(pib.cca_threshold);
