@@ -29,6 +29,7 @@ impl StrBuf {
         res
     }
 
+    #[allow(unused)]
     pub unsafe fn append_from(&mut self, c_str: *const u8) {
         let mut src_idx: usize = 0;
         let mut idx: usize = self.len;

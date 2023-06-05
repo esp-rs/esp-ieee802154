@@ -20,6 +20,8 @@ pub const IEEE802154_FRAME_EXT_ADDR_SIZE: usize = 8;
 pub const IEEE802154_MULTIPAN_0: u8 = 0;
 pub const CONFIG_IEEE802154_CCA_THRESHOLD: i8 = 1;
 
+static PIB: Mutex<RefCell<Option<Ieee802154Pib>>> = Mutex::new(RefCell::new(None));
+
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub enum Ieee802154PendingMode {
     #[default]
@@ -57,16 +59,14 @@ pub struct Ieee802154Pib {
     cca_mode: Ieee802154CcaMode,
 }
 
-static PIB: Mutex<RefCell<Option<Ieee802154Pib>>> = Mutex::new(RefCell::new(None));
-
 pub fn ieee802154_pib_init() {
     critical_section::with(|cs| {
         PIB.borrow_ref_mut(cs).replace(Ieee802154Pib {
             auto_ack_tx: true,
             auto_ack_rx: true,
-            enhance_ack_tx: false,
-            promiscuous: true,
+            enhance_ack_tx: true,
             coordinator: false,
+            promiscuous: true,
             rx_when_idle: false,
             txpower: 10,
             channel: 11,
@@ -179,7 +179,6 @@ pub fn ieee802154_pib_set_cca_mode(mode: Ieee802154CcaMode) {
 }
 
 pub fn ieee802154_pib_update() {
-    // if (ieee802154_pib_is_pending()) {
     critical_section::with(|cs| {
         let mut pib = PIB.borrow_ref_mut(cs);
         let pib = pib.as_mut().unwrap();
@@ -203,9 +202,6 @@ pub fn ieee802154_pib_update() {
             pib.pending_mode == Ieee802154PendingMode::Ieee802154AutoPendingEnhanced,
         );
     });
-
-    // clr_pending();
-    // }
 }
 
 pub fn ieee802154_set_multipan_hal(pib: &Ieee802154Pib) {
@@ -221,17 +217,15 @@ pub fn ieee802154_set_multipan_hal(pib: &Ieee802154Pib) {
     }
 }
 
-const IEEE802154_TXPOWER_VALUE_MAX: i8 = 13;
-const IEEE802154_TXPOWER_VALUE_MIN: i8 = -32;
-
 pub fn ieee802154_txpower_convert(txpower: i8) -> u8 {
-    let ieee820154_txpower_value;
+    const IEEE802154_TXPOWER_VALUE_MAX: i8 = 13;
+    const IEEE802154_TXPOWER_VALUE_MIN: i8 = -32;
+
     if txpower > IEEE802154_TXPOWER_VALUE_MAX {
-        ieee820154_txpower_value = 15;
+        15
     } else if txpower < IEEE802154_TXPOWER_VALUE_MIN {
-        ieee820154_txpower_value = 0;
+        0
     } else {
-        ieee820154_txpower_value = ((txpower - IEEE802154_TXPOWER_VALUE_MIN) / 3) as u8;
+        ((txpower - IEEE802154_TXPOWER_VALUE_MIN) / 3) as u8
     }
-    return ieee820154_txpower_value;
 }

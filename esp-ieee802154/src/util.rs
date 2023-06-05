@@ -1,20 +1,13 @@
-use core::cell::RefCell;
-
-use critical_section::Mutex;
-
-use crate::{
-    binary::include::{
-        ieee802154_coex_event_t_IEEE802154_ACK, ieee802154_coex_event_t_IEEE802154_IDLE_RX,
-        ieee802154_coex_event_t_IEEE802154_NORMAL, ieee802154_coex_event_t_IEEE802154_RX_AT,
-        ieee802154_coex_event_t_IEEE802154_TX_AT,
-    },
-    hal::{ieee802154_hal_set_ack_pti, ieee802154_hal_set_normal_pti},
+use crate::binary::include::{
+    ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
+    ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
 };
 
 extern "C" {
-    fn esp_ieee802154_coex_pti_set(event: u32); // TO DO: esp_ieee802154_coex_pti_set --> esp_coex_ieee802154_pti_set
+    fn esp_coex_ieee802154_txrx_pti_set(event: ieee802154_coex_event_t);
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Ieee802154TxrxScene {
     Ieee802154SceneIdle,
@@ -24,92 +17,35 @@ pub enum Ieee802154TxrxScene {
     Ieee802154SceneRxAt,
 }
 
-static TEST_MODE: Mutex<RefCell<bool>> = Mutex::new(RefCell::new(false));
-static TX_PTI: Mutex<RefCell<u8>> = Mutex::new(RefCell::new(0u8));
-static RX_PTI: Mutex<RefCell<u8>> = Mutex::new(RefCell::new(0u8));
-static ACK_PTI: Mutex<RefCell<u8>> = Mutex::new(RefCell::new(0u8));
-
-pub fn set_test_mode(enable: bool) {
-    critical_section::with(|cs| {
-        *(TEST_MODE.borrow_ref_mut(cs)) = enable;
-    });
-}
-
-pub fn get_test_mode() -> bool {
-    critical_section::with(|cs| *(TEST_MODE.borrow_ref(cs)))
-}
-
-pub fn set_ack_pti() {
-    unsafe {
-        esp_ieee802154_coex_pti_set(ieee802154_coex_event_t_IEEE802154_ACK); // from libcoexist.a
-    }
-}
-
 pub fn ieee802154_set_txrx_pti(txrx_scene: Ieee802154TxrxScene) {
-    let (s_tx_pti, s_rx_pti, s_ack_pti) = critical_section::with(|cs| {
-        (
-            *TX_PTI.borrow(cs).borrow(),
-            *RX_PTI.borrow(cs).borrow(),
-            *ACK_PTI.borrow(cs).borrow(),
-        )
-    });
-
-    if get_test_mode() {
-        if txrx_scene == Ieee802154TxrxScene::Ieee802154SceneTx
-            || txrx_scene == Ieee802154TxrxScene::Ieee802154SceneTxAt
-        {
-            ieee802154_hal_set_normal_pti(s_tx_pti);
-        } else if txrx_scene == Ieee802154TxrxScene::Ieee802154SceneRx
-            || txrx_scene == Ieee802154TxrxScene::Ieee802154SceneRxAt
-        {
-            ieee802154_hal_set_normal_pti(s_rx_pti);
+    match txrx_scene {
+        Ieee802154TxrxScene::Ieee802154SceneIdle => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_IDLE) };
         }
-        ieee802154_hal_set_ack_pti(s_ack_pti);
-    } else {
-        match txrx_scene {
-            Ieee802154TxrxScene::Ieee802154SceneIdle => {
-                unsafe {
-                    esp_ieee802154_coex_pti_set(ieee802154_coex_event_t_IEEE802154_IDLE_RX);
-                    // from libcoexist.a
-                }
-            }
-            Ieee802154TxrxScene::Ieee802154SceneTx | Ieee802154TxrxScene::Ieee802154SceneRx => {
-                unsafe {
-                    esp_ieee802154_coex_pti_set(ieee802154_coex_event_t_IEEE802154_NORMAL);
-                    // from libcoexist.a
-                }
-            }
-            Ieee802154TxrxScene::Ieee802154SceneTxAt => {
-                unsafe {
-                    esp_ieee802154_coex_pti_set(ieee802154_coex_event_t_IEEE802154_TX_AT);
-                    // from libcoexist.a
-                }
-            }
-            Ieee802154TxrxScene::Ieee802154SceneRxAt => {
-                unsafe {
-                    esp_ieee802154_coex_pti_set(ieee802154_coex_event_t_IEEE802154_RX_AT);
-                    // from libcoexist.a
-                }
-            }
+        Ieee802154TxrxScene::Ieee802154SceneTx | Ieee802154TxrxScene::Ieee802154SceneRx => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_LOW) };
+        }
+        Ieee802154TxrxScene::Ieee802154SceneTxAt | Ieee802154TxrxScene::Ieee802154SceneRxAt => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_MIDDLE) };
         }
     }
 }
 
-pub fn rssi_to_lqi(rssi: i8) -> u8 {
+pub(crate) fn rssi_to_lqi(rssi: i8) -> u8 {
     if rssi < -80 {
-        return 0;
+        0
     } else if rssi > -30 {
-        return 0xff;
+        0xff
     } else {
         let lqi_convert = ((rssi as u32).wrapping_add(80)) * 255;
-        return (lqi_convert / 50) as u8;
+        (lqi_convert / 50) as u8
     }
 }
 
-pub fn freq_to_channel(freq: u8) -> u8 {
-    return (freq - 3) / 5 + 11;
+pub(crate) fn freq_to_channel(freq: u8) -> u8 {
+    (freq - 3) / 5 + 11
 }
 
-pub fn channel_to_freq(channel: u8) -> u8 {
-    return (channel - 11) * 5 + 3;
+pub(crate) fn channel_to_freq(channel: u8) -> u8 {
+    (channel - 11) * 5 + 3
 }
