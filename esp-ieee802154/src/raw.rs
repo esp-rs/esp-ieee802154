@@ -90,6 +90,17 @@ fn esp_btbb_enable() {
 
 /// Initialize the IEEE802.15.4 MAC
 fn ieee802154_mac_init() {
+    unsafe {
+        extern "C" {
+            static mut coex_pti_tab_ptr: u32;
+            static coex_pti_tab: u8;
+        }
+
+        // manually set coex_pti_tab_ptr pointing to coex_pti_tab
+        (&coex_pti_tab_ptr as *const _ as *mut u32)
+            .write_volatile(&coex_pti_tab as *const _ as u32);
+    }
+
     ieee802154_pib_init();
 
     enable_events(Ieee802154Event::Ieee802154EventMask as u16);
