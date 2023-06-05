@@ -1,43 +1,43 @@
 use core::cell::RefCell;
 
-use crate::util::freq_to_channel;
+use critical_section::Mutex;
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
+use esp_hal::interrupt::{self, Priority};
+use esp_hal::peripherals::Interrupt;
+use esp_hal::system::{RadioClockControl, RadioClockController, RadioPeripherals};
+use heapless::spsc::Queue;
 
 use super::hal::disable_events;
 use super::pib::*;
-use super::util::{get_test_mode, ieee802154_set_txrx_pti, set_ack_pti, Ieee802154TxrxScene};
+use super::util::{ieee802154_set_txrx_pti, Ieee802154TxrxScene};
 use super::utils::ieee802154;
-use crate::frame::*;
-use critical_section::Mutex;
-use heapless::spsc::Queue;
-
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-
 use super::{
     binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
     hal::*,
 };
+use crate::binary::include::{
+    esp_phy_calibration_data_t, ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_MIDDLE,
+};
+use crate::frame::*;
+use crate::util::freq_to_channel;
 
 pub(crate) const FRAME_SIZE: usize = 129;
 const PHY_ENABLE_VERSION_PRINT: u32 = 1;
+
+static mut RX_BUFFER: [u8; FRAME_SIZE] = [0u8; FRAME_SIZE];
+static RX_QUEUE: Mutex<RefCell<Queue<RawReceived, 20>>> = Mutex::new(RefCell::new(Queue::new()));
+static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
 
 extern "C" {
     pub fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
 
     pub fn bt_bb_set_zb_tx_on_delay(time: u16); // from libbtbb.a
 
+    fn esp_coex_ieee802154_ack_pti_set(event: ieee802154_coex_event_t); // from ???
+
     pub fn phy_version_print(); // from libphy.a
 }
-
-static mut RX_BUFFER: [u8; FRAME_SIZE] = [0u8; FRAME_SIZE];
-
-#[derive(Debug)]
-pub struct RawReceived {
-    pub data: [u8; FRAME_SIZE],
-    pub channel: u8,
-}
-
-static RX_QUEUE: Mutex<RefCell<Queue<RawReceived, 20>>> = Mutex::new(RefCell::new(Queue::new()));
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Ieee802154State {
@@ -47,54 +47,56 @@ pub enum Ieee802154State {
     TxAck,
 }
 
-static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
+#[derive(Debug)]
+pub struct RawReceived {
+    pub data: [u8; FRAME_SIZE],
+    pub channel: u8,
+}
 
 /// Enable the IEEE802.15.4 radio
-pub fn esp_ieee802154_enable(radio_clock_control: &mut esp_hal::system::RadioClockControl) {
-    use esp_hal::system::RadioClockController;
+pub fn esp_ieee802154_enable(radio_clock_control: &mut RadioClockControl) {
     radio_clock_control.init_clocks();
-    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Phy);
-    radio_clock_control.enable(esp_hal::system::RadioPeripherals::Ieee802154);
+    radio_clock_control.enable(RadioPeripherals::Phy);
+    radio_clock_control.enable(RadioPeripherals::Ieee802154);
 
     esp_phy_enable();
+    esp_btbb_enable();
     ieee802154_mac_init();
 
+    unsafe { phy_version_print() }; // libphy.a
     log::info!("date={:x}", ieee802154().mac_date.read().bits());
 }
 
 /// Enable the PHY
 fn esp_phy_enable() {
     unsafe {
-        let mut calibration_data = crate::binary::include::esp_phy_calibration_data_t {
+        let mut calibration_data = esp_phy_calibration_data_t {
             version: [0u8; 4],
             mac: [0u8; 6],
             opaque: [0u8; 1894],
         };
         register_chipv7_phy(
             core::ptr::null(),
-            &mut calibration_data as *mut crate::binary::include::esp_phy_calibration_data_t,
+            &mut calibration_data as *mut esp_phy_calibration_data_t,
             esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
         );
-        bt_bb_v2_init_cmplx(PHY_ENABLE_VERSION_PRINT); // bt_bb_v2_init_cmplx // bt_bb_v2_init_cmplx(int print_version);
-        phy_version_print(); // libphy.a // extern void phy_version_print(void);
     }
+}
+
+/// Enable BTBB
+fn esp_btbb_enable() {
+    unsafe { bt_bb_v2_init_cmplx(PHY_ENABLE_VERSION_PRINT) };
 }
 
 /// Initialize the IEEE802.15.4 MAC
 fn ieee802154_mac_init() {
-    //TODO: need to be removed
-    etm_clk_enable();
-
     ieee802154_pib_init();
 
-    enable_events(Ieee802154Event::Ieee802154EventMask as u16); // ieee802154_hal_enable_events(IEEE802154_EVENT_MASK);
-
-    if !get_test_mode() {
-        disable_events(
-            (Ieee802154Event::Ieee802154EventTimer0Overflow as u16)
-                | (Ieee802154Event::Ieee802154EventTimer1Overflow as u16),
-        );
-    }
+    enable_events(Ieee802154Event::Ieee802154EventMask as u16);
+    disable_events(
+        (Ieee802154Event::Ieee802154EventTimer0Overflow as u16)
+            | (Ieee802154Event::Ieee802154EventTimer1Overflow as u16),
+    );
 
     enable_tx_abort_events(
         Ieee802154TxAbortReason::Ieee802154TxAbortByRxAckTimeout.bit()
@@ -110,7 +112,7 @@ fn ieee802154_mac_init() {
 
     set_ed_sample_mode(Ieee802154EdSampleMode::Ieee802154EdSampleAvg);
 
-    set_ack_pti();
+    unsafe { esp_coex_ieee802154_ack_pti_set(ieee802154_coex_event_t_IEEE802154_MIDDLE) };
     ieee802154_set_txrx_pti(Ieee802154TxrxScene::Ieee802154SceneIdle);
 
     unsafe {
@@ -120,34 +122,14 @@ fn ieee802154_mac_init() {
         .rxon_delay
         .modify(|_, w| w.rxon_delay().variant(50));
 
-    // esp_intr_alloc(ETS_ZB_MAC_SOURCE, 0, ieee802154_isr, NULL, NULL);
-    esp_hal::interrupt::enable(
-        esp_hal::peripherals::Interrupt::ZB_MAC,
-        esp_hal::interrupt::Priority::Priority1,
-    )
-    .unwrap();
+    // memset(s_rx_frame, 0, sizeof(s_rx_frame));
+    // s_ieee802154_state = IEEE802154_STATE_IDLE;
+
+    interrupt::enable(Interrupt::ZB_MAC, Priority::Priority1).unwrap();
     unsafe {
         esp_hal::riscv::interrupt::enable();
     }
-
-    // esp_receive_ack_timeout_timer_init(); // TODO timer stuff
-
-    /*
-        memset(rx_frame, 0, sizeof(rx_frame));
-        ieee802154_state = IEEE802154_STATE_IDLE;
-    */
 }
-
-/*
-static bool start_ed(uint32_t duration)
-{
-    ieee802154_hal_enable_events(IEEE802154_EVENT_ED_DONE);
-    ieee802154_hal_set_ed_duration(duration);
-    ieee802154_hal_set_cmd(IEEE802154_CMD_ED_START);
-
-    return true;
-}
-*/
 
 pub fn tx_init(frame: *const u8) {
     let tx_frame = frame;
@@ -191,21 +173,12 @@ pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
 }
 
 pub fn ieee802154_receive() -> i32 {
-    // if (((ieee802154_state == IEEE802154_STATE_RX)
-    //     || (ieee802154_state == IEEE802154_STATE_TX_ACK))
-    //     && (!ieee802154_pib_is_pending()))
-    // {
-    //     // already in rx state, don't abort current rx operation
-    //     return ESP_OK;
-    // }
-
     critical_section::with(|cs| {
         if *STATE.borrow_ref(cs) == Ieee802154State::Receive {
             return;
         }
 
         rx_init();
-
         enable_rx();
 
         *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
@@ -273,12 +246,14 @@ pub fn set_channel(channel: u8) {
     ieee802154_pib_set_channel(channel);
 }
 
+#[allow(unused)]
 pub fn set_pending_mode(mode: Ieee802154PendingMode) {
     ieee802154_pib_set_pending_mode(mode);
 }
 
+#[allow(unused)]
 pub fn set_multipan_enable(mask: u8) {
-    ieee802154_pib_set_multipan_enable(mask);
+    ieee802154_hal_set_multipan_enable_mask(mask);
 }
 
 pub fn set_short_address(index: u8, address: u16) {
@@ -308,13 +283,8 @@ fn ieee802154_sec_update() {
     // ieee802154_sec_clr_transmit_security();
 }
 
-// pub fn ieee802154_set_promiscuous(enable: bool) {
-//     ieee802154_pib_set_promiscuous(enable);
-//     ieee802154_pib_set_auto_ack_rx(!enable);
-//     ieee802154_pib_set_auto_ack_tx(!enable);
-// }
-
 /// Enable the ETM clock
+#[allow(unused)]
 fn etm_clk_enable() {
     #[cfg(not(feature = "esp32c6"))]
     compile_error!("Unsupported target");

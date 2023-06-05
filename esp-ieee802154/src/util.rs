@@ -1,12 +1,13 @@
 use crate::binary::include::{
-    ieee802154_coex_event_t_IEEE802154_IDLE, ieee802154_coex_event_t_IEEE802154_LOW,
-    ieee802154_coex_event_t_IEEE802154_MIDDLE,
+    ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
+    ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
 };
 
 extern "C" {
-    fn esp_coex_ieee802154_txrx_pti_set(event: u32);
+    fn esp_coex_ieee802154_txrx_pti_set(event: ieee802154_coex_event_t);
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Ieee802154TxrxScene {
     Ieee802154SceneIdle,
