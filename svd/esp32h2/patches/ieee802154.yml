@@ -33,3 +33,14 @@ ieee802154:
         name: ieee802154_crc_error_cnt_clear
       iee802154_sfd_timeout_cnt_clear:
         name: ieee802154_sfd_timeout_cnt_clear
+
+  _delete: mac_date
+
+  _add:
+    mac_date:
+      addressOffset: 0x18c
+      size: 0x20
+      fields:
+        mac_date:
+          bitOffset: 0
+          bitWidth: 32

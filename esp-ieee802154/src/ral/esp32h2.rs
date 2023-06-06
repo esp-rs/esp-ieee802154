@@ -2,8 +2,8 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(unused)]
-use core::marker::PhantomData;
-use core::ops::Deref;
+use core::{marker::PhantomData, ops::Deref};
+
 #[allow(unused_imports)]
 use generic::*;
 #[doc = r"Common register and bit access and modify traits"]
@@ -918,105 +918,12 @@ pub mod ieee802154 {
         pub cca_busy_cnt: CCA_BUSY_CNT,
         #[doc = "0x180 - "]
         pub error_cnt_clear: ERROR_CNT_CLEAR,
-        _reserved_92_mac_date: [u8; 0x04],
+        #[doc = "0x184 - "]
+        pub debug_sel_cfg0: DEBUG_SEL_CFG0,
         #[doc = "0x188 - "]
         pub debug_sel_cfg1: DEBUG_SEL_CFG1,
         #[doc = "0x18c - "]
         pub mac_date: MAC_DATE,
-    }
-    impl RegisterBlock {
-        #[doc = "0x184 - "]
-        #[inline(always)]
-        pub const fn mac_date(&self) -> &MAC_DATE {
-            unsafe { &*(self as *const Self).cast::<u8>().add(388usize).cast() }
-        }
-        #[doc = "0x184 - "]
-        #[inline(always)]
-        pub const fn debug_sel_cfg0(&self) -> &DEBUG_SEL_CFG0 {
-            unsafe { &*(self as *const Self).cast::<u8>().add(388usize).cast() }
-        }
-    }
-    #[doc = "mac_date (rw) register accessor: an alias for `Reg<MAC_DATE_SPEC>`"]
-    pub type MAC_DATE = crate::ral::Reg<mac_date::MAC_DATE_SPEC>;
-    #[doc = ""]
-    pub mod mac_date {
-        #[doc = "Register `mac_date` reader"]
-        pub struct R(crate::ral::R<MAC_DATE_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<MAC_DATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<MAC_DATE_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<MAC_DATE_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `mac_date` writer"]
-        pub struct W(crate::ral::W<MAC_DATE_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<MAC_DATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<MAC_DATE_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<MAC_DATE_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `mac_date` reader - "]
-        pub type MAC_DATE_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `mac_date` writer - "]
-        pub type MAC_DATE_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, MAC_DATE_SPEC, u32, u32, 32, O>;
-        impl R {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            pub fn mac_date(&self) -> MAC_DATE_R {
-                MAC_DATE_R::new(self.bits)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            #[must_use]
-            pub fn mac_date(&mut self) -> MAC_DATE_W<0> {
-                MAC_DATE_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mac_date](index.html) module"]
-        pub struct MAC_DATE_SPEC;
-        impl crate::ral::RegisterSpec for MAC_DATE_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [mac_date::R](R) reader structure"]
-        impl crate::ral::Readable for MAC_DATE_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [mac_date::W](W) writer structure"]
-        impl crate::ral::Writable for MAC_DATE_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
     }
     #[doc = "debug_sel_cfg1 (rw) register accessor: an alias for `Reg<DEBUG_SEL_CFG1_SPEC>`"]
     pub type DEBUG_SEL_CFG1 = crate::ral::Reg<debug_sel_cfg1::DEBUG_SEL_CFG1_SPEC>;
@@ -1273,88 +1180,6 @@ pub mod ieee802154 {
         }
         #[doc = "`write(|w| ..)` method takes [debug_sel_cfg0::W](W) writer structure"]
         impl crate::ral::Writable for DEBUG_SEL_CFG0_SPEC {
-            type Writer = W;
-            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
-        }
-    }
-    #[doc = "mac_date (rw) register accessor: an alias for `Reg<MAC_DATE_SPEC>`"]
-    pub type MAC_DATE = crate::ral::Reg<mac_date::MAC_DATE_SPEC>;
-    #[doc = ""]
-    pub mod mac_date {
-        #[doc = "Register `mac_date` reader"]
-        pub struct R(crate::ral::R<MAC_DATE_SPEC>);
-        impl core::ops::Deref for R {
-            type Target = crate::ral::R<MAC_DATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl From<crate::ral::R<MAC_DATE_SPEC>> for R {
-            #[inline(always)]
-            fn from(reader: crate::ral::R<MAC_DATE_SPEC>) -> Self {
-                R(reader)
-            }
-        }
-        #[doc = "Register `mac_date` writer"]
-        pub struct W(crate::ral::W<MAC_DATE_SPEC>);
-        impl core::ops::Deref for W {
-            type Target = crate::ral::W<MAC_DATE_SPEC>;
-            #[inline(always)]
-            fn deref(&self) -> &Self::Target {
-                &self.0
-            }
-        }
-        impl core::ops::DerefMut for W {
-            #[inline(always)]
-            fn deref_mut(&mut self) -> &mut Self::Target {
-                &mut self.0
-            }
-        }
-        impl From<crate::ral::W<MAC_DATE_SPEC>> for W {
-            #[inline(always)]
-            fn from(writer: crate::ral::W<MAC_DATE_SPEC>) -> Self {
-                W(writer)
-            }
-        }
-        #[doc = "Field `mac_date` reader - "]
-        pub type MAC_DATE_R = crate::ral::FieldReader<u32, u32>;
-        #[doc = "Field `mac_date` writer - "]
-        pub type MAC_DATE_W<'a, const O: u8> =
-            crate::ral::FieldWriter<'a, u32, MAC_DATE_SPEC, u32, u32, 32, O>;
-        impl R {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            pub fn mac_date(&self) -> MAC_DATE_R {
-                MAC_DATE_R::new(self.bits)
-            }
-        }
-        impl W {
-            #[doc = "Bits 0:31"]
-            #[inline(always)]
-            #[must_use]
-            pub fn mac_date(&mut self) -> MAC_DATE_W<0> {
-                MAC_DATE_W::new(self)
-            }
-            #[doc = "Writes raw bits to the register."]
-            #[inline(always)]
-            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
-                self.0.bits(bits);
-                self
-            }
-        }
-        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mac_date](index.html) module"]
-        pub struct MAC_DATE_SPEC;
-        impl crate::ral::RegisterSpec for MAC_DATE_SPEC {
-            type Ux = u32;
-        }
-        #[doc = "`read()` method returns [mac_date::R](R) reader structure"]
-        impl crate::ral::Readable for MAC_DATE_SPEC {
-            type Reader = R;
-        }
-        #[doc = "`write(|w| ..)` method takes [mac_date::W](W) writer structure"]
-        impl crate::ral::Writable for MAC_DATE_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
@@ -10124,6 +9949,88 @@ pub mod ieee802154 {
         }
         #[doc = "`write(|w| ..)` method takes [command::W](W) writer structure"]
         impl crate::ral::Writable for COMMAND_SPEC {
+            type Writer = W;
+            const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+            const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
+        }
+    }
+    #[doc = "mac_date (rw) register accessor: an alias for `Reg<MAC_DATE_SPEC>`"]
+    pub type MAC_DATE = crate::ral::Reg<mac_date::MAC_DATE_SPEC>;
+    #[doc = ""]
+    pub mod mac_date {
+        #[doc = "Register `mac_date` reader"]
+        pub struct R(crate::ral::R<MAC_DATE_SPEC>);
+        impl core::ops::Deref for R {
+            type Target = crate::ral::R<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl From<crate::ral::R<MAC_DATE_SPEC>> for R {
+            #[inline(always)]
+            fn from(reader: crate::ral::R<MAC_DATE_SPEC>) -> Self {
+                R(reader)
+            }
+        }
+        #[doc = "Register `mac_date` writer"]
+        pub struct W(crate::ral::W<MAC_DATE_SPEC>);
+        impl core::ops::Deref for W {
+            type Target = crate::ral::W<MAC_DATE_SPEC>;
+            #[inline(always)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+        impl core::ops::DerefMut for W {
+            #[inline(always)]
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+        impl From<crate::ral::W<MAC_DATE_SPEC>> for W {
+            #[inline(always)]
+            fn from(writer: crate::ral::W<MAC_DATE_SPEC>) -> Self {
+                W(writer)
+            }
+        }
+        #[doc = "Field `mac_date` reader - "]
+        pub type MAC_DATE_R = crate::ral::FieldReader<u32, u32>;
+        #[doc = "Field `mac_date` writer - "]
+        pub type MAC_DATE_W<'a, const O: u8> =
+            crate::ral::FieldWriter<'a, u32, MAC_DATE_SPEC, u32, u32, 32, O>;
+        impl R {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            pub fn mac_date(&self) -> MAC_DATE_R {
+                MAC_DATE_R::new(self.bits)
+            }
+        }
+        impl W {
+            #[doc = "Bits 0:31"]
+            #[inline(always)]
+            #[must_use]
+            pub fn mac_date(&mut self) -> MAC_DATE_W<0> {
+                MAC_DATE_W::new(self)
+            }
+            #[doc = "Writes raw bits to the register."]
+            #[inline(always)]
+            pub unsafe fn bits(&mut self, bits: u32) -> &mut Self {
+                self.0.bits(bits);
+                self
+            }
+        }
+        #[doc = "\n\nThis register you can [`read`](crate::generic::Reg::read), [`write_with_zero`](crate::generic::Reg::write_with_zero), [`modify`](crate::generic::Reg::modify). See [API](https://docs.rs/svd2rust/#read--modify--write-api).\n\nFor information about available fields see [mac_date](index.html) module"]
+        pub struct MAC_DATE_SPEC;
+        impl crate::ral::RegisterSpec for MAC_DATE_SPEC {
+            type Ux = u32;
+        }
+        #[doc = "`read()` method returns [mac_date::R](R) reader structure"]
+        impl crate::ral::Readable for MAC_DATE_SPEC {
+            type Reader = R;
+        }
+        #[doc = "`write(|w| ..)` method takes [mac_date::W](W) writer structure"]
+        impl crate::ral::Writable for MAC_DATE_SPEC {
             type Writer = W;
             const ZERO_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
             const ONE_TO_MODIFY_FIELDS_BITMAP: Self::Ux = 0;
