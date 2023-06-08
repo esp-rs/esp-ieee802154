@@ -1,17 +1,18 @@
 #![no_std]
 #![no_main]
 
-use esp32c6_hal::{
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
+#[cfg(feature = "esp32h2")]
+use esp32h2_hal as esp_hal;
+use esp_backtrace as _;
+use esp_hal::{
     clock::{ClockControl, CpuClock},
     peripherals::Peripherals,
     prelude::*,
-    system::RadioClockController,
-    system::RadioPeripherals,
-    system::SystemParts,
     timer::TimerGroup,
-    Delay, Rtc,
+    Rtc,
 };
-use esp_backtrace as _;
 use esp_ieee802154::*;
 use esp_println::println;
 
@@ -21,7 +22,10 @@ fn main() -> ! {
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
+    #[cfg(feature = "esp32c6")]
     let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
+    #[cfg(feature = "esp32h2")]
+    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
 
     let mut rtc = Rtc::new(peripherals.LP_CLKRST);
     let timer_group0 = TimerGroup::new(
