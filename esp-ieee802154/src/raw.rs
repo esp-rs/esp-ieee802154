@@ -1,26 +1,31 @@
 use core::cell::RefCell;
 
 use critical_section::Mutex;
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-use esp_hal::interrupt::{self, Priority};
-use esp_hal::peripherals::Interrupt;
-use esp_hal::system::{RadioClockControl, RadioClockController, RadioPeripherals};
 use heapless::spsc::Queue;
 
-use super::hal::disable_events;
-use super::pib::*;
-use super::util::{ieee802154_set_txrx_pti, Ieee802154TxrxScene};
-use super::utils::ieee802154;
 use super::{
     binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
-    hal::*,
+    hal::{disable_events, *},
+    pib::*,
+    util::{ieee802154_set_txrx_pti, Ieee802154TxrxScene},
+    utils::ieee802154,
 };
-use crate::binary::include::{
-    esp_phy_calibration_data_t, ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_MIDDLE,
+use crate::{
+    binary::include::{
+        esp_phy_calibration_data_t,
+        ieee802154_coex_event_t,
+        ieee802154_coex_event_t_IEEE802154_MIDDLE,
+    },
+    esp_hal::{
+        self,
+        interrupt::{self, Priority},
+        peripherals::Interrupt,
+        prelude::interrupt,
+        system::{RadioClockControl, RadioClockController, RadioPeripherals},
+    },
+    frame::*,
+    util::freq_to_channel,
 };
-use crate::frame::*;
-use crate::util::freq_to_channel;
 
 pub(crate) const FRAME_SIZE: usize = 129;
 const PHY_ENABLE_VERSION_PRINT: u32 = 1;
@@ -90,6 +95,7 @@ fn esp_btbb_enable() {
 
 /// Initialize the IEEE802.15.4 MAC
 fn ieee802154_mac_init() {
+    #[cfg(feature = "esp32c6")]
     unsafe {
         extern "C" {
             static mut coex_pti_tab_ptr: u32;
@@ -151,7 +157,7 @@ pub fn tx_init(frame: *const u8) {
     ieee802154_hal_set_tx_addr(tx_frame);
 
     if true
-    /* ieee802154_frame_is_ack_required(frame) */
+    // ieee802154_frame_is_ack_required(frame)
     {
         // set rx pointer for ack frame
         set_next_rx_buffer();
@@ -294,39 +300,6 @@ fn ieee802154_sec_update() {
     // ieee802154_sec_clr_transmit_security();
 }
 
-/// Enable the ETM clock
-#[allow(unused)]
-fn etm_clk_enable() {
-    #[cfg(not(feature = "esp32c6"))]
-    compile_error!("Unsupported target");
-
-    const REG_MODEM_SYSCON_BASE: u32 = 0x600A9800;
-    const MODEM_SYSCON_CLK_CONF_REG: u32 = REG_MODEM_SYSCON_BASE + 0x4;
-    const MODEM_SYSCON_CLK_ETM_EN: u32 = 1 << 22;
-    const ETM_REG_BASE: u32 = 0x600A8800;
-    const ETM_CLK_EN_REG: u32 = ETM_REG_BASE + 0x008C;
-    const ETM_CLK_EN: u32 = 1 << 0;
-    const DR_REG_PCR_BASE: u32 = 0x60096000;
-    const CLKRST_MODCLK_CONF_REG: u32 = DR_REG_PCR_BASE + 0x98;
-    const PCR_ETM_CLK_EN_M: u32 = 1 << 0;
-    const PCR_ETM_RST_EN: u32 = 1 << 1;
-
-    unsafe {
-        (MODEM_SYSCON_CLK_CONF_REG as *mut u32).write_volatile(
-            (MODEM_SYSCON_CLK_CONF_REG as *mut u32).read_volatile() | MODEM_SYSCON_CLK_ETM_EN,
-        );
-
-        (ETM_CLK_EN_REG as *mut u32)
-            .write_volatile((ETM_CLK_EN_REG as *mut u32).read_volatile() | ETM_CLK_EN);
-
-        (CLKRST_MODCLK_CONF_REG as *mut u32).write_volatile(
-            (CLKRST_MODCLK_CONF_REG as *mut u32).read_volatile()
-                | PCR_ETM_CLK_EN_M
-                | PCR_ETM_RST_EN,
-        ); // Active ETM clock
-    }
-}
-
 fn next_operation() {
     critical_section::with(|cs| {
         if ieee802154_pib_get_rx_when_idle() {
@@ -338,7 +311,6 @@ fn next_operation() {
     });
 }
 
-use esp_hal::prelude::interrupt;
 #[interrupt]
 fn ZB_MAC() {
     log::trace!("ZB_MAC interrupt");

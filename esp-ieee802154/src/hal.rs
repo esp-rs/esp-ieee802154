@@ -1,6 +1,7 @@
 use crate::{pib::Ieee802154CcaMode, utils::ieee802154};
 
-/* IEEE802154 events */
+/// IEEE802154 events
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154Event {
     Ieee802154EventTxDone = 1 << 0,
@@ -18,6 +19,7 @@ pub enum Ieee802154Event {
     Ieee802154EventMask = 0x00001FFF,
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154TxAbortReason {
     Ieee802154TxAbortByRxAckStop = 1,
@@ -43,6 +45,7 @@ impl Ieee802154TxAbortReason {
     }
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154RxAbortReason {
     Ieee802154RxAbortByRxStop = 1,
@@ -69,13 +72,15 @@ impl Ieee802154RxAbortReason {
     }
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154EdSampleMode {
     Ieee802154EdSampleMax = 0x00,
     Ieee802154EdSampleAvg = 0x01,
 }
 
-/* IEEE802154 cmds */
+/// IEEE802154 commands
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154Cmd {
     Ieee802154CmdTxStart = 0x41,
@@ -92,6 +97,7 @@ pub enum Ieee802154Cmd {
     Ieee802154CmdTimer1Stop = 0x4F,
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub enum Ieee802154MultipanIndex {
     Ieee802154Multipan0 = 0,
@@ -150,6 +156,7 @@ pub fn set_ed_sample_mode(ed_sample_mode: Ieee802154EdSampleMode) {
         .modify(|_, w| w.ed_sample_mode().variant(ed_sample_mode as u8));
 }
 
+#[allow(unused)]
 #[inline(always)]
 pub fn ieee802154_hal_set_normal_pti(normal_pti: u8) {
     ieee802154()
@@ -157,6 +164,7 @@ pub fn ieee802154_hal_set_normal_pti(normal_pti: u8) {
         .modify(|_, w| w.coex_pti().variant(normal_pti));
 }
 
+#[allow(unused)]
 #[inline(always)]
 pub fn ieee802154_hal_set_ack_pti(ack_pti: u8) {
     ieee802154()
@@ -344,6 +352,7 @@ pub fn ieee802154_hal_set_rx_addr(addr: *mut u8) {
         .modify(|_, w| w.rxdma_addr().variant(addr as u32));
 }
 
+#[allow(unused)]
 #[inline(always)]
 pub fn ieee802154_hal_set_pending_bit(enable: bool) {
     ieee802154()
