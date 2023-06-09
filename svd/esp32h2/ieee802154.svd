@@ -11,18 +11,6 @@
       <baseAddress>0x600A3000</baseAddress>
       <registers>
         <register>
-          <name>mac_date</name>
-          <addressOffset>0x18C</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>mac_date</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>32</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
           <name>debug_sel_cfg1</name>
           <addressOffset>0x188</addressOffset>
           <size>0x20</size>
@@ -73,18 +61,6 @@
               <name>debug_field3_sel</name>
               <bitOffset>24</bitOffset>
               <bitWidth>5</bitWidth>
-            </field>
-          </fields>
-        </register>
-        <register>
-          <name>mac_date</name>
-          <addressOffset>0x184</addressOffset>
-          <size>0x20</size>
-          <fields>
-            <field>
-              <name>mac_date</name>
-              <bitOffset>0</bitOffset>
-              <bitWidth>32</bitWidth>
             </field>
           </fields>
         </register>
@@ -1569,6 +1545,18 @@
               <name>opcode</name>
               <bitOffset>0</bitOffset>
               <bitWidth>8</bitWidth>
+            </field>
+          </fields>
+        </register>
+        <register>
+          <name>mac_date</name>
+          <addressOffset>0x18C</addressOffset>
+          <size>0x20</size>
+          <fields>
+            <field>
+              <name>mac_date</name>
+              <bitOffset>0</bitOffset>
+              <bitWidth>32</bitWidth>
             </field>
           </fields>
         </register>

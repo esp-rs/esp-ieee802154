@@ -1,14 +1,19 @@
 #![no_std]
 #![no_main]
 
-use esp32c6_hal::{
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
+#[cfg(feature = "esp32h2")]
+use esp32h2_hal as esp_hal;
+use esp_backtrace as _;
+use esp_hal::{
     clock::{ClockControl, CpuClock},
     peripherals::Peripherals,
     prelude::*,
     timer::TimerGroup,
-    Delay, Rtc,
+    Delay,
+    Rtc,
 };
-use esp_backtrace as _;
 use esp_ieee802154::*;
 use esp_println::println;
 use ieee802154::mac::{Header, PanId, ShortAddress};
@@ -19,7 +24,10 @@ fn main() -> ! {
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
+    #[cfg(feature = "esp32c6")]
     let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
+    #[cfg(feature = "esp32h2")]
+    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
 
     let mut rtc = Rtc::new(peripherals.LP_CLKRST);
     let timer_group0 = TimerGroup::new(
@@ -47,7 +55,7 @@ fn main() -> ! {
     let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
-        channel: 11,
+        channel: 15,
         promiscuous: false,
         pan_id: Some(0x4242),
         short_addr: Some(0x2222),

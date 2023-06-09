@@ -1,4 +1,9 @@
-use std::{env, fs::File, io::Write, path::PathBuf};
+use std::{
+    env,
+    fs::File,
+    io::Write,
+    path::{Path, PathBuf},
+};
 
 macro_rules! copy_file {
     // $out:  `&PathBuf`
@@ -28,9 +33,13 @@ fn main() {
 
     #[cfg(feature = "esp32h2")]
     {
+        empty_file(out, "rom_coexist.x");
         copy_file!(out, "ld/esp32h2/rom_functions.x");
+        empty_file(out, "rom_phy.x");
+
         copy_file!(out, "libs/esp32h2/libbtbb.a");
         copy_file!(out, "libs/esp32h2/libphy.a");
+        copy_file!(out, "libs/esp32h2/libcoexist.a");
     }
 
     println!("cargo:rustc-link-lib=btbb");
@@ -38,4 +47,9 @@ fn main() {
     println!("cargo:rustc-link-lib=phy");
 
     println!("cargo:rustc-link-search={}", out.display());
+}
+
+#[allow(unused)]
+fn empty_file(path: &Path, filename: &str) {
+    File::create(path.join(filename)).unwrap();
 }

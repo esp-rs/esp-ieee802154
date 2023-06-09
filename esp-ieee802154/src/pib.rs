@@ -4,12 +4,19 @@ use critical_section::Mutex;
 
 use crate::{
     hal::{
-        ieee802154_hal_set_cca_mode, ieee802154_hal_set_cca_threshold,
-        ieee802154_hal_set_coordinator, ieee802154_hal_set_freq,
-        ieee802154_hal_set_multipan_enable_mask, ieee802154_hal_set_multipan_ext_addr,
-        ieee802154_hal_set_multipan_panid, ieee802154_hal_set_multipan_short_addr,
-        ieee802154_hal_set_pending_mode, ieee802154_hal_set_power, ieee802154_hal_set_promiscuous,
-        ieee802154_hal_set_rx_auto_ack, ieee802154_hal_set_tx_auto_ack,
+        ieee802154_hal_set_cca_mode,
+        ieee802154_hal_set_cca_threshold,
+        ieee802154_hal_set_coordinator,
+        ieee802154_hal_set_freq,
+        ieee802154_hal_set_multipan_enable_mask,
+        ieee802154_hal_set_multipan_ext_addr,
+        ieee802154_hal_set_multipan_panid,
+        ieee802154_hal_set_multipan_short_addr,
+        ieee802154_hal_set_pending_mode,
+        ieee802154_hal_set_power,
+        ieee802154_hal_set_promiscuous,
+        ieee802154_hal_set_rx_auto_ack,
+        ieee802154_hal_set_tx_auto_ack,
         ieee802154_hal_set_tx_enhance_ack,
     },
     util::channel_to_freq,
@@ -22,6 +29,7 @@ pub const CONFIG_IEEE802154_CCA_THRESHOLD: i8 = 1;
 
 static PIB: Mutex<RefCell<Option<Ieee802154Pib>>> = Mutex::new(RefCell::new(None));
 
+#[allow(unused)]
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub enum Ieee802154PendingMode {
     #[default]
@@ -145,6 +153,7 @@ pub fn ieee802154_pib_set_pending_mode(mode: Ieee802154PendingMode) {
     });
 }
 
+#[allow(unused)]
 pub fn ieee802154_pib_set_multipan_enable(mask: u8) {
     critical_section::with(|cs| {
         PIB.borrow_ref_mut(cs).as_mut().unwrap().multipan_mask = mask;

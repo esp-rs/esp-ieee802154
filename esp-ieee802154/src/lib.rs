@@ -1,6 +1,18 @@
 #![no_std]
 #![feature(c_variadic)]
 
+use byte::{BytesExt, TryRead};
+#[cfg(feature = "esp32c6")]
+use esp32c6_hal as esp_hal;
+#[cfg(feature = "esp32h2")]
+use esp32h2_hal as esp_hal;
+use esp_hal::system::RadioClockControl;
+use heapless::Vec;
+use ieee802154::mac::{self, FooterMode, FrameContent, FrameSerDesContext, Header};
+use pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE};
+use raw::*;
+use util::rssi_to_lqi;
+
 mod binary;
 mod compat;
 mod frame;
@@ -13,15 +25,6 @@ mod raw;
 mod util;
 mod utils;
 
-use byte::{BytesExt, TryRead};
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-
-use ieee802154::mac::{FooterMode, FrameContent, FrameSerDesContext, Header};
-use pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE};
-use raw::*;
-use util::rssi_to_lqi;
-
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     Incomplete,
@@ -32,7 +35,7 @@ pub enum Error {
 pub struct Frame {
     pub header: Header,
     pub content: FrameContent,
-    pub payload: heapless::Vec<u8, FRAME_SIZE>,
+    pub payload: Vec<u8, FRAME_SIZE>,
     pub footer: [u8; 2],
 }
 
@@ -71,7 +74,7 @@ impl Default for Config {
             coordinator: Default::default(),
             rx_when_idle: Default::default(),
             txpower: 10,
-            channel: 11,
+            channel: 15,
             cca_threshold: CONFIG_IEEE802154_CCA_THRESHOLD,
             cca_mode: Ieee802154CcaMode::Ieee802154CcaModeEd,
             pan_id: None,
@@ -101,7 +104,7 @@ pub struct Ieee802154 {
 }
 
 impl Ieee802154 {
-    pub fn new(radio_clocks: &mut esp_hal::system::RadioClockControl) -> Self {
+    pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
         Self {
             _private: (),
@@ -150,10 +153,8 @@ impl Ieee802154Controller for Ieee802154 {
     fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
         let poll_res = ieee802154_poll();
         if let Some(raw) = poll_res {
-            let decode_res = ieee802154::mac::Frame::try_read(
-                &raw.data[1..][..raw.data[0] as usize],
-                FooterMode::Explicit,
-            );
+            let decode_res =
+                mac::Frame::try_read(&raw.data[1..][..raw.data[0] as usize], FooterMode::Explicit);
 
             if let Ok((decoded, _)) = decode_res {
                 let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
@@ -162,17 +163,17 @@ impl Ieee802154Controller for Ieee802154 {
                     frame: Frame {
                         header: decoded.header,
                         content: decoded.content,
-                        payload: heapless::Vec::from_slice(&decoded.payload).unwrap(),
+                        payload: Vec::from_slice(&decoded.payload).unwrap(),
                         footer: decoded.footer,
                     },
                     channel: raw.channel,
-                    rssi: rssi,
+                    rssi,
                     lqi: rssi_to_lqi(rssi),
                 }))
             } else {
                 Some(Err(match decode_res.err().unwrap() {
                     byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
-                    byte::Error::BadInput { err: _err } => Error::BadInput, // maybe worth to keep the description?
+                    byte::Error::BadInput { .. } => Error::BadInput,
                 }))
             }
         } else {
@@ -181,7 +182,7 @@ impl Ieee802154Controller for Ieee802154 {
     }
 
     fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
-        let frm = ieee802154::mac::Frame {
+        let frm = mac::Frame {
             header: frame.header.clone(),
             content: frame.content,
             payload: &frame.payload,
