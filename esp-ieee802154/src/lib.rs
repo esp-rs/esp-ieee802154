@@ -1,3 +1,5 @@
+//! Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2
+
 #![no_std]
 #![feature(c_variadic)]
 
@@ -27,12 +29,14 @@ extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
     0
 }
 
+/// IEEE802.15.4 errors
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     Incomplete,
     BadInput,
 }
 
+/// An IEEE802.15.4 frame
 #[derive(Debug, Clone)]
 pub struct Frame {
     pub header: Header,
@@ -41,6 +45,7 @@ pub struct Frame {
     pub footer: [u8; 2],
 }
 
+/// A received IEEE802.15.4 frame
 #[derive(Debug, Clone)]
 pub struct ReceivedFrame {
     pub frame: Frame,
@@ -49,6 +54,7 @@ pub struct ReceivedFrame {
     pub lqi: u8,
 }
 
+/// Driver configuration
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
     pub auto_ack_tx: bool,
@@ -98,6 +104,7 @@ pub trait Ieee802154Controller {
     fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
 }
 
+/// IEEE802.15.4 driver
 #[derive(Debug, Clone, Copy)]
 pub struct Ieee802154 {
     _private: (),
