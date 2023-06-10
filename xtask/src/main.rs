@@ -60,7 +60,11 @@ fn main() -> Result<()> {
 fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
     let svd_path = workspace.join("svd").join(chip.to_string());
     let svd_file = svd_path.join("ieee802154.svd");
-    let out_dir = workspace.join("esp-ieee802154").join("src").join("ral");
+    let out_dir = workspace
+        .join("esp-ieee802154")
+        .join("src")
+        .join("hal")
+        .join("ral");
 
     // Apply any patches to the SVD.
     info!("applying patches to SVD file");
@@ -91,7 +95,7 @@ fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
     let mut device_x = String::new();
     let items = render(&device, &config, &mut device_x)?;
     let data = items.to_string()
-        .replace("crate :: ", "crate :: ral :: ")
+        .replace("crate :: ", "crate :: hal :: ral :: ")
         .replace(
             "# ! [deny (dead_code)] # ! [deny (improper_ctypes)] # ! [deny (missing_docs)] # ! [deny (no_mangle_generic_items)] # ! [deny (non_shorthand_field_patterns)] # ! [deny (overflowing_literals)] # ! [deny (path_statements)] # ! [deny (patterns_in_fns_without_body)] # ! [deny (private_in_public)] # ! [deny (unconditional_recursion)] # ! [deny (unused_allocation)] # ! [deny (unused_comparisons)] # ! [deny (unused_parens)] # ! [deny (while_true)] # ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] # ! [no_std]",
             "# ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] #![allow(unused)]"

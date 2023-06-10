@@ -20,9 +20,6 @@ mod compat;
 mod frame;
 mod hal;
 mod pib;
-#[cfg_attr(feature = "esp32c6", path = "ral/esp32c6.rs")]
-#[cfg_attr(feature = "esp32h2", path = "ral/esp32h2.rs")]
-mod ral;
 mod raw;
 
 #[no_mangle]

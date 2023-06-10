@@ -1,5 +1,9 @@
 use crate::pib::Ieee802154CcaMode;
 
+#[cfg_attr(feature = "esp32c6", path = "ral/esp32c6.rs")]
+#[cfg_attr(feature = "esp32h2", path = "ral/esp32h2.rs")]
+mod ral;
+
 /// IEEE802154 events
 #[allow(unused)]
 #[derive(Debug, Clone, Copy)]
@@ -119,8 +123,8 @@ impl From<usize> for Ieee802154MultipanIndex {
     }
 }
 
-pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
-    unsafe { &*crate::ral::IEEE802154::PTR }
+pub fn ieee802154() -> &'static self::ral::ieee802154::RegisterBlock {
+    unsafe { &*self::ral::IEEE802154::PTR }
 }
 
 #[inline(always)]
