@@ -2,24 +2,21 @@ use core::cell::RefCell;
 
 use critical_section::Mutex;
 
-use crate::{
-    hal::{
-        ieee802154_hal_set_cca_mode,
-        ieee802154_hal_set_cca_threshold,
-        ieee802154_hal_set_coordinator,
-        ieee802154_hal_set_freq,
-        ieee802154_hal_set_multipan_enable_mask,
-        ieee802154_hal_set_multipan_ext_addr,
-        ieee802154_hal_set_multipan_panid,
-        ieee802154_hal_set_multipan_short_addr,
-        ieee802154_hal_set_pending_mode,
-        ieee802154_hal_set_power,
-        ieee802154_hal_set_promiscuous,
-        ieee802154_hal_set_rx_auto_ack,
-        ieee802154_hal_set_tx_auto_ack,
-        ieee802154_hal_set_tx_enhance_ack,
-    },
-    util::channel_to_freq,
+use crate::hal::{
+    ieee802154_hal_set_cca_mode,
+    ieee802154_hal_set_cca_threshold,
+    ieee802154_hal_set_coordinator,
+    ieee802154_hal_set_freq,
+    ieee802154_hal_set_multipan_enable_mask,
+    ieee802154_hal_set_multipan_ext_addr,
+    ieee802154_hal_set_multipan_panid,
+    ieee802154_hal_set_multipan_short_addr,
+    ieee802154_hal_set_pending_mode,
+    ieee802154_hal_set_power,
+    ieee802154_hal_set_promiscuous,
+    ieee802154_hal_set_rx_auto_ack,
+    ieee802154_hal_set_tx_auto_ack,
+    ieee802154_hal_set_tx_enhance_ack,
 };
 
 pub const IEEE802154_MULTIPAN_MAX: usize = 4;
@@ -211,6 +208,10 @@ pub fn ieee802154_pib_update() {
             pib.pending_mode == Ieee802154PendingMode::Ieee802154AutoPendingEnhanced,
         );
     });
+}
+
+fn channel_to_freq(channel: u8) -> u8 {
+    (channel - 11) * 5 + 3
 }
 
 pub fn ieee802154_set_multipan_hal(pib: &Ieee802154Pib) {

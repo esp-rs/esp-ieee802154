@@ -69,12 +69,3 @@ impl Write for StrBuf {
         Ok(())
     }
 }
-
-pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
-    unsafe { &*crate::ral::IEEE802154::PTR }
-}
-
-#[no_mangle]
-extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
-    0
-}

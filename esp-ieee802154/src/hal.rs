@@ -1,4 +1,4 @@
-use crate::{pib::Ieee802154CcaMode, utils::ieee802154};
+use crate::pib::Ieee802154CcaMode;
 
 /// IEEE802154 events
 #[allow(unused)]
@@ -117,6 +117,10 @@ impl From<usize> for Ieee802154MultipanIndex {
             _ => panic!(),
         }
     }
+}
+
+pub fn ieee802154() -> &'static crate::ral::ieee802154::RegisterBlock {
+    unsafe { &*crate::ral::IEEE802154::PTR }
 }
 
 #[inline(always)]
