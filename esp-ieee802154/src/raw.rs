@@ -3,18 +3,15 @@ use core::cell::RefCell;
 use critical_section::Mutex;
 use heapless::spsc::Queue;
 
-use super::{
-    binary::include::{esp_phy_calibration_mode_t_PHY_RF_CAL_FULL, register_chipv7_phy},
-    hal::{disable_events, *},
-    pib::*,
-    util::{ieee802154_set_txrx_pti, Ieee802154TxrxScene},
-    utils::ieee802154,
-};
 use crate::{
     binary::include::{
         esp_phy_calibration_data_t,
+        esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
         ieee802154_coex_event_t,
+        ieee802154_coex_event_t_IEEE802154_IDLE,
+        ieee802154_coex_event_t_IEEE802154_LOW,
         ieee802154_coex_event_t_IEEE802154_MIDDLE,
+        register_chipv7_phy,
     },
     esp_hal::{
         self,
@@ -24,7 +21,8 @@ use crate::{
         system::{RadioClockControl, RadioClockController, RadioPeripherals},
     },
     frame::*,
-    util::freq_to_channel,
+    hal::*,
+    pib::*,
 };
 
 pub(crate) const FRAME_SIZE: usize = 129;
@@ -41,6 +39,8 @@ extern "C" {
 
     fn esp_coex_ieee802154_ack_pti_set(event: ieee802154_coex_event_t); // from ???
 
+    fn esp_coex_ieee802154_txrx_pti_set(event: ieee802154_coex_event_t); // from ???
+
     pub fn phy_version_print(); // from libphy.a
 }
 
@@ -50,6 +50,16 @@ pub enum Ieee802154State {
     Receive,
     Transmit,
     TxAck,
+}
+
+#[allow(unused)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Ieee802154TxrxScene {
+    Ieee802154SceneIdle,
+    Ieee802154SceneTx,
+    Ieee802154SceneRx,
+    Ieee802154SceneTxAt,
+    Ieee802154SceneRxAt,
 }
 
 #[derive(Debug)]
@@ -145,6 +155,20 @@ fn ieee802154_mac_init() {
     interrupt::enable(Interrupt::ZB_MAC, Priority::Priority1).unwrap();
     unsafe {
         esp_hal::riscv::interrupt::enable();
+    }
+}
+
+fn ieee802154_set_txrx_pti(txrx_scene: Ieee802154TxrxScene) {
+    match txrx_scene {
+        Ieee802154TxrxScene::Ieee802154SceneIdle => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_IDLE) };
+        }
+        Ieee802154TxrxScene::Ieee802154SceneTx | Ieee802154TxrxScene::Ieee802154SceneRx => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_LOW) };
+        }
+        Ieee802154TxrxScene::Ieee802154SceneTxAt | Ieee802154TxrxScene::Ieee802154SceneRxAt => {
+            unsafe { esp_coex_ieee802154_txrx_pti_set(ieee802154_coex_event_t_IEEE802154_MIDDLE) };
+        }
     }
 }
 
@@ -373,6 +397,10 @@ fn ZB_MAC() {
         log::trace!("Ieee802154EventAckTxDone");
         next_operation();
     }
+}
+
+fn freq_to_channel(freq: u8) -> u8 {
+    (freq - 3) / 5 + 11
 }
 
 fn will_auto_send_ack(frame: &[u8]) -> bool {

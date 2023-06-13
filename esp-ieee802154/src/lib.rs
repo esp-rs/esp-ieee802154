@@ -1,3 +1,5 @@
+//! Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2
+
 #![no_std]
 #![feature(c_variadic)]
 
@@ -9,28 +11,32 @@ use esp32h2_hal as esp_hal;
 use esp_hal::system::RadioClockControl;
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameContent, FrameSerDesContext, Header};
-use pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE};
-use raw::*;
-use util::rssi_to_lqi;
+
+use self::{
+    pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE},
+    raw::*,
+};
 
 mod binary;
 mod compat;
 mod frame;
 mod hal;
 mod pib;
-#[cfg_attr(feature = "esp32c6", path = "ral/esp32c6.rs")]
-#[cfg_attr(feature = "esp32h2", path = "ral/esp32h2.rs")]
-mod ral;
 mod raw;
-mod util;
-mod utils;
 
+#[no_mangle]
+extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
+    0
+}
+
+/// IEEE802.15.4 errors
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     Incomplete,
     BadInput,
 }
 
+/// An IEEE802.15.4 frame
 #[derive(Debug, Clone)]
 pub struct Frame {
     pub header: Header,
@@ -39,6 +45,7 @@ pub struct Frame {
     pub footer: [u8; 2],
 }
 
+/// A received IEEE802.15.4 frame
 #[derive(Debug, Clone)]
 pub struct ReceivedFrame {
     pub frame: Frame,
@@ -47,6 +54,7 @@ pub struct ReceivedFrame {
     pub lqi: u8,
 }
 
+/// Driver configuration
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
     pub auto_ack_tx: bool,
@@ -96,6 +104,7 @@ pub trait Ieee802154Controller {
     fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
 }
 
+/// IEEE802.15.4 driver
 #[derive(Debug, Clone, Copy)]
 pub struct Ieee802154 {
     _private: (),
@@ -202,5 +211,16 @@ impl Ieee802154Controller for Ieee802154 {
         ieee802154_transmit(self.transmit_buffer.as_ptr() as *const u8, false); // what about CCA?
 
         Ok(())
+    }
+}
+
+fn rssi_to_lqi(rssi: i8) -> u8 {
+    if rssi < -80 {
+        0
+    } else if rssi > -30 {
+        0xff
+    } else {
+        let lqi_convert = ((rssi as u32).wrapping_add(80)) * 255;
+        (lqi_convert / 50) as u8
     }
 }

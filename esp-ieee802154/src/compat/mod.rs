@@ -1,8 +1,10 @@
-use core::ffi::VaListImpl;
-use core::fmt::Write;
+use core::{ffi::VaListImpl, fmt::Write};
+
 use log::info;
 
-use crate::utils::StrBuf;
+use self::str_buf::StrBuf;
+
+mod str_buf;
 
 #[no_mangle]
 pub unsafe extern "C" fn phy_printf(format: *const u8, args: ...) {
