@@ -20,8 +20,8 @@ impl StrBuf {
         };
 
         let mut idx: usize = 0;
-        while *(c_str.offset(idx as isize)) != 0 {
-            res.buffer[idx] = *(c_str.offset(idx as isize));
+        while *(c_str.add(idx)) != 0 {
+            res.buffer[idx] = *(c_str.add(idx));
             idx += 1;
         }
 
@@ -33,8 +33,8 @@ impl StrBuf {
     pub unsafe fn append_from(&mut self, c_str: *const u8) {
         let mut src_idx: usize = 0;
         let mut idx: usize = self.len;
-        while *(c_str.offset(src_idx as isize)) != 0 {
-            self.buffer[idx] = *(c_str.offset(src_idx as isize));
+        while *(c_str.add(src_idx)) != 0 {
+            self.buffer[idx] = *(c_str.add(src_idx));
             idx += 1;
             src_idx += 1;
         }

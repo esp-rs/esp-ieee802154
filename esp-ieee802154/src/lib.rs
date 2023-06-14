@@ -175,7 +175,7 @@ impl Ieee802154Controller for Ieee802154 {
                     frame: Frame {
                         header: decoded.header,
                         content: decoded.content,
-                        payload: Vec::from_slice(&decoded.payload).unwrap(),
+                        payload: Vec::from_slice(decoded.payload).unwrap(),
                         footer: decoded.footer,
                     },
                     channel: raw.channel,
@@ -195,10 +195,10 @@ impl Ieee802154Controller for Ieee802154 {
 
     fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
         let frm = mac::Frame {
-            header: frame.header.clone(),
+            header: frame.header,
             content: frame.content,
             payload: &frame.payload,
-            footer: frame.footer.clone(),
+            footer: frame.footer,
         };
 
         let mut offset = 1usize;
