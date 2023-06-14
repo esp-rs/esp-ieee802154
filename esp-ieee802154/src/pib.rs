@@ -193,7 +193,7 @@ pub fn ieee802154_pib_update() {
         ieee802154_hal_set_power(ieee802154_txpower_convert(pib.txpower));
 
         ieee802154_hal_set_multipan_enable_mask(pib.multipan_mask);
-        ieee802154_set_multipan_hal(&pib);
+        ieee802154_set_multipan_hal(pib);
 
         ieee802154_hal_set_cca_mode(pib.cca_mode);
         ieee802154_hal_set_cca_threshold(pib.cca_threshold);

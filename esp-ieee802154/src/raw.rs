@@ -210,7 +210,7 @@ pub fn ieee802154_transmit(frame: *const u8, cca: bool) -> i32 {
         }
     });
 
-    return 0; // ESP_OK;
+    0 // ESP_OK
 }
 
 pub fn ieee802154_receive() -> i32 {
@@ -225,7 +225,7 @@ pub fn ieee802154_receive() -> i32 {
         *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
     });
 
-    return 0; // ESP-OK
+    0 // ESP-OK
 }
 
 pub fn ieee802154_poll() -> Option<RawReceived> {
@@ -368,7 +368,7 @@ fn ZB_MAC() {
                 let mut queue = RX_QUEUE.borrow_ref_mut(cs);
                 if !queue.is_full() {
                     let item = RawReceived {
-                        data: RX_BUFFER.clone(),
+                        data: RX_BUFFER,
                         channel: freq_to_channel(ieee802154_hal_get_freq()),
                     };
                     queue.enqueue(item).ok();

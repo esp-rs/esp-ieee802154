@@ -45,7 +45,7 @@ pub enum Ieee802154TxAbortReason {
 
 impl Ieee802154TxAbortReason {
     pub fn bit(&self) -> u32 {
-        1 << *self as u32 - 1
+        1 << (*self as u32 - 1)
     }
 }
 
@@ -72,7 +72,7 @@ pub enum Ieee802154RxAbortReason {
 
 impl Ieee802154RxAbortReason {
     pub fn bit(&self) -> u32 {
-        1 << *self as u32 - 1
+        1 << (*self as u32 - 1)
     }
 }
 
@@ -246,7 +246,7 @@ pub fn ieee802154_hal_set_multipan_ext_addr(index: Ieee802154MultipanIndex, ext_
             .as_ptr()
             .offset(4 * index as isize);
         ext_addr_ptr.write_volatile(
-            ((ext_addr.offset(0).read_volatile() as u32) << 0)
+            (ext_addr.offset(0).read_volatile() as u32)
                 | ((ext_addr.offset(1).read_volatile() as u32) << 8)
                 | ((ext_addr.offset(2).read_volatile() as u32) << 16)
                 | ((ext_addr.offset(3).read_volatile() as u32) << 24),
@@ -254,7 +254,7 @@ pub fn ieee802154_hal_set_multipan_ext_addr(index: Ieee802154MultipanIndex, ext_
 
         ext_addr_ptr = ext_addr_ptr.offset(1);
         ext_addr_ptr.write_volatile(
-            ((ext_addr.offset(4).read_volatile() as u32) << 0)
+            (ext_addr.offset(4).read_volatile() as u32)
                 | ((ext_addr.offset(5).read_volatile() as u32) << 8)
                 | ((ext_addr.offset(6).read_volatile() as u32) << 16)
                 | ((ext_addr.offset(7).read_volatile() as u32) << 24),

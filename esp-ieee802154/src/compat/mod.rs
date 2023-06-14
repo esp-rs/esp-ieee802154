@@ -44,7 +44,7 @@ pub(crate) unsafe fn vsnprintf(
     let mut format_char = ' ';
     let mut is_long = false;
     let mut found = false;
-    for c in s.chars().into_iter() {
+    for c in s.chars() {
         if !found {
             if c == '%' {
                 found = true;
@@ -53,16 +53,14 @@ pub(crate) unsafe fn vsnprintf(
             if !found {
                 res_str.append_char(c);
             }
-        } else {
-            if c.is_numeric() || c == '-' || c == 'l' {
-                if c == 'l' {
-                    is_long = true;
-                }
-                // ignore
-            } else {
-                // a format char
-                format_char = c;
+        } else if c.is_numeric() || c == '-' || c == 'l' {
+            if c == 'l' {
+                is_long = true;
             }
+            // ignore
+        } else {
+            // a format char
+            format_char = c;
         }
 
         if found && format_char != ' ' {
@@ -70,7 +68,7 @@ pub(crate) unsafe fn vsnprintf(
             match format_char {
                 'd' => {
                     if is_long {
-                        let v = args.arg::<i32>();
+                        let v = args.arg::<i64>();
                         write!(res_str, "{}", v).ok();
                     } else {
                         let v = args.arg::<i32>();

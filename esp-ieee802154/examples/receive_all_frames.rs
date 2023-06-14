@@ -59,7 +59,7 @@ fn main() -> ! {
         ..Config::default()
     });
 
-    println!("start receiveing");
+    println!("start receiving");
     ieee802154.start_receive();
 
     loop {
