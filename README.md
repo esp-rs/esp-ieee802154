@@ -2,16 +2,23 @@
 
 Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2.
 
+Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and supports sending and receiving of raw frames.
+
 ## Running examples
 
-`cargo run --release --example EXAMPLENAME --features esp32c6`
+`cargo run --release --example EXAMPLE_NAME --features CHIP`
 
-Available examples
+Supported chips:
 
-- receive_all_frames: print all received frames on channel 15 in promiscuous mode
-- receive_frame: print all received frames on channel 11, pan 0x4242 sent to short address 0x2323
-- send_broadcast_frame: send broadcast frames on channel 11
-- send_frame: send regular frames on channel 11, pan 0x4242 to short address 0x2323
+- `esp32c6`
+- `esp32h2`
+
+Available examples:
+
+- `receive_all_frames`: print all frames received on channel 15, in promiscuous mode
+- `receive_frame`: print all frames received on channel 15, pan 0x4242, sent to short address 0x2323
+- `send_broadcast_frame`: send broadcast frames on channel 15
+- `send_frame`: send regular frames on channel 15, pan 0x4242, to short address 0x2323
 
 ## License
 

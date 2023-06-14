@@ -1,4 +1,7 @@
 //! Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2
+//!
+//! Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and
+//! supports sending and receiving of raw frames.
 
 #![no_std]
 #![feature(c_variadic)]
