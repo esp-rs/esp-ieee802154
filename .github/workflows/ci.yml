@@ -39,3 +39,5 @@ jobs:
 
       - name: check (${{ matrix.chip }})
         run: cd esp-ieee802154/ && cargo check --features=${{ matrix.chip }}
+      - name: check examples (${{ matrix.chip }})
+        run: cd esp-ieee802154-examples/ && cargo check --examples --features=${{ matrix.chip }}
