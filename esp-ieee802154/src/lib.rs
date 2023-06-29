@@ -50,6 +50,15 @@ pub enum Error {
     BadInput,
 }
 
+impl From<byte::Error> for Error {
+    fn from(err: byte::Error) -> Self {
+        match err {
+            byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
+            byte::Error::BadInput { .. } => Error::BadInput,
+        }
+    }
+}
+
 /// IEEE 802.15.4 driver configuration
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
@@ -149,31 +158,30 @@ impl Ieee802154 {
 
     /// Get a received frame, if available
     pub fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
-        let poll_res = ieee802154_poll();
-        if let Some(raw) = poll_res {
-            let decode_res =
+        if let Some(raw) = ieee802154_poll() {
+            let maybe_decoded =
                 mac::Frame::try_read(&raw.data[1..][..raw.data[0] as usize], FooterMode::Explicit);
 
-            if let Ok((decoded, _)) = decode_res {
-                let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
+            let result = match maybe_decoded {
+                Ok((decoded, _)) => {
+                    let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
 
-                Some(Ok(ReceivedFrame {
-                    frame: Frame {
-                        header: decoded.header,
-                        content: decoded.content,
-                        payload: Vec::from_slice(decoded.payload).unwrap(),
-                        footer: decoded.footer,
-                    },
-                    channel: raw.channel,
-                    rssi,
-                    lqi: rssi_to_lqi(rssi),
-                }))
-            } else {
-                Some(Err(match decode_res.err().unwrap() {
-                    byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
-                    byte::Error::BadInput { .. } => Error::BadInput,
-                }))
-            }
+                    Ok(ReceivedFrame {
+                        frame: Frame {
+                            header: decoded.header,
+                            content: decoded.content,
+                            payload: Vec::from_slice(decoded.payload).unwrap(),
+                            footer: decoded.footer,
+                        },
+                        channel: raw.channel,
+                        rssi,
+                        lqi: rssi_to_lqi(rssi),
+                    })
+                }
+                Err(err) => Err(err.into()),
+            };
+
+            Some(result)
         } else {
             None
         }
