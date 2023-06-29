@@ -82,19 +82,7 @@ impl Default for Config {
     }
 }
 
-pub trait Ieee802154Controller {
-    fn set_config(&mut self, cfg: Config);
-
-    fn start_receive(&mut self);
-
-    fn get_raw_received(&mut self) -> Option<RawReceived>;
-
-    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>>;
-
-    fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
-}
-
-/// IEEE802.15.4 driver
+/// IEEE 802.15.4 driver
 #[derive(Debug, Clone, Copy)]
 pub struct Ieee802154 {
     _private: (),
@@ -105,16 +93,15 @@ pub struct Ieee802154 {
 impl Ieee802154 {
     pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
+
         Self {
             _private: (),
             _align: 0,
             transmit_buffer: [0u8; FRAME_SIZE],
         }
     }
-}
 
-impl Ieee802154Controller for Ieee802154 {
-    fn set_config(&mut self, cfg: Config) {
+    pub fn set_config(&mut self, cfg: Config) {
         set_auto_ack_tx(cfg.auto_ack_tx);
         set_auto_ack_rx(cfg.auto_ack_rx);
         set_enhance_ack_tx(cfg.enhance_ack_tx);
@@ -141,15 +128,15 @@ impl Ieee802154Controller for Ieee802154 {
         }
     }
 
-    fn start_receive(&mut self) {
+    pub fn start_receive(&mut self) {
         ieee802154_receive();
     }
 
-    fn get_raw_received(&mut self) -> Option<RawReceived> {
+    pub fn get_raw_received(&mut self) -> Option<RawReceived> {
         ieee802154_poll()
     }
 
-    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
+    pub fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
         let poll_res = ieee802154_poll();
         if let Some(raw) = poll_res {
             let decode_res =
@@ -180,7 +167,7 @@ impl Ieee802154Controller for Ieee802154 {
         }
     }
 
-    fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
+    pub fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
         let frm = mac::Frame {
             header: frame.header,
             content: frame.content,
