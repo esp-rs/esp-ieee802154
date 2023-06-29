@@ -22,7 +22,7 @@ use self::{
 };
 pub use self::{
     frame::{Frame, ReceivedFrame},
-    pib::{Ieee802154CcaMode, Ieee802154PendingMode},
+    pib::{CcaMode, PendingMode},
     raw::RawReceived,
 };
 
@@ -38,7 +38,6 @@ extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
     0
 }
 
-/// IEEE802.15.4 errors
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
     Incomplete,
@@ -57,7 +56,7 @@ pub struct Config {
     pub txpower: i8,
     pub channel: u8,
     pub cca_threshold: i8,
-    pub cca_mode: Ieee802154CcaMode,
+    pub cca_mode: CcaMode,
     pub pan_id: Option<u16>,
     pub short_addr: Option<u16>,
     pub ext_addr: Option<u64>,
@@ -75,7 +74,7 @@ impl Default for Config {
             txpower: 10,
             channel: 15,
             cca_threshold: CONFIG_IEEE802154_CCA_THRESHOLD,
-            cca_mode: Ieee802154CcaMode::Ieee802154CcaModeEd,
+            cca_mode: CcaMode::Ed,
             pan_id: None,
             short_addr: None,
             ext_addr: None,
