@@ -63,9 +63,12 @@ enum Ieee802154TxRxScene {
     RxAt,
 }
 
+/// A raw payload received on some channel
 #[derive(Debug)]
 pub struct RawReceived {
+    /// Payload
     pub data: [u8; FRAME_SIZE],
+    /// Receiver channel
     pub channel: u8,
 }
 

@@ -1,7 +1,9 @@
-//! Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2
+//! Low-level [IEEE 802.15.4] driver for the ESP32-C6 and ESP32-H2
 //!
-//! Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and
+//! Implements the PHY/MAC layers of the IEEE 802.15.4 protocol stack, and
 //! supports sending and receiving of raw frames.
+//!
+//! [IEEE 802.15.4]: https://en.wikipedia.org/wiki/IEEE_802.15.4
 
 #![no_std]
 #![feature(c_variadic)]
@@ -38,9 +40,13 @@ extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
     0
 }
 
+/// IEEE 802.15.4 errors
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
+    /// The requested data is bigger than available range, and/or the offset is
+    /// invalid
     Incomplete,
+    /// The requested data content is invalid
     BadInput,
 }
 
@@ -91,6 +97,7 @@ pub struct Ieee802154 {
 }
 
 impl Ieee802154 {
+    /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
     pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
@@ -101,6 +108,7 @@ impl Ieee802154 {
         }
     }
 
+    /// Set the configuration for the driver
     pub fn set_config(&mut self, cfg: Config) {
         set_auto_ack_tx(cfg.auto_ack_tx);
         set_auto_ack_rx(cfg.auto_ack_rx);
@@ -124,18 +132,22 @@ impl Ieee802154 {
         if let Some(ext_addr) = cfg.ext_addr {
             let mut address = [0u8; IEEE802154_FRAME_EXT_ADDR_SIZE];
             address.copy_from_slice(&ext_addr.to_be_bytes()); // LE or BE?
+
             set_extended_address(0, address);
         }
     }
 
+    /// Start receiving frames
     pub fn start_receive(&mut self) {
         ieee802154_receive();
     }
 
+    /// Return the raw data of a received frame
     pub fn get_raw_received(&mut self) -> Option<RawReceived> {
         ieee802154_poll()
     }
 
+    /// Get a received frame, if available
     pub fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
         let poll_res = ieee802154_poll();
         if let Some(raw) = poll_res {
@@ -167,6 +179,7 @@ impl Ieee802154 {
         }
     }
 
+    /// Transmit a frame
     pub fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
         let frm = mac::Frame {
             header: frame.header,
