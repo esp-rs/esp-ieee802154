@@ -20,12 +20,13 @@ use crate::{
         prelude::interrupt,
         system::{RadioClockControl, RadioClockController, RadioPeripherals},
     },
-    frame::*,
+    frame::{frame_get_version, frame_is_ack_required, FRAME_VERSION_1, FRAME_VERSION_2},
     hal::*,
     pib::*,
 };
 
 pub(crate) const FRAME_SIZE: usize = 129;
+
 const PHY_ENABLE_VERSION_PRINT: u32 = 1;
 
 static mut RX_BUFFER: [u8; FRAME_SIZE] = [0u8; FRAME_SIZE];
@@ -33,15 +34,15 @@ static RX_QUEUE: Mutex<RefCell<Queue<RawReceived, 20>>> = Mutex::new(RefCell::ne
 static STATE: Mutex<RefCell<Ieee802154State>> = Mutex::new(RefCell::new(Ieee802154State::Idle));
 
 extern "C" {
-    pub fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
+    fn bt_bb_v2_init_cmplx(print_version: u32); // from libbtbb.a
 
-    pub fn bt_bb_set_zb_tx_on_delay(time: u16); // from libbtbb.a
+    fn bt_bb_set_zb_tx_on_delay(time: u16); // from libbtbb.a
 
     fn esp_coex_ieee802154_ack_pti_set(event: ieee802154_coex_event_t); // from ???
 
     fn esp_coex_ieee802154_txrx_pti_set(event: ieee802154_coex_event_t); // from ???
 
-    pub fn phy_version_print(); // from libphy.a
+    fn phy_version_print(); // from libphy.a
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -82,7 +83,6 @@ pub fn esp_ieee802154_enable(radio_clock_control: &mut RadioClockControl) {
     log::info!("date={:x}", ieee802154().mac_date.read().bits());
 }
 
-/// Enable the PHY
 fn esp_phy_enable() {
     unsafe {
         let mut calibration_data = esp_phy_calibration_data_t {
@@ -90,6 +90,7 @@ fn esp_phy_enable() {
             mac: [0u8; 6],
             opaque: [0u8; 1894],
         };
+
         register_chipv7_phy(
             core::ptr::null(),
             &mut calibration_data as *mut esp_phy_calibration_data_t,
@@ -98,12 +99,10 @@ fn esp_phy_enable() {
     }
 }
 
-/// Enable BTBB
 fn esp_btbb_enable() {
     unsafe { bt_bb_v2_init_cmplx(PHY_ENABLE_VERSION_PRINT) };
 }
 
-/// Initialize the IEEE802.15.4 MAC
 fn ieee802154_mac_init() {
     #[cfg(feature = "esp32c6")]
     unsafe {
@@ -112,7 +111,7 @@ fn ieee802154_mac_init() {
             static coex_pti_tab: u8;
         }
 
-        // manually set coex_pti_tab_ptr pointing to coex_pti_tab
+        // Manually set `coex_pti_tab_ptr` pointing to `coex_pti_tab`
         (&coex_pti_tab_ptr as *const _ as *mut u32)
             .write_volatile(&coex_pti_tab as *const _ as u32);
     }
@@ -404,13 +403,13 @@ fn freq_to_channel(freq: u8) -> u8 {
 }
 
 fn will_auto_send_ack(frame: &[u8]) -> bool {
-    ieee802154_frame_is_ack_required(frame)
-        && ieee802154_frame_get_version(frame) <= IEEE802154_FRAME_VERSION_1
+    frame_is_ack_required(frame)
+        && frame_get_version(frame) <= FRAME_VERSION_1
         && ieee802154_hal_get_tx_auto_ack()
 }
 
 fn should_send_enhanced_ack(frame: &[u8]) -> bool {
-    ieee802154_frame_is_ack_required(frame)
-        && ieee802154_frame_get_version(frame) <= IEEE802154_FRAME_VERSION_2
+    frame_is_ack_required(frame)
+        && frame_get_version(frame) <= FRAME_VERSION_2
         && ieee802154_hal_get_tx_enhance_ack()
 }

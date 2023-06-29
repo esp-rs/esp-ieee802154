@@ -13,11 +13,17 @@ use esp32c6_hal as esp_hal;
 use esp32h2_hal as esp_hal;
 use esp_hal::system::RadioClockControl;
 use heapless::Vec;
-use ieee802154::mac::{self, FooterMode, FrameContent, FrameSerDesContext, Header};
+use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
 use self::{
-    pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE},
+    frame::FRAME_SIZE,
+    pib::{CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE},
     raw::*,
+};
+pub use self::{
+    frame::{Frame, ReceivedFrame},
+    pib::{Ieee802154CcaMode, Ieee802154PendingMode},
+    raw::RawReceived,
 };
 
 mod binary;
@@ -39,25 +45,7 @@ pub enum Error {
     BadInput,
 }
 
-/// An IEEE802.15.4 frame
-#[derive(Debug, Clone)]
-pub struct Frame {
-    pub header: Header,
-    pub content: FrameContent,
-    pub payload: Vec<u8, FRAME_SIZE>,
-    pub footer: [u8; 2],
-}
-
-/// A received IEEE802.15.4 frame
-#[derive(Debug, Clone)]
-pub struct ReceivedFrame {
-    pub frame: Frame,
-    pub channel: u8,
-    pub rssi: i8,
-    pub lqi: u8,
-}
-
-/// Driver configuration
+/// IEEE 802.15.4 driver configuration
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
     pub auto_ack_tx: bool,
