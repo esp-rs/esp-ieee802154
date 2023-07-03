@@ -3,6 +3,7 @@ use std::{
     fs::{self, File},
     io::Write,
     path::{Path, PathBuf},
+    process::Command,
 };
 
 use anyhow::Result;
@@ -13,7 +14,6 @@ use log::{info, LevelFilter};
 use strum::Display;
 use svd2rust::{generate::device::render, load_from, Config, Target};
 use svdtools::patch::process_file;
-use xshell::{cmd, Shell};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display, ValueEnum)]
 #[strum(serialize_all = "lowercase")]
@@ -113,8 +113,10 @@ fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
         .replace("\\\\?\\", "");
 
     let chip_name = chip.to_string();
-    let sh = Shell::new()?;
-    cmd!(sh, "rustfmt {out_dir}/{chip_name}.rs").quiet().run()?;
+    let file_name = format!("{out_dir}/{chip_name}.rs");
+
+    info!("formatting source file '{file_name}'");
+    Command::new("rustfmt").arg(file_name).status()?;
 
     info!("All done.");
 

@@ -1,8 +1,10 @@
 # esp-ieee802154
 
-Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2.
+Low-level [IEEE 802.15.4] driver for the ESP32-C6 and ESP32-H2.
 
 Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and supports sending and receiving of raw frames.
+
+[IEEE 802.15.4]: https://en.wikipedia.org/wiki/IEEE_802.15.4
 
 ## Running examples
 

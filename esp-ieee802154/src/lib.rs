@@ -1,7 +1,9 @@
-//! Low-level IEEE802.15.4 driver for the ESP32-C6 and ESP32-H2
+//! Low-level [IEEE 802.15.4] driver for the ESP32-C6 and ESP32-H2
 //!
-//! Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and
+//! Implements the PHY/MAC layers of the IEEE 802.15.4 protocol stack, and
 //! supports sending and receiving of raw frames.
+//!
+//! [IEEE 802.15.4]: https://en.wikipedia.org/wiki/IEEE_802.15.4
 
 #![no_std]
 #![feature(c_variadic)]
@@ -13,11 +15,17 @@ use esp32c6_hal as esp_hal;
 use esp32h2_hal as esp_hal;
 use esp_hal::system::RadioClockControl;
 use heapless::Vec;
-use ieee802154::mac::{self, FooterMode, FrameContent, FrameSerDesContext, Header};
+use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
 use self::{
-    pib::{Ieee802154CcaMode, CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE},
+    frame::FRAME_SIZE,
+    pib::{CONFIG_IEEE802154_CCA_THRESHOLD, IEEE802154_FRAME_EXT_ADDR_SIZE},
     raw::*,
+};
+pub use self::{
+    frame::{Frame, ReceivedFrame},
+    pib::{CcaMode, PendingMode},
+    raw::RawReceived,
 };
 
 mod binary;
@@ -32,32 +40,26 @@ extern "C" fn rtc_clk_xtal_freq_get() -> i32 {
     0
 }
 
-/// IEEE802.15.4 errors
+/// IEEE 802.15.4 errors
 #[derive(Debug, Clone, Copy)]
 pub enum Error {
+    /// The requested data is bigger than available range, and/or the offset is
+    /// invalid
     Incomplete,
+    /// The requested data content is invalid
     BadInput,
 }
 
-/// An IEEE802.15.4 frame
-#[derive(Debug, Clone)]
-pub struct Frame {
-    pub header: Header,
-    pub content: FrameContent,
-    pub payload: Vec<u8, FRAME_SIZE>,
-    pub footer: [u8; 2],
+impl From<byte::Error> for Error {
+    fn from(err: byte::Error) -> Self {
+        match err {
+            byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
+            byte::Error::BadInput { .. } => Error::BadInput,
+        }
+    }
 }
 
-/// A received IEEE802.15.4 frame
-#[derive(Debug, Clone)]
-pub struct ReceivedFrame {
-    pub frame: Frame,
-    pub channel: u8,
-    pub rssi: i8,
-    pub lqi: u8,
-}
-
-/// Driver configuration
+/// IEEE 802.15.4 driver configuration
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
     pub auto_ack_tx: bool,
@@ -69,7 +71,7 @@ pub struct Config {
     pub txpower: i8,
     pub channel: u8,
     pub cca_threshold: i8,
-    pub cca_mode: Ieee802154CcaMode,
+    pub cca_mode: CcaMode,
     pub pan_id: Option<u16>,
     pub short_addr: Option<u16>,
     pub ext_addr: Option<u64>,
@@ -87,7 +89,7 @@ impl Default for Config {
             txpower: 10,
             channel: 15,
             cca_threshold: CONFIG_IEEE802154_CCA_THRESHOLD,
-            cca_mode: Ieee802154CcaMode::Ieee802154CcaModeEd,
+            cca_mode: CcaMode::Ed,
             pan_id: None,
             short_addr: None,
             ext_addr: None,
@@ -95,19 +97,7 @@ impl Default for Config {
     }
 }
 
-pub trait Ieee802154Controller {
-    fn set_config(&mut self, cfg: Config);
-
-    fn start_receive(&mut self);
-
-    fn get_raw_received(&mut self) -> Option<RawReceived>;
-
-    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>>;
-
-    fn transmit(&mut self, frame: &Frame) -> Result<(), Error>;
-}
-
-/// IEEE802.15.4 driver
+/// IEEE 802.15.4 driver
 #[derive(Debug, Clone, Copy)]
 pub struct Ieee802154 {
     _private: (),
@@ -116,18 +106,19 @@ pub struct Ieee802154 {
 }
 
 impl Ieee802154 {
+    /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
     pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
+
         Self {
             _private: (),
             _align: 0,
             transmit_buffer: [0u8; FRAME_SIZE],
         }
     }
-}
 
-impl Ieee802154Controller for Ieee802154 {
-    fn set_config(&mut self, cfg: Config) {
+    /// Set the configuration for the driver
+    pub fn set_config(&mut self, cfg: Config) {
         set_auto_ack_tx(cfg.auto_ack_tx);
         set_auto_ack_rx(cfg.auto_ack_rx);
         set_enhance_ack_tx(cfg.enhance_ack_tx);
@@ -150,50 +141,54 @@ impl Ieee802154Controller for Ieee802154 {
         if let Some(ext_addr) = cfg.ext_addr {
             let mut address = [0u8; IEEE802154_FRAME_EXT_ADDR_SIZE];
             address.copy_from_slice(&ext_addr.to_be_bytes()); // LE or BE?
+
             set_extended_address(0, address);
         }
     }
 
-    fn start_receive(&mut self) {
+    /// Start receiving frames
+    pub fn start_receive(&mut self) {
         ieee802154_receive();
     }
 
-    fn get_raw_received(&mut self) -> Option<RawReceived> {
+    /// Return the raw data of a received frame
+    pub fn get_raw_received(&mut self) -> Option<RawReceived> {
         ieee802154_poll()
     }
 
-    fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
-        let poll_res = ieee802154_poll();
-        if let Some(raw) = poll_res {
-            let decode_res =
+    /// Get a received frame, if available
+    pub fn get_received(&mut self) -> Option<Result<ReceivedFrame, Error>> {
+        if let Some(raw) = ieee802154_poll() {
+            let maybe_decoded =
                 mac::Frame::try_read(&raw.data[1..][..raw.data[0] as usize], FooterMode::Explicit);
 
-            if let Ok((decoded, _)) = decode_res {
-                let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
+            let result = match maybe_decoded {
+                Ok((decoded, _)) => {
+                    let rssi = raw.data[raw.data[0] as usize - 1] as i8; // crc is not written to rx buffer
 
-                Some(Ok(ReceivedFrame {
-                    frame: Frame {
-                        header: decoded.header,
-                        content: decoded.content,
-                        payload: Vec::from_slice(decoded.payload).unwrap(),
-                        footer: decoded.footer,
-                    },
-                    channel: raw.channel,
-                    rssi,
-                    lqi: rssi_to_lqi(rssi),
-                }))
-            } else {
-                Some(Err(match decode_res.err().unwrap() {
-                    byte::Error::Incomplete | byte::Error::BadOffset(_) => Error::Incomplete,
-                    byte::Error::BadInput { .. } => Error::BadInput,
-                }))
-            }
+                    Ok(ReceivedFrame {
+                        frame: Frame {
+                            header: decoded.header,
+                            content: decoded.content,
+                            payload: Vec::from_slice(decoded.payload).unwrap(),
+                            footer: decoded.footer,
+                        },
+                        channel: raw.channel,
+                        rssi,
+                        lqi: rssi_to_lqi(rssi),
+                    })
+                }
+                Err(err) => Err(err.into()),
+            };
+
+            Some(result)
         } else {
             None
         }
     }
 
-    fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
+    /// Transmit a frame
+    pub fn transmit(&mut self, frame: &Frame) -> Result<(), Error> {
         let frm = mac::Frame {
             header: frame.header,
             content: frame.content,

@@ -29,19 +29,6 @@ impl StrBuf {
         res
     }
 
-    #[allow(unused)]
-    pub unsafe fn append_from(&mut self, c_str: *const u8) {
-        let mut src_idx: usize = 0;
-        let mut idx: usize = self.len;
-        while *(c_str.add(src_idx)) != 0 {
-            self.buffer[idx] = *(c_str.add(src_idx));
-            idx += 1;
-            src_idx += 1;
-        }
-
-        self.len = idx;
-    }
-
     pub fn append(&mut self, s: &str) {
         let mut idx: usize = self.len;
         s.chars().for_each(|c| {
