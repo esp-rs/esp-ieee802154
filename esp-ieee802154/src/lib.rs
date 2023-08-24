@@ -210,9 +210,19 @@ impl Ieee802154 {
 
         Ok(())
     }
+
+    /// Transmit a raw frame
+    pub fn transmit_raw(&mut self, frame: &[u8]) -> Result<(), Error> {
+        self.transmit_buffer[1..][..frame.len()].copy_from_slice(frame);
+        self.transmit_buffer[0] = frame.len() as u8;
+
+        ieee802154_transmit(self.transmit_buffer.as_ptr() as *const u8, false); // what about CCA?
+
+        Ok(())
+    }
 }
 
-fn rssi_to_lqi(rssi: i8) -> u8 {
+pub fn rssi_to_lqi(rssi: i8) -> u8 {
     if rssi < -80 {
         0
     } else if rssi > -30 {
