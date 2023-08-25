@@ -48,7 +48,12 @@ fn main() -> ! {
     wdt1.disable();
 
     println!("Start");
-    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
+
+    #[cfg(feature = "esp32c6")]
+    let (_, _, radio) = peripherals.RADIO.split();
+    #[cfg(feature = "esp32h2")]
+    let (_, radio) = peripherals.RADIO.split();
+    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
         channel: 15,

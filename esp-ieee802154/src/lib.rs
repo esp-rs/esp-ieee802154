@@ -8,12 +8,15 @@
 #![no_std]
 #![feature(c_variadic)]
 
+use core::cell::RefCell;
+
 use byte::{BytesExt, TryRead};
+use critical_section::Mutex;
 #[cfg(feature = "esp32c6")]
 use esp32c6_hal as esp_hal;
 #[cfg(feature = "esp32h2")]
 use esp32h2_hal as esp_hal;
-use esp_hal::system::RadioClockControl;
+use esp_hal::{radio::LowRate, system::RadioClockControl};
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
@@ -98,7 +101,7 @@ impl Default for Config {
 }
 
 /// IEEE 802.15.4 driver
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 pub struct Ieee802154 {
     _private: (),
     _align: u32,
@@ -107,7 +110,7 @@ pub struct Ieee802154 {
 
 impl Ieee802154 {
     /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
-    pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
+    pub fn new(_radio: LowRate, radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
         Self {
@@ -220,6 +223,71 @@ impl Ieee802154 {
 
         Ok(())
     }
+
+    pub fn set_tx_done_callback(&mut self, callback: &mut (dyn FnMut() + Send)) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+            tx_done_callback.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_tx_done_callback(&mut self) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+            tx_done_callback.take();
+        });
+    }
+
+    pub fn set_rx_available_callback(&mut self, callback: &mut (dyn FnMut() + Send)) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+            rx_available_callback.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_rx_available_callback(&mut self) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+            rx_available_callback.take();
+        });
+    }
+
+    pub fn set_tx_done_callback_fn(&mut self, callback: fn()) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+            tx_done_callback_fn.replace(callback);
+        });
+    }
+
+    pub fn clear_tx_done_callback_fn(&mut self) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+            tx_done_callback_fn.take();
+        });
+    }
+
+    pub fn set_rx_available_callback_fn(&mut self, callback: fn()) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+            rx_available_callback_fn.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_rx_available_callback_fn(&mut self) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+            rx_available_callback_fn.take();
+        });
+    }
+}
+
+impl Drop for Ieee802154 {
+    fn drop(&mut self) {
+        self.clear_tx_done_callback();
+        self.clear_tx_done_callback_fn();
+        self.clear_rx_available_callback();
+        self.clear_rx_available_callback_fn();
+    }
 }
 
 pub fn rssi_to_lqi(rssi: i8) -> u8 {
@@ -231,4 +299,54 @@ pub fn rssi_to_lqi(rssi: i8) -> u8 {
         let lqi_convert = ((rssi as u32).wrapping_add(80)) * 255;
         (lqi_convert / 50) as u8
     }
+}
+
+static TX_DONE_CALLBACK: Mutex<RefCell<Option<&'static mut (dyn FnMut() + Send)>>> =
+    Mutex::new(RefCell::new(None));
+
+static RX_AVAILABLE_CALLBACK: Mutex<RefCell<Option<&'static mut (dyn FnMut() + Send)>>> =
+    Mutex::new(RefCell::new(None));
+
+static TX_DONE_CALLBACK_FN: Mutex<RefCell<Option<fn()>>> = Mutex::new(RefCell::new(None));
+
+static RX_AVAILABLE_CALLBACK_FN: Mutex<RefCell<Option<fn()>>> = Mutex::new(RefCell::new(None));
+
+fn tx_done() {
+    log::trace!("tx_done callback");
+
+    critical_section::with(|cs| {
+        let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+        let tx_done_callback = tx_done_callback.as_mut();
+
+        if let Some(tx_done_callback) = tx_done_callback {
+            tx_done_callback();
+        }
+
+        let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+        let tx_done_callback_fn = tx_done_callback_fn.as_mut();
+
+        if let Some(tx_done_callback_fn) = tx_done_callback_fn {
+            tx_done_callback_fn();
+        }
+    });
+}
+
+fn rx_available() {
+    log::trace!("rx available callback");
+
+    critical_section::with(|cs| {
+        let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+        let rx_available_callback = rx_available_callback.as_mut();
+
+        if let Some(rx_available_callback) = rx_available_callback {
+            rx_available_callback();
+        }
+
+        let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+        let rx_available_callback_fn = rx_available_callback_fn.as_mut();
+
+        if let Some(rx_available_callback_fn) = rx_available_callback_fn {
+            rx_available_callback_fn();
+        }
+    });
 }

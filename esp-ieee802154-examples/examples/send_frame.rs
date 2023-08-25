@@ -11,8 +11,7 @@ use esp_hal::{
     peripherals::Peripherals,
     prelude::*,
     timer::TimerGroup,
-    Delay,
-    Rtc,
+    Delay, Rtc,
 };
 use esp_ieee802154::*;
 use esp_println::println;
@@ -21,6 +20,8 @@ use ieee802154::mac::{Header, PanId, ShortAddress};
 #[entry]
 fn main() -> ! {
     esp_println::logger::init_logger(log::LevelFilter::Info);
+    //esp_println::logger::init_logger(log::LevelFilter::Trace);
+    //esp_println::logger::init_logger(log::LevelFilter::Warn);
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
@@ -52,7 +53,11 @@ fn main() -> ! {
     let mut delay = Delay::new(&clocks);
 
     println!("Start");
-    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
+    #[cfg(feature = "esp32c6")]
+    let (_, _, radio) = peripherals.RADIO.split();
+    #[cfg(feature = "esp32h2")]
+    let (_, radio) = peripherals.RADIO.split();
+    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
         channel: 15,

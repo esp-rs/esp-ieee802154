@@ -324,14 +324,25 @@ fn ieee802154_sec_update() {
 }
 
 fn next_operation() {
-    critical_section::with(|cs| {
+    let previous_operation = critical_section::with(|cs| {
+        let state = STATE.borrow_ref(cs).clone();
+
         if ieee802154_pib_get_rx_when_idle() {
             enable_rx();
             *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
         } else {
             *STATE.borrow_ref_mut(cs) = Ieee802154State::Idle;
         }
+
+        state
     });
+
+    match previous_operation {
+        Ieee802154State::Receive => crate::rx_available(),
+        Ieee802154State::Transmit => crate::tx_done(),
+        Ieee802154State::TxAck => crate::tx_done(),
+        _ => (),
+    }
 }
 
 #[interrupt]
