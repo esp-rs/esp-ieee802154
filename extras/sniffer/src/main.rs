@@ -137,7 +137,7 @@ fn main() {
                         }
 
                         if packet.len() > 0 {
-                            let len = packet[0] - 1;
+                            let len = packet[0] - 2;
                             let crc = crc(&packet[1..][..len as usize]);
                             packet.insert(1 + (len as usize), crc[0]);
                             packet.insert(1 + (len as usize) + 1, crc[1]);
