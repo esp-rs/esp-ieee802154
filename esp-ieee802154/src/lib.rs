@@ -8,7 +8,7 @@
 #![no_std]
 #![feature(c_variadic)]
 
-use core::cell::RefCell;
+use core::{cell::RefCell, marker::PhantomData};
 
 use byte::{BytesExt, TryRead};
 use critical_section::Mutex;
@@ -102,21 +102,23 @@ impl Default for Config {
 
 /// IEEE 802.15.4 driver
 #[derive(Debug)]
-pub struct Ieee802154 {
-    _private: (),
+pub struct Ieee802154<'a> {
     _align: u32,
     transmit_buffer: [u8; FRAME_SIZE],
+    _phantom1: PhantomData<&'a ()>,
+    //_phantom2:PhantomData< &'b ()>,
 }
 
-impl Ieee802154 {
+impl<'a> Ieee802154<'a> {
     /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
     pub fn new(_radio: LowRate, radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
         Self {
-            _private: (),
             _align: 0,
             transmit_buffer: [0u8; FRAME_SIZE],
+            _phantom1: PhantomData::default(),
+            //_phantom2: PhantomData::default(),
         }
     }
 
@@ -224,7 +226,7 @@ impl Ieee802154 {
         Ok(())
     }
 
-    pub fn set_tx_done_callback(&mut self, callback: &mut (dyn FnMut() + Send)) {
+    pub fn set_tx_done_callback(&mut self, callback: &'a mut (dyn FnMut() + Send)) {
         critical_section::with(|cs| {
             let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
             tx_done_callback.replace(unsafe { core::mem::transmute(callback) });
@@ -238,7 +240,7 @@ impl Ieee802154 {
         });
     }
 
-    pub fn set_rx_available_callback(&mut self, callback: &mut (dyn FnMut() + Send)) {
+    pub fn set_rx_available_callback(&mut self, callback: &'a mut (dyn FnMut() + Send)) {
         critical_section::with(|cs| {
             let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
             rx_available_callback.replace(unsafe { core::mem::transmute(callback) });
@@ -281,7 +283,7 @@ impl Ieee802154 {
     }
 }
 
-impl Drop for Ieee802154 {
+impl<'a> Drop for Ieee802154<'a> {
     fn drop(&mut self) {
         self.clear_tx_done_callback();
         self.clear_tx_done_callback_fn();
