@@ -20,8 +20,6 @@ use ieee802154::mac::{Header, PanId, ShortAddress};
 #[entry]
 fn main() -> ! {
     esp_println::logger::init_logger(log::LevelFilter::Info);
-    //esp_println::logger::init_logger(log::LevelFilter::Trace);
-    //esp_println::logger::init_logger(log::LevelFilter::Warn);
 
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
