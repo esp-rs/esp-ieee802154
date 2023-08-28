@@ -10,7 +10,7 @@ use pcap_file::{
     DataLink,
 };
 use r_extcap::{
-    config::StringConfig,
+    config::{ConfigOptionValue, SelectorConfig, StringConfig},
     controls::{synchronous::ExtcapControlSender, ControlCommand, ControlPacket},
     interface::{Dlt, Interface, Metadata},
     ExtcapStep,
@@ -23,6 +23,9 @@ pub struct AppArgs {
 
     #[arg(long, default_value = "")]
     serialport: String,
+
+    #[arg(long, default_value = "11")]
+    channel: String,
 }
 
 lazy_static! {
@@ -48,6 +51,79 @@ lazy_static! {
         .required(false)
         .placeholder("")
         .build();
+    static ref CONFIG_CHANNEL: SelectorConfig = SelectorConfig::builder()
+        .config_number(3)
+        .call("channel")
+        .display("Channel")
+        .tooltip("Channel Selector")
+        .default_options([
+            ConfigOptionValue::builder()
+                .value("11")
+                .display("11")
+                .default(true)
+                .build(),
+            ConfigOptionValue::builder()
+                .value("12")
+                .display("12")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("13")
+                .display("13")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("14")
+                .display("14")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("15")
+                .display("15")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("16")
+                .display("16")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("17")
+                .display("17")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("18")
+                .display("18")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("19")
+                .display("19")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("20")
+                .display("20")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("21")
+                .display("21")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("22")
+                .display("22")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("23")
+                .display("23")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("24")
+                .display("24")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("25")
+                .display("25")
+                .build(),
+            ConfigOptionValue::builder()
+                .value("26")
+                .display("26")
+                .build(),
+        ])
+        .build();
 }
 
 fn main() {
@@ -68,7 +144,9 @@ fn main() {
                 .print_from_interfaces(&[&*WIFI_CAPTURE_INTERFACE])
                 .unwrap();
         }
-        ExtcapStep::Config(config_step) => config_step.list_configs(&[&*CONFIG_SERIALPORT]),
+        ExtcapStep::Config(config_step) => {
+            config_step.list_configs(&[&*CONFIG_SERIALPORT, &*CONFIG_CHANNEL])
+        }
         ExtcapStep::ReloadConfig(_reload_config_step) => {
             panic!("Unsupported operation");
         }
@@ -92,6 +170,8 @@ fn main() {
             };
             let mut pcap_writer = PcapWriter::with_header(capture_step.fifo, pcap_header).unwrap();
 
+            let channel = args.channel.clone();
+
             let serialport = if args.serialport.is_empty() {
                 let ports = serialport::available_ports().unwrap();
                 if ports.len() != 1 {
@@ -102,10 +182,32 @@ fn main() {
                 args.serialport.clone()
             };
 
-            let port = serialport::new(serialport, 115_200)
+            let mut port = serialport::new(serialport, 115_200)
                 .timeout(Duration::from_millis(100))
                 .open()
                 .expect("Failed to open port");
+
+            // drain the input ... just to be on the safe side
+            loop {
+                if let Ok(len) = port.read(&mut [0u8; 128]) {
+                    if len == 0 {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            // maybe reset the target
+            port.write_all(&[b'r']).unwrap();
+
+            // wait for target to boot up
+            std::thread::sleep(Duration::from_millis(1000));
+
+            // configure channel
+            port.write_all(format!("{:02}", (&channel).parse::<u16>().unwrap()).as_bytes())
+                .unwrap();
+
             let mut buf_read = BufReader::new(port);
 
             let mut packet = Vec::<u8>::new();
