@@ -10,8 +10,9 @@ use esp_hal::{
     clock::{ClockControl, CpuClock},
     peripherals::Peripherals,
     prelude::*,
+    reset::software_reset,
     timer::TimerGroup,
-    Rtc,
+    Rtc, Uart,
 };
 use esp_ieee802154::*;
 use esp_println::println;
@@ -47,10 +48,32 @@ fn main() -> ! {
     wdt0.disable();
     wdt1.disable();
 
-    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
+    let mut uart0 = Uart::new(peripherals.UART0, &mut system.peripheral_clock_control);
+    let mut cnt = 0;
+    let mut read = [0u8; 2];
+    loop {
+        if let nb::Result::Ok(c) = uart0.read() {
+            if c == b'r' {
+                continue;
+            }
+
+            read[cnt] = c;
+            cnt += 1;
+
+            if cnt >= 2 {
+                break;
+            }
+        }
+    }
+    let channel: u8 = unsafe { core::str::from_utf8_unchecked(&read) }
+        .parse()
+        .unwrap();
+
+    let (.., radio) = peripherals.RADIO.split();
+    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
-        channel: 15,
+        channel,
         promiscuous: true,
         rx_when_idle: true,
         auto_ack_rx: false,
@@ -63,6 +86,12 @@ fn main() -> ! {
     loop {
         if let Some(frame) = ieee802154.get_raw_received() {
             println!("@RAW {:02x?}", &frame.data);
+        }
+
+        if let nb::Result::Ok(c) = uart0.read() {
+            if c == b'r' {
+                software_reset();
+            }
         }
     }
 }

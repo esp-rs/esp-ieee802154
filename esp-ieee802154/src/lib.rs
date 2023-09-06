@@ -8,12 +8,15 @@
 #![no_std]
 #![feature(c_variadic)]
 
+use core::{cell::RefCell, marker::PhantomData};
+
 use byte::{BytesExt, TryRead};
+use critical_section::Mutex;
 #[cfg(feature = "esp32c6")]
 use esp32c6_hal as esp_hal;
 #[cfg(feature = "esp32h2")]
 use esp32h2_hal as esp_hal;
-use esp_hal::system::RadioClockControl;
+use esp_hal::{radio::LowRate, system::RadioClockControl};
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
@@ -98,22 +101,24 @@ impl Default for Config {
 }
 
 /// IEEE 802.15.4 driver
-#[derive(Debug, Clone, Copy)]
-pub struct Ieee802154 {
-    _private: (),
+#[derive(Debug)]
+pub struct Ieee802154<'a> {
     _align: u32,
     transmit_buffer: [u8; FRAME_SIZE],
+    _phantom1: PhantomData<&'a ()>,
+    //_phantom2:PhantomData< &'b ()>,
 }
 
-impl Ieee802154 {
+impl<'a> Ieee802154<'a> {
     /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
-    pub fn new(radio_clocks: &mut RadioClockControl) -> Self {
+    pub fn new(_radio: LowRate, radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
         Self {
-            _private: (),
             _align: 0,
             transmit_buffer: [0u8; FRAME_SIZE],
+            _phantom1: PhantomData::default(),
+            //_phantom2: PhantomData::default(),
         }
     }
 
@@ -210,9 +215,84 @@ impl Ieee802154 {
 
         Ok(())
     }
+
+    /// Transmit a raw frame
+    pub fn transmit_raw(&mut self, frame: &[u8]) -> Result<(), Error> {
+        self.transmit_buffer[1..][..frame.len()].copy_from_slice(frame);
+        self.transmit_buffer[0] = frame.len() as u8;
+
+        ieee802154_transmit(self.transmit_buffer.as_ptr() as *const u8, false); // what about CCA?
+
+        Ok(())
+    }
+
+    pub fn set_tx_done_callback(&mut self, callback: &'a mut (dyn FnMut() + Send)) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+            tx_done_callback.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_tx_done_callback(&mut self) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+            tx_done_callback.take();
+        });
+    }
+
+    pub fn set_rx_available_callback(&mut self, callback: &'a mut (dyn FnMut() + Send)) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+            rx_available_callback.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_rx_available_callback(&mut self) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+            rx_available_callback.take();
+        });
+    }
+
+    pub fn set_tx_done_callback_fn(&mut self, callback: fn()) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+            tx_done_callback_fn.replace(callback);
+        });
+    }
+
+    pub fn clear_tx_done_callback_fn(&mut self) {
+        critical_section::with(|cs| {
+            let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+            tx_done_callback_fn.take();
+        });
+    }
+
+    pub fn set_rx_available_callback_fn(&mut self, callback: fn()) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+            rx_available_callback_fn.replace(unsafe { core::mem::transmute(callback) });
+        });
+    }
+
+    pub fn clear_rx_available_callback_fn(&mut self) {
+        critical_section::with(|cs| {
+            let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+            rx_available_callback_fn.take();
+        });
+    }
 }
 
-fn rssi_to_lqi(rssi: i8) -> u8 {
+impl<'a> Drop for Ieee802154<'a> {
+    fn drop(&mut self) {
+        self.clear_tx_done_callback();
+        self.clear_tx_done_callback_fn();
+        self.clear_rx_available_callback();
+        self.clear_rx_available_callback_fn();
+    }
+}
+
+pub fn rssi_to_lqi(rssi: i8) -> u8 {
     if rssi < -80 {
         0
     } else if rssi > -30 {
@@ -221,4 +301,54 @@ fn rssi_to_lqi(rssi: i8) -> u8 {
         let lqi_convert = ((rssi as u32).wrapping_add(80)) * 255;
         (lqi_convert / 50) as u8
     }
+}
+
+static TX_DONE_CALLBACK: Mutex<RefCell<Option<&'static mut (dyn FnMut() + Send)>>> =
+    Mutex::new(RefCell::new(None));
+
+static RX_AVAILABLE_CALLBACK: Mutex<RefCell<Option<&'static mut (dyn FnMut() + Send)>>> =
+    Mutex::new(RefCell::new(None));
+
+static TX_DONE_CALLBACK_FN: Mutex<RefCell<Option<fn()>>> = Mutex::new(RefCell::new(None));
+
+static RX_AVAILABLE_CALLBACK_FN: Mutex<RefCell<Option<fn()>>> = Mutex::new(RefCell::new(None));
+
+fn tx_done() {
+    log::trace!("tx_done callback");
+
+    critical_section::with(|cs| {
+        let mut tx_done_callback = TX_DONE_CALLBACK.borrow_ref_mut(cs);
+        let tx_done_callback = tx_done_callback.as_mut();
+
+        if let Some(tx_done_callback) = tx_done_callback {
+            tx_done_callback();
+        }
+
+        let mut tx_done_callback_fn = TX_DONE_CALLBACK_FN.borrow_ref_mut(cs);
+        let tx_done_callback_fn = tx_done_callback_fn.as_mut();
+
+        if let Some(tx_done_callback_fn) = tx_done_callback_fn {
+            tx_done_callback_fn();
+        }
+    });
+}
+
+fn rx_available() {
+    log::trace!("rx available callback");
+
+    critical_section::with(|cs| {
+        let mut rx_available_callback = RX_AVAILABLE_CALLBACK.borrow_ref_mut(cs);
+        let rx_available_callback = rx_available_callback.as_mut();
+
+        if let Some(rx_available_callback) = rx_available_callback {
+            rx_available_callback();
+        }
+
+        let mut rx_available_callback_fn = RX_AVAILABLE_CALLBACK_FN.borrow_ref_mut(cs);
+        let rx_available_callback_fn = rx_available_callback_fn.as_mut();
+
+        if let Some(rx_available_callback_fn) = rx_available_callback_fn {
+            rx_available_callback_fn();
+        }
+    });
 }

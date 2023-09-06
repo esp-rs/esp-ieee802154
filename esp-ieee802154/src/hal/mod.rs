@@ -9,18 +9,18 @@ mod ral;
 #[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum Event {
-    TxDone          = 1 << 0,
-    RxDone          = 1 << 1,
-    AckTxDone       = 1 << 2,
-    AckRxDone       = 1 << 3,
-    RxAbort         = 1 << 4,
-    TxAbort         = 1 << 5,
-    EdDone          = 1 << 6,
-    Timer0Overflow  = 1 << 8,
-    Timer1Overflow  = 1 << 9,
+    TxDone = 1 << 0,
+    RxDone = 1 << 1,
+    AckTxDone = 1 << 2,
+    AckRxDone = 1 << 3,
+    RxAbort = 1 << 4,
+    TxAbort = 1 << 5,
+    EdDone = 1 << 6,
+    Timer0Overflow = 1 << 8,
+    Timer1Overflow = 1 << 9,
     ClockCountMatch = 1 << 10,
-    TxSfdDone       = 1 << 11,
-    RxSfdDone       = 1 << 12,
+    TxSfdDone = 1 << 11,
+    RxSfdDone = 1 << 12,
 }
 
 impl Event {
@@ -56,21 +56,21 @@ impl BitOr<Event> for u16 {
 #[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum TxAbortReason {
-    RxAckStop       = 1,
+    RxAckStop = 1,
     RxAckSfdTimeout = 2,
-    RxAckCrcError   = 3,
+    RxAckCrcError = 3,
     RxAckInvalidLen = 4,
     RxAckFilterFail = 5,
-    RxAckNoRss      = 6,
-    RxAckCoexBreak  = 7,
+    RxAckNoRss = 6,
+    RxAckCoexBreak = 7,
     RxAckTypeNotAck = 8,
-    RxAckRestart    = 9,
-    RxAckTimeout    = 16,
-    TxStop          = 17,
-    TxCoexBreak     = 18,
+    RxAckRestart = 9,
+    RxAckTimeout = 16,
+    TxStop = 17,
+    TxCoexBreak = 18,
     TxSecurityError = 19,
-    CcaFailed       = 24,
-    CcaBusy         = 25,
+    CcaFailed = 24,
+    CcaBusy = 25,
 }
 
 impl TxAbortReason {
@@ -98,22 +98,22 @@ impl BitOr<TxAbortReason> for u32 {
 #[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum RxAbortReason {
-    RxStop              = 1,
-    SfdTimeout          = 2,
-    CrcError            = 3,
-    InvalidLen          = 4,
-    FilterFail          = 5,
-    NoRss               = 6,
-    CoexBreak           = 7,
-    UnexpectedAck       = 8,
-    RxRestart           = 9,
-    TxAckTimeout        = 16,
-    TxAckStop           = 17,
-    TxAckCoexBreak      = 18,
+    RxStop = 1,
+    SfdTimeout = 2,
+    CrcError = 3,
+    InvalidLen = 4,
+    FilterFail = 5,
+    NoRss = 6,
+    CoexBreak = 7,
+    UnexpectedAck = 8,
+    RxRestart = 9,
+    TxAckTimeout = 16,
+    TxAckStop = 17,
+    TxAckCoexBreak = 18,
     EnhackSecurityError = 19,
-    EdAbort             = 24,
-    EdStop              = 25,
-    EdCoexReject        = 26,
+    EdAbort = 24,
+    EdStop = 25,
+    EdCoexReject = 26,
 }
 
 impl RxAbortReason {
@@ -148,18 +148,18 @@ pub(crate) enum EdSampleMode {
 #[allow(unused)]
 #[derive(Debug, Clone, Copy)]
 pub(crate) enum Command {
-    TxStart     = 0x41,
-    RxStart     = 0x42,
-    CcaTxStart  = 0x43,
-    EdStart     = 0x44,
-    Stop        = 0x45,
-    DtmTxStart  = 0x46,
-    DtmRxStart  = 0x47,
-    DtmStop     = 0x48,
+    TxStart = 0x41,
+    RxStart = 0x42,
+    CcaTxStart = 0x43,
+    EdStart = 0x44,
+    Stop = 0x45,
+    DtmTxStart = 0x46,
+    DtmRxStart = 0x47,
+    DtmStop = 0x48,
     Timer0Start = 0x4C,
-    Timer0Stop  = 0x4D,
+    Timer0Stop = 0x4D,
     Timer1Start = 0x4E,
-    Timer1Stop  = 0x4F,
+    Timer1Stop = 0x4F,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -414,6 +414,6 @@ pub(crate) fn set_rx_addr(addr: *mut u8) {
 }
 
 #[inline(always)]
-fn ieee802154() -> &'static self::ral::ieee802154::RegisterBlock {
+pub(crate) fn ieee802154() -> &'static self::ral::ieee802154::RegisterBlock {
     unsafe { &*self::ral::IEEE802154::PTR }
 }

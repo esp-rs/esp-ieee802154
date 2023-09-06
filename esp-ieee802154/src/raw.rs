@@ -5,12 +5,9 @@ use heapless::spsc::Queue;
 
 use crate::{
     binary::include::{
-        esp_phy_calibration_data_t,
-        esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
-        ieee802154_coex_event_t,
-        ieee802154_coex_event_t_IEEE802154_IDLE,
-        ieee802154_coex_event_t_IEEE802154_LOW,
-        ieee802154_coex_event_t_IEEE802154_MIDDLE,
+        esp_phy_calibration_data_t, esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
+        ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
+        ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
         register_chipv7_phy,
     },
     esp_hal::{
@@ -128,9 +125,12 @@ fn ieee802154_mac_init() {
             | TxAbortReason::TxCoexBreak
             | TxAbortReason::TxSecurityError
             | TxAbortReason::CcaFailed
-            | TxAbortReason::CcaBusy,
+            | TxAbortReason::CcaBusy
+            | TxAbortReason::TxStop,
     );
-    enable_rx_abort_events(RxAbortReason::TxAckTimeout | RxAbortReason::TxAckCoexBreak);
+    enable_rx_abort_events(
+        RxAbortReason::TxAckTimeout | RxAbortReason::TxAckCoexBreak | RxAbortReason::RxStop,
+    );
 
     set_ed_sample_mode(EdSampleMode::Avg);
 
@@ -167,7 +167,7 @@ fn ieee802154_set_txrx_pti(txrx_scene: Ieee802154TxRxScene) {
 
 pub fn tx_init(frame: *const u8) {
     let tx_frame = frame;
-    // stop_current_operation();
+    stop_current_operation();
     ieee802154_pib_update();
     ieee802154_sec_update();
 
@@ -229,7 +229,7 @@ pub fn ieee802154_poll() -> Option<RawReceived> {
 }
 
 fn rx_init() {
-    // stop_current_operation();
+    stop_current_operation();
     ieee802154_pib_update();
 }
 
@@ -240,6 +240,12 @@ fn enable_rx() {
     set_cmd(Command::RxStart);
 
     // ieee802154_state = IEEE802154_STATE_RX;
+}
+
+fn stop_current_operation() {
+    let events = get_events();
+    set_cmd(Command::Stop);
+    clear_events(events);
 }
 
 fn set_next_rx_buffer() {
@@ -318,14 +324,25 @@ fn ieee802154_sec_update() {
 }
 
 fn next_operation() {
-    critical_section::with(|cs| {
+    let previous_operation = critical_section::with(|cs| {
+        let state = STATE.borrow_ref(cs).clone();
+
         if ieee802154_pib_get_rx_when_idle() {
             enable_rx();
             *STATE.borrow_ref_mut(cs) = Ieee802154State::Receive;
         } else {
             *STATE.borrow_ref_mut(cs) = Ieee802154State::Idle;
         }
+
+        state
     });
+
+    match previous_operation {
+        Ieee802154State::Receive => crate::rx_available(),
+        Ieee802154State::Transmit => crate::tx_done(),
+        Ieee802154State::TxAck => crate::tx_done(),
+        _ => (),
+    }
 }
 
 #[interrupt]
@@ -390,6 +407,20 @@ fn ZB_MAC() {
     if events & Event::AckTxDone != 0 {
         log::trace!("EventAckTxDone");
         next_operation();
+    }
+
+    if events & Event::TxAbort != 0 {
+        log::trace!("TxAbort");
+        ieee802154()
+            .tx_status
+            .modify(|_, w| w.tx_abort_status().variant(0));
+    }
+
+    if events & Event::RxAbort != 0 {
+        log::trace!("RxAbort");
+        ieee802154()
+            .rx_status
+            .modify(|_, w| w.rx_abort_status().variant(0));
     }
 }
 

@@ -11,8 +11,7 @@ use esp_hal::{
     peripherals::Peripherals,
     prelude::*,
     timer::TimerGroup,
-    Delay,
-    Rtc,
+    Delay, Rtc,
 };
 use esp_ieee802154::*;
 use esp_println::println;
@@ -52,7 +51,9 @@ fn main() -> ! {
     let mut delay = Delay::new(&clocks);
 
     println!("Start");
-    let mut ieee802154 = Ieee802154::new(&mut system.radio_clock_control);
+
+    let (.., radio) = peripherals.RADIO.split();
+    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
         channel: 15,
