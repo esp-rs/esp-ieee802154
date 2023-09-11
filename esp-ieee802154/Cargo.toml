@@ -1,24 +1,24 @@
 [package]
-name = "esp-ieee802154"
-version = "0.1.0"
-edition = "2021"
+name        = "esp-ieee802154"
+version     = "0.1.0"
+edition     = "2021"
 description = "Low-level IEEE 802.15.4 driver for the ESP32-C6 and ESP32-H2"
-repository = "https://github.com/esp-rs/esp-ieee802154"
-license = "MIT OR Apache-2.0"
+repository  = "https://github.com/esp-rs/esp-ieee802154"
+license     = "MIT OR Apache-2.0"
 
 [lib]
 bench = false
-test = false
+test  = false
 
 [dependencies]
-byte = "0.2.6"
-critical-section = "1.1.1"
-esp32c6-hal = { version = "0.4.0", optional = true }
-esp32h2-hal = { version = "0.2.0", optional = true }
-heapless = "0.7.16"
-ieee802154 = "0.6.1"
-log = "0.4.18"
-vcell = "0.1.3"
+byte             = "0.2.6"
+critical-section = "1.1.2"
+esp32c6-hal      = { version = "0.5.0", optional = true }
+esp32h2-hal      = { version = "0.3.0", optional = true }
+heapless         = "0.7.16"
+ieee802154       = "0.6.1"
+log              = "0.4.20"
+vcell            = "0.1.3"
 
 [features]
 default = []
