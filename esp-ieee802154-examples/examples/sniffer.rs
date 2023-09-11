@@ -11,8 +11,7 @@ use esp_hal::{
     peripherals::Peripherals,
     prelude::*,
     reset::software_reset,
-    timer::TimerGroup,
-    Rtc, Uart,
+    Uart,
 };
 use esp_ieee802154::*;
 use esp_println::println;
@@ -24,29 +23,9 @@ fn main() -> ! {
     let peripherals = Peripherals::take();
     let mut system = peripherals.PCR.split();
     #[cfg(feature = "esp32c6")]
-    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
+    let _clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
     #[cfg(feature = "esp32h2")]
-    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
-
-    let mut rtc = Rtc::new(peripherals.LP_CLKRST);
-    let timer_group0 = TimerGroup::new(
-        peripherals.TIMG0,
-        &clocks,
-        &mut system.peripheral_clock_control,
-    );
-    let mut wdt0 = timer_group0.wdt;
-    let timer_group1 = TimerGroup::new(
-        peripherals.TIMG1,
-        &clocks,
-        &mut system.peripheral_clock_control,
-    );
-    let mut wdt1 = timer_group1.wdt;
-
-    // Disable watchdog timers
-    rtc.swd.disable();
-    rtc.rwdt.disable();
-    wdt0.disable();
-    wdt1.disable();
+    let _clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
 
     let mut uart0 = Uart::new(peripherals.UART0, &mut system.peripheral_clock_control);
     let mut cnt = 0;
