@@ -6,12 +6,7 @@ use esp32c6_hal as esp_hal;
 #[cfg(feature = "esp32h2")]
 use esp32h2_hal as esp_hal;
 use esp_backtrace as _;
-use esp_hal::{
-    clock::{ClockControl, CpuClock},
-    peripherals::Peripherals,
-    prelude::*,
-    Delay,
-};
+use esp_hal::{clock::ClockControl, peripherals::Peripherals, prelude::*, Delay};
 use esp_ieee802154::*;
 use esp_println::println;
 use ieee802154::mac::{Header, PanId, ShortAddress};
@@ -21,17 +16,14 @@ fn main() -> ! {
     esp_println::logger::init_logger(log::LevelFilter::Info);
 
     let peripherals = Peripherals::take();
-    let mut system = peripherals.PCR.split();
-    #[cfg(feature = "esp32c6")]
-    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
-    #[cfg(feature = "esp32h2")]
-    let clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
+    let mut system = peripherals.SYSTEM.split();
+    let clocks = ClockControl::max(system.clock_control).freeze();
 
     let mut delay = Delay::new(&clocks);
 
     println!("Start");
 
-    let (.., radio) = peripherals.RADIO.split();
+    let radio = peripherals.IEEE802154;
     let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {

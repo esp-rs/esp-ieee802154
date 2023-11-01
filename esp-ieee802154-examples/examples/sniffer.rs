@@ -7,11 +7,7 @@ use esp32c6_hal as esp_hal;
 use esp32h2_hal as esp_hal;
 use esp_backtrace as _;
 use esp_hal::{
-    clock::{ClockControl, CpuClock},
-    peripherals::Peripherals,
-    prelude::*,
-    reset::software_reset,
-    Uart,
+    clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset, Uart,
 };
 use esp_ieee802154::*;
 use esp_println::println;
@@ -21,13 +17,10 @@ fn main() -> ! {
     esp_println::logger::init_logger(log::LevelFilter::Info);
 
     let peripherals = Peripherals::take();
-    let mut system = peripherals.PCR.split();
-    #[cfg(feature = "esp32c6")]
-    let _clocks = ClockControl::configure(system.clock_control, CpuClock::Clock160MHz).freeze();
-    #[cfg(feature = "esp32h2")]
-    let _clocks = ClockControl::configure(system.clock_control, CpuClock::Clock96MHz).freeze();
+    let mut system = peripherals.SYSTEM.split();
+    let clocks = ClockControl::max(system.clock_control).freeze();
 
-    let mut uart0 = Uart::new(peripherals.UART0, &mut system.peripheral_clock_control);
+    let mut uart0 = Uart::new(peripherals.UART0, &clocks);
     let mut cnt = 0;
     let mut read = [0u8; 2];
     loop {
@@ -48,7 +41,7 @@ fn main() -> ! {
         .parse()
         .unwrap();
 
-    let (.., radio) = peripherals.RADIO.split();
+    let radio = peripherals.IEEE802154;
     let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
 
     ieee802154.set_config(Config {
