@@ -16,7 +16,7 @@ use critical_section::Mutex;
 use esp32c6_hal as esp_hal;
 #[cfg(feature = "esp32h2")]
 use esp32h2_hal as esp_hal;
-use esp_hal::{radio::LowRate, system::RadioClockControl};
+use esp_hal::{peripherals::IEEE802154, system::RadioClockControl};
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
@@ -111,7 +111,7 @@ pub struct Ieee802154<'a> {
 
 impl<'a> Ieee802154<'a> {
     /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
-    pub fn new(_radio: LowRate, radio_clocks: &mut RadioClockControl) -> Self {
+    pub fn new(_radio: IEEE802154, radio_clocks: &mut RadioClockControl) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
         Self {

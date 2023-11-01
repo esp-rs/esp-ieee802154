@@ -21,15 +21,15 @@ static PIB: Mutex<RefCell<Option<Pib>>> = Mutex::new(RefCell::new(None));
 pub enum PendingMode {
     /// Frame pending bit always set to 1 in the ack to Data Request
     #[default]
-    Disable  = 0,
+    Disable = 0,
     /// Frame pending bit set to 1 if src address matches, in the ack to Data
     /// Request
-    Enable   = 1,
+    Enable = 1,
     /// Frame pending bit set to 1 if src address matches, in all ack frames
     Enhanced = 2,
     /// Frame pending bit set to 0 only if src address is short address and
     /// matches in table, in the ack to Data Request
-    Zigbee   = 3,
+    Zigbee = 3,
 }
 
 /// CCA mode
@@ -37,11 +37,11 @@ pub enum PendingMode {
 pub enum CcaMode {
     /// Carrier only
     #[default]
-    Carrier      = 0x00,
+    Carrier = 0x00,
     /// Energy Detect only
-    Ed           = 0x01,
+    Ed = 0x01,
     /// Carrier or Energy Detect
-    CarrierOrEd  = 0x02,
+    CarrierOrEd = 0x02,
     /// Carrier and Energy Detect
     CarrierAndEd = 0x03,
 }
