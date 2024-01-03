@@ -13,7 +13,7 @@ use directories::BaseDirs;
 use log::{info, LevelFilter};
 use strum::Display;
 use svd2rust::{generate::device::render, load_from, Config, Target};
-use svdtools::patch::process_file;
+use svdtools::patch::{process_file, Config as PatchConfig};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display, ValueEnum)]
 #[strum(serialize_all = "lowercase")]
@@ -70,7 +70,8 @@ fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
     info!("applying patches to SVD file");
 
     let yaml_file = svd_path.join("patches").join("ieee802154.yml");
-    process_file(&yaml_file)?;
+    let config = PatchConfig::default();
+    process_file(&yaml_file, None, None, &config)?;
 
     let from = svd_path.join("ieee802154.base.svd.patched");
     let to = svd_path.join("ieee802154.svd");
@@ -83,8 +84,8 @@ fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
 
     let config = Config {
         target: Target::RISCV,
-        output_dir: out_dir.clone(),
-        const_generic: true,
+        make_mod: true,
+        output_dir: Some(out_dir.clone()),
 
         ..Config::default()
     };
@@ -94,12 +95,9 @@ fn generate_register_access_layer(workspace: &Path, chip: Chip) -> Result<()> {
 
     let mut device_x = String::new();
     let items = render(&device, &config, &mut device_x)?;
-    let data = items.to_string()
+    let data = items
+        .to_string()
         .replace("crate :: ", "crate :: hal :: ral :: ")
-        .replace(
-            "# ! [deny (dead_code)] # ! [deny (improper_ctypes)] # ! [deny (missing_docs)] # ! [deny (no_mangle_generic_items)] # ! [deny (non_shorthand_field_patterns)] # ! [deny (overflowing_literals)] # ! [deny (path_statements)] # ! [deny (patterns_in_fns_without_body)] # ! [deny (private_in_public)] # ! [deny (unconditional_recursion)] # ! [deny (unused_allocation)] # ! [deny (unused_comparisons)] # ! [deny (unused_parens)] # ! [deny (while_true)] # ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] # ! [no_std]",
-            "# ! [allow (non_camel_case_types)] # ! [allow (non_snake_case)] #![allow(unused)]"
-        )
         .replace("DEVICE_PERIPHERALS", "IEEE802154_PERIPHERALS");
 
     let mut file = File::create(out_dir.join(&format!("{}.rs", chip.to_string())))?;

@@ -5,12 +5,12 @@ edition = "2021"
 publish = false
 
 [dependencies]
-anyhow      = "1.0.71"
-bindgen     = "0.66.1"
-clap        = { version = "4.3.8", features = ["derive"] }
+anyhow      = "1.0.79"
+bindgen     = "0.69.1"
+clap        = { version = "4.4.12", features = ["derive"] }
 directories = "5.0.1"
-env_logger  = "0.10.0"
-log         = "0.4.19"
+env_logger  = "0.10.1"
+log         = "0.4.20"
 strum       = { version = "0.25.0", features = ["derive"] }
-svd2rust    = "0.29.0"
-svdtools    = "0.3.0"
+svd2rust    = "0.31.3"
+svdtools    = "0.3.8"
