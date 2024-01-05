@@ -5,9 +5,12 @@ use heapless::spsc::Queue;
 
 use crate::{
     binary::include::{
-        esp_phy_calibration_data_t, esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
-        ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
-        ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
+        esp_phy_calibration_data_t,
+        esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
+        ieee802154_coex_event_t,
+        ieee802154_coex_event_t_IEEE802154_IDLE,
+        ieee802154_coex_event_t_IEEE802154_LOW,
+        ieee802154_coex_event_t_IEEE802154_MIDDLE,
         register_chipv7_phy,
     },
     esp_hal::{
@@ -411,16 +414,12 @@ fn ZB_MAC() {
 
     if events & Event::TxAbort != 0 {
         log::trace!("TxAbort");
-        ieee802154()
-            .tx_status
-            .modify(|_, w| w.tx_abort_status().variant(0));
+        abort_tx();
     }
 
     if events & Event::RxAbort != 0 {
         log::trace!("RxAbort");
-        ieee802154()
-            .rx_status
-            .modify(|_, w| w.rx_abort_status().variant(0));
+        abort_rx();
     }
 }
 
