@@ -1,10 +1,6 @@
 #![no_std]
 #![no_main]
 
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-#[cfg(feature = "esp32h2")]
-use esp32h2_hal as esp_hal;
 use esp_backtrace as _;
 use esp_hal::{
     clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset, Uart,

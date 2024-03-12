@@ -12,10 +12,6 @@ use core::{cell::RefCell, marker::PhantomData};
 
 use byte::{BytesExt, TryRead};
 use critical_section::Mutex;
-#[cfg(feature = "esp32c6")]
-use esp32c6_hal as esp_hal;
-#[cfg(feature = "esp32h2")]
-use esp32h2_hal as esp_hal;
 use esp_hal::{peripherals::IEEE802154, system::RadioClockControl};
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameSerDesContext};

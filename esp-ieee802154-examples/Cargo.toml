@@ -5,18 +5,17 @@ edition = "2021"
 publish = false
 
 [dependencies]
-esp-backtrace  = { version = "0.10.0", features = ["panic-handler", "exception-handler", "print-uart"] }
+esp-backtrace  = { version = "0.11.1", features = ["panic-handler", "exception-handler", "println"] }
 esp-ieee802154 = { version = "0.1.0", path = "../esp-ieee802154" }
-esp-println    = { version = "0.8.0", features = ["log"] }
-esp32c6-hal    = { version = "0.8.0", optional = true }
-esp32h2-hal    = { version = "0.6.0", optional = true }
+esp-println    = { version = "0.9.1", features = ["log"] }
+esp-hal        = "0.16.1"
 heapless       = "0.8.0"
 ieee802154     = "0.6.1"
 log            = "0.4.20"
 
 [features]
-esp32c6 = ["esp32c6-hal", "esp-backtrace/esp32c6", "esp-ieee802154/esp32c6", "esp-println/esp32c6"]
-esp32h2 = ["esp32h2-hal", "esp-backtrace/esp32h2", "esp-ieee802154/esp32h2", "esp-println/esp32h2"]
+esp32c6 = ["esp-hal/esp32c6", "esp-backtrace/esp32c6", "esp-ieee802154/esp32c6", "esp-println/esp32c6"]
+esp32h2 = ["esp-hal/esp32h2", "esp-backtrace/esp32h2", "esp-ieee802154/esp32h2", "esp-println/esp32h2"]
 
 [profile.release]
 debug = true

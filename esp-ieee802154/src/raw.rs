@@ -5,24 +5,20 @@ use heapless::spsc::Queue;
 
 use crate::{
     binary::include::{
-        esp_phy_calibration_data_t,
-        esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
-        ieee802154_coex_event_t,
-        ieee802154_coex_event_t_IEEE802154_IDLE,
-        ieee802154_coex_event_t_IEEE802154_LOW,
-        ieee802154_coex_event_t_IEEE802154_MIDDLE,
+        esp_phy_calibration_data_t, esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
+        ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
+        ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
         register_chipv7_phy,
-    },
-    esp_hal::{
-        self,
-        interrupt::{self, Priority},
-        peripherals::Interrupt,
-        prelude::interrupt,
-        system::{RadioClockControl, RadioClockController, RadioPeripherals},
     },
     frame::{frame_get_version, frame_is_ack_required, FRAME_VERSION_1, FRAME_VERSION_2},
     hal::*,
     pib::*,
+};
+use esp_hal::{
+    interrupt::{self, Priority},
+    peripherals::Interrupt,
+    prelude::interrupt,
+    system::{RadioClockControl, RadioClockController, RadioPeripherals},
 };
 
 pub(crate) const FRAME_SIZE: usize = 129;
@@ -114,8 +110,7 @@ fn ieee802154_mac_init() {
         }
 
         // Manually set `coex_pti_tab_ptr` pointing to `coex_pti_tab`
-        (&coex_pti_tab_ptr as *const _ as *mut u32)
-            .write_volatile(&coex_pti_tab as *const _ as u32);
+        core::ptr::addr_of_mut!(coex_pti_tab_ptr).write_volatile(&coex_pti_tab as *const _ as u32);
     }
 
     ieee802154_pib_init();
