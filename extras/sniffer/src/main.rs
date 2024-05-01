@@ -188,12 +188,8 @@ fn main() {
                 .expect("Failed to open port");
 
             // drain the input ... just to be on the safe side
-            loop {
-                if let Ok(len) = port.read(&mut [0u8; 128]) {
-                    if len == 0 {
-                        break;
-                    }
-                } else {
+            while let Ok(len) = port.read(&mut [0u8; 128]) {
+                if len == 1 {
                     break;
                 }
             }
