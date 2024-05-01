@@ -201,7 +201,7 @@ fn main() {
             std::thread::sleep(Duration::from_millis(1000));
 
             // configure channel
-            port.write_all(format!("{:02}", (&channel).parse::<u16>().unwrap()).as_bytes())
+            port.write_all(format!("{:02}", (channel).parse::<u16>().unwrap()).as_bytes())
                 .unwrap();
 
             let mut buf_read = BufReader::new(port);
