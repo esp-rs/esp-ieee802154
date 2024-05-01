@@ -221,12 +221,12 @@ fn main() {
                 if let Ok(len) = buf_read.read_line(&mut line) {
                     if len > 0 {
                         if line.contains(prefix) {
-                            if !line.contains("]") {
+                            if !line.contains(']') {
                                 panic!("Unexpected {}", line);
                             }
 
                             let start = line.find(prefix).unwrap() + prefix.len();
-                            let end = line.find("]").unwrap();
+                            let end = line.find(']').unwrap();
                             let line = line[start..end].to_string();
                             for hex in line.split(", ") {
                                 let byte = u8::from_str_radix(hex, 16).unwrap();
