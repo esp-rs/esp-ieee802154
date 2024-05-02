@@ -15,9 +15,9 @@ use crate::{
     pib::*,
 };
 use esp_hal::{
-    interrupt::{self, Priority},
+    interrupt,
+    interrupt::Priority,
     peripherals::Interrupt,
-    prelude::interrupt,
     system::{RadioClockControl, RadioClockController, RadioPeripherals},
 };
 
@@ -343,7 +343,6 @@ fn next_operation() {
     }
 }
 
-#[interrupt]
 fn ZB_MAC() {
     log::trace!("ZB_MAC interrupt");
 
