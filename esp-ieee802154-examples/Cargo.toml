@@ -5,13 +5,15 @@ edition = "2021"
 publish = false
 
 [dependencies]
-esp-backtrace  = { version = "0.11.1", features = ["panic-handler", "exception-handler", "println"] }
-esp-ieee802154 = { version = "0.1.0", path = "../esp-ieee802154" }
-esp-println    = { version = "0.9.1", features = ["log"] }
-esp-hal        = "0.17.0"
-heapless       = "0.8.0"
-ieee802154     = "0.6.1"
-log            = "0.4.20"
+esp-backtrace   = { version = "0.11.1", features = ["panic-handler", "exception-handler", "println"] }
+esp-ieee802154  = { version = "0.1.0", path = "../esp-ieee802154" }
+esp-println     = { version = "0.9.1", features = ["log"] }
+esp-hal         = "0.17.0"
+heapless        = "0.8.0"
+ieee802154      = "0.6.1"
+log             = "0.4.20"
+embedded-hal    = "1.0.0"
+embedded-hal-nb = "1.0.0"
 
 [features]
 esp32c6 = ["esp-hal/esp32c6", "esp-backtrace/esp32c6", "esp-ieee802154/esp32c6", "esp-println/esp32c6"]
