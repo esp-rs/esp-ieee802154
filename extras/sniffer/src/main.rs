@@ -189,7 +189,7 @@ fn main() {
 
             // drain the input ... just to be on the safe side
             while let Ok(len) = port.read(&mut [0u8; 128]) {
-                if len == 1 {
+                if len == 0 {
                     break;
                 }
             }
