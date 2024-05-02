@@ -188,12 +188,8 @@ fn main() {
                 .expect("Failed to open port");
 
             // drain the input ... just to be on the safe side
-            loop {
-                if let Ok(len) = port.read(&mut [0u8; 128]) {
-                    if len == 0 {
-                        break;
-                    }
-                } else {
+            while let Ok(len) = port.read(&mut [0u8; 128]) {
+                if len == 0 {
                     break;
                 }
             }
@@ -205,7 +201,7 @@ fn main() {
             std::thread::sleep(Duration::from_millis(1000));
 
             // configure channel
-            port.write_all(format!("{:02}", (&channel).parse::<u16>().unwrap()).as_bytes())
+            port.write_all(format!("{:02}", (channel).parse::<u16>().unwrap()).as_bytes())
                 .unwrap();
 
             let mut buf_read = BufReader::new(port);
@@ -225,12 +221,12 @@ fn main() {
                 if let Ok(len) = buf_read.read_line(&mut line) {
                     if len > 0 {
                         if line.contains(prefix) {
-                            if !line.contains("]") {
+                            if !line.contains(']') {
                                 panic!("Unexpected {}", line);
                             }
 
                             let start = line.find(prefix).unwrap() + prefix.len();
-                            let end = line.find("]").unwrap();
+                            let end = line.find(']').unwrap();
                             let line = line[start..end].to_string();
                             for hex in line.split(", ") {
                                 let byte = u8::from_str_radix(hex, 16).unwrap();
@@ -238,7 +234,7 @@ fn main() {
                             }
                         }
 
-                        if packet.len() > 0 {
+                        if !packet.is_empty() {
                             let len = packet[0] - 2;
                             let crc = crc(&packet[1..][..len as usize]);
                             packet.insert(1 + (len as usize), crc[0]);
