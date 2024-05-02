@@ -1,9 +1,10 @@
 #![no_std]
 #![no_main]
 
+use embedded_hal_nb::serial::Read;
 use esp_backtrace as _;
 use esp_hal::{
-    clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset, Uart,
+    clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset, uart::Uart,
 };
 use esp_ieee802154::*;
 use esp_println::println;
