@@ -18,6 +18,7 @@ use esp_hal::{
     interrupt,
     interrupt::Priority,
     peripherals::Interrupt,
+    prelude::handler,
     system::{RadioClockControl, RadioClockController, RadioPeripherals},
 };
 
@@ -343,6 +344,7 @@ fn next_operation() {
     }
 }
 
+#[handler]
 fn ZB_MAC() {
     log::trace!("ZB_MAC interrupt");
 
