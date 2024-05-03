@@ -12,7 +12,6 @@ esp-hal         = "0.17.0"
 heapless        = "0.8.0"
 ieee802154      = "0.6.1"
 log             = "0.4.20"
-embedded-hal    = "1.0.0"
 embedded-hal-nb = "1.0.0"
 
 [features]
