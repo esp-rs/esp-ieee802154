@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use embedded_hal::delay::DelayNs;
 use esp_backtrace as _;
 use esp_hal::{clock::ClockControl, delay::Delay, peripherals::Peripherals, prelude::*};
 use esp_ieee802154::*;
@@ -16,7 +15,7 @@ fn main() -> ! {
     let mut system = peripherals.SYSTEM.split();
     let clocks = ClockControl::max(system.clock_control).freeze();
 
-    let mut delay = Delay::new(&clocks);
+    let delay = Delay::new(&clocks);
 
     println!("Start");
 
@@ -58,7 +57,7 @@ fn main() -> ! {
             .ok();
 
         println!("Send frame with sequence number {seq_number}");
-        delay.delay_ms(1000u32);
+        delay.delay_millis(1000u32);
         seq_number = seq_number.wrapping_add(1);
     }
 }
