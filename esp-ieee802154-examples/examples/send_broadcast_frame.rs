@@ -2,7 +2,6 @@
 #![no_main]
 
 use embedded_hal::delay::DelayNs;
-use embedded_hal_nb::serial::Read;
 use esp_backtrace as _;
 use esp_hal::{clock::ClockControl, delay::Delay, peripherals::Peripherals, prelude::*};
 use esp_ieee802154::*;
