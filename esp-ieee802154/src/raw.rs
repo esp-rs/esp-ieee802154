@@ -143,8 +143,12 @@ fn ieee802154_mac_init() {
     // s_ieee802154_state = IEEE802154_STATE_IDLE;
 
     unsafe {
-        esp_hal::riscv::interrupt::enable();
+        esp_hal::interrupt::bind_interrupt(
+            esp_hal::peripherals::Interrupt::ZB_MAC,
+            ZB_MAC.handler(),
+        );
     }
+    esp_hal::interrupt::enable(esp_hal::peripherals::Interrupt::ZB_MAC, ZB_MAC.priority()).unwrap();
 }
 
 fn ieee802154_set_txrx_pti(txrx_scene: Ieee802154TxRxScene) {
