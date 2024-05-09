@@ -8,7 +8,7 @@ publish = false
 esp-backtrace   = { version = "0.11.1", features = ["panic-handler", "exception-handler", "println"] }
 esp-ieee802154  = { version = "0.1.0", path = "../esp-ieee802154" }
 esp-println     = { version = "0.9.1", features = ["log"] }
-esp-hal         = "0.17.0"
+esp-hal         = { git = "https://github.com/jessebraham/esp-hal",  branch = "feature/updates" }
 heapless        = "0.8.0"
 ieee802154      = "0.6.1"
 log             = "0.4.20"
