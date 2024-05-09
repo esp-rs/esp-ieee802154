@@ -2,25 +2,20 @@
 #![no_main]
 
 use esp_backtrace as _;
-use esp_hal::{clock::ClockControl, delay::Delay, peripherals::Peripherals, prelude::*};
+use esp_hal::{
+    clock::ClockControl, delay::Delay, peripherals::Peripherals, prelude::*, system::SystemControl,
+};
 use esp_ieee802154::*;
 use esp_println::println;
 use ieee802154::mac::{Header, PanId, ShortAddress};
 
 #[entry]
 fn main() -> ! {
-    esp_println::logger::init_logger(log::LevelFilter::Info);
-
-    let peripherals = Peripherals::take();
-    let mut system = peripherals.SYSTEM.split();
+    let mut peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::max(system.clock_control).freeze();
 
-    let delay = Delay::new(&clocks);
-
-    println!("Start");
-
-    let radio = peripherals.IEEE802154;
-    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
+    let mut ieee802154 = Ieee802154::new(peripherals.IEEE802154, &mut peripherals.RADIO_CLK);
 
     ieee802154.set_config(Config {
         channel: 15,
@@ -29,6 +24,8 @@ fn main() -> ! {
         short_addr: Some(0x2323),
         ..Config::default()
     });
+
+    let delay = Delay::new(&clocks);
 
     let mut seq_number = 0u8;
     loop {

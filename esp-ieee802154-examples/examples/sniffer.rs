@@ -4,17 +4,16 @@
 use embedded_hal_nb::serial::Read;
 use esp_backtrace as _;
 use esp_hal::{
-    clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset, uart::Uart,
+    clock::ClockControl, peripherals::Peripherals, prelude::*, reset::software_reset,
+    system::SystemControl, uart::Uart,
 };
 use esp_ieee802154::*;
 use esp_println::println;
 
 #[entry]
 fn main() -> ! {
-    esp_println::logger::init_logger(log::LevelFilter::Info);
-
-    let peripherals = Peripherals::take();
-    let mut system = peripherals.SYSTEM.split();
+    let mut peripherals = Peripherals::take();
+    let system = SystemControl::new(peripherals.SYSTEM);
     let clocks = ClockControl::max(system.clock_control).freeze();
 
     let mut uart0 = Uart::new(peripherals.UART0, &clocks);
@@ -34,12 +33,12 @@ fn main() -> ! {
             }
         }
     }
+
     let channel: u8 = unsafe { core::str::from_utf8_unchecked(&read) }
         .parse()
         .unwrap();
 
-    let radio = peripherals.IEEE802154;
-    let mut ieee802154 = Ieee802154::new(radio, &mut system.radio_clock_control);
+    let mut ieee802154 = Ieee802154::new(peripherals.IEEE802154, &mut peripherals.RADIO_CLK);
 
     ieee802154.set_config(Config {
         channel,
