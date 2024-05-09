@@ -12,7 +12,7 @@ use core::{cell::RefCell, marker::PhantomData};
 
 use byte::{BytesExt, TryRead};
 use critical_section::Mutex;
-use esp_hal::{peripherals::IEEE802154, system::RadioClockControl};
+use esp_hal::peripherals::{IEEE802154, RADIO_CLK};
 use heapless::Vec;
 use ieee802154::mac::{self, FooterMode, FrameSerDesContext};
 
@@ -27,7 +27,6 @@ pub use self::{
     raw::RawReceived,
 };
 
-mod binary;
 mod compat;
 mod frame;
 mod hal;
@@ -107,7 +106,7 @@ pub struct Ieee802154<'a> {
 
 impl<'a> Ieee802154<'a> {
     /// Construct a new driver, enabling the IEEE 802.15.4 radio in the process
-    pub fn new(_radio: IEEE802154, radio_clocks: &mut RadioClockControl) -> Self {
+    pub fn new(_radio: IEEE802154, radio_clocks: &mut RADIO_CLK) -> Self {
         esp_ieee802154_enable(radio_clocks);
 
         Self {
