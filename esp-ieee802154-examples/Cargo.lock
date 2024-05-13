@@ -275,7 +275,7 @@ dependencies = [
 [[package]]
 name = "esp-build"
 version = "0.1.0"
-source = "git+https://github.com/jessebraham/esp-hal?branch=feature/updates#c3b2c7c4007e0b81af6376dbbcb1b2653a08bb34"
+source = "git+https://github.com/esp-rs/esp-hal?rev=58f40e9#58f40e95e504cc003fa08bca23c565c1ce3e3a4c"
 dependencies = [
  "quote",
  "syn 2.0.61",
@@ -285,7 +285,7 @@ dependencies = [
 [[package]]
 name = "esp-hal"
 version = "0.17.0"
-source = "git+https://github.com/jessebraham/esp-hal?branch=feature/updates#c3b2c7c4007e0b81af6376dbbcb1b2653a08bb34"
+source = "git+https://github.com/esp-rs/esp-hal?rev=58f40e9#58f40e95e504cc003fa08bca23c565c1ce3e3a4c"
 dependencies = [
  "basic-toml",
  "bitfield",
@@ -319,7 +319,7 @@ dependencies = [
 [[package]]
 name = "esp-hal-procmacros"
 version = "0.10.0"
-source = "git+https://github.com/jessebraham/esp-hal?branch=feature/updates#c3b2c7c4007e0b81af6376dbbcb1b2653a08bb34"
+source = "git+https://github.com/esp-rs/esp-hal?rev=58f40e9#58f40e95e504cc003fa08bca23c565c1ce3e3a4c"
 dependencies = [
  "darling",
  "document-features",
@@ -363,7 +363,7 @@ dependencies = [
 [[package]]
 name = "esp-metadata"
 version = "0.1.0"
-source = "git+https://github.com/jessebraham/esp-hal?branch=feature/updates#c3b2c7c4007e0b81af6376dbbcb1b2653a08bb34"
+source = "git+https://github.com/esp-rs/esp-hal?rev=58f40e9#58f40e95e504cc003fa08bca23c565c1ce3e3a4c"
 dependencies = [
  "basic-toml",
  "lazy_static",
@@ -384,7 +384,7 @@ dependencies = [
 [[package]]
 name = "esp-riscv-rt"
 version = "0.8.0"
-source = "git+https://github.com/jessebraham/esp-hal?branch=feature/updates#c3b2c7c4007e0b81af6376dbbcb1b2653a08bb34"
+source = "git+https://github.com/esp-rs/esp-hal?rev=58f40e9#58f40e95e504cc003fa08bca23c565c1ce3e3a4c"
 dependencies = [
  "document-features",
  "riscv",
@@ -394,7 +394,7 @@ dependencies = [
 [[package]]
 name = "esp-wifi-sys"
 version = "0.3.0"
-source = "git+https://github.com/jessebraham/esp-wifi?branch=feature/ieee802154#2222d481210380a6894435eb1a1c5efc1ddea64b"
+source = "git+https://github.com/esp-rs/esp-wifi?rev=2ceb4b3#2ceb4b3e2a29f03f2a6e25b519ddc45df4356666"
 dependencies = [
  "anyhow",
 ]

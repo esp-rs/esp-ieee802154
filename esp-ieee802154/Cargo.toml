@@ -13,8 +13,8 @@ test  = false
 [dependencies]
 byte             = "0.2.7"
 critical-section = "1.1.2"
-esp-hal          = { git = "https://github.com/jessebraham/esp-hal",  branch = "feature/updates" }
-esp-wifi-sys     = { git = "https://github.com/jessebraham/esp-wifi", branch = "feature/ieee802154" }
+esp-hal          = { git = "https://github.com/esp-rs/esp-hal",  rev = "58f40e9" }
+esp-wifi-sys     = { git = "https://github.com/esp-rs/esp-wifi", rev = "2ceb4b3" }
 heapless         = "0.8.0"
 ieee802154       = "0.6.1"
 log              = "0.4.21"
