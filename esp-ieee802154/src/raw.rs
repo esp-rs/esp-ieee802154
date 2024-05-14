@@ -1,23 +1,24 @@
 use core::cell::RefCell;
 
 use critical_section::Mutex;
+use esp_wifi_sys::include::{
+    esp_phy_calibration_data_t, esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
+    ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
+    ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
+    register_chipv7_phy,
+};
 use heapless::spsc::Queue;
 
 use crate::{
-    binary::include::{
-        esp_phy_calibration_data_t, esp_phy_calibration_mode_t_PHY_RF_CAL_FULL,
-        ieee802154_coex_event_t, ieee802154_coex_event_t_IEEE802154_IDLE,
-        ieee802154_coex_event_t_IEEE802154_LOW, ieee802154_coex_event_t_IEEE802154_MIDDLE,
-        register_chipv7_phy,
-    },
     frame::{frame_get_version, frame_is_ack_required, FRAME_VERSION_1, FRAME_VERSION_2},
     hal::*,
     pib::*,
 };
 use esp_hal::{
     interrupt::Priority,
+    peripherals::RADIO_CLK,
     prelude::handler,
-    system::{RadioClockControl, RadioClockController, RadioPeripherals},
+    system::{RadioClockController, RadioPeripherals},
 };
 
 pub(crate) const FRAME_SIZE: usize = 129;
@@ -67,7 +68,7 @@ pub struct RawReceived {
     pub channel: u8,
 }
 
-pub(crate) fn esp_ieee802154_enable(radio_clock_control: &mut RadioClockControl) {
+pub(crate) fn esp_ieee802154_enable(radio_clock_control: &mut RADIO_CLK) {
     radio_clock_control.init_clocks();
     radio_clock_control.enable(RadioPeripherals::Phy);
     radio_clock_control.enable(RadioPeripherals::Ieee802154);
