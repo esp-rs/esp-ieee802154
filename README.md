@@ -1,5 +1,11 @@
 # esp-ieee802154
 
+---
+
+## This project has moved! It can now be found in the [esp-rs/esp-hal](https://github.com/esp-rs/esp-hal/tree/main/esp-ieee802154) repository.
+
+---
+
 Low-level [IEEE 802.15.4] driver for the ESP32-C6 and ESP32-H2.
 
 Implements the PHY/MAC layers of the IEEE802.15.4 protocol stack, and supports sending and receiving of raw frames.
